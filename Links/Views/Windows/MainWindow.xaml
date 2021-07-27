@@ -3,10 +3,144 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:b="clr-namespace:Links.Infrastructure.Behaviors"
+        xmlns:vm="clr-namespace:Links.ViewModels"    
         xmlns:local="clr-namespace:Links"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Width="900" Height="600"
+        MinWidth="650" MinHeight="333"
+        Style="{StaticResource CustomWindow}">
 
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding CloseWindowCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+    <i:Interaction.Behaviors>
+        <b:WindowStateChangedBehavior/>
+    </i:Interaction.Behaviors>
+
+    <Window.DataContext>
+        <vm:MainWindowViewModel/>
+    </Window.DataContext>
+
+    <Window.Resources>
+        <Style TargetType="TextBlock" x:Key="TitleTextBlock">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="10, 0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Foreground" Value="{Binding Theme.TitleForeground, UpdateSourceTrigger=PropertyChanged}"/>
+            <Setter Property="Effect" Value="{Binding Theme.TitleEffect, UpdateSourceTrigger=PropertyChanged}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="{Binding Theme.TitleForegroundMouseOver, UpdateSourceTrigger=PropertyChanged}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Button" x:Key="SystemButton">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template" Value="{StaticResource SystemButtonTemplate}"/>
+        </Style>
+        <Style TargetType="Button" BasedOn="{StaticResource SystemButton}" x:Key="MinimizeWindowButton">
+            <Setter Property="Background" Value="{Binding Theme.MinimizeWindowButtonBackground, UpdateSourceTrigger=PropertyChanged}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{Binding Theme.MinimizeWindowButtonBackgroundMouseOver, UpdateSourceTrigger=PropertyChanged}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{Binding Theme.MinimizeWindowButtonBackgroundPressed, UpdateSourceTrigger=PropertyChanged}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Button" BasedOn="{StaticResource SystemButton}" x:Key="MaximizeWindowButton">
+            <Setter Property="Background" Value="{Binding Theme.MaximizeWindowButtonBackground, UpdateSourceTrigger=PropertyChanged}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{Binding Theme.MaximizeWindowButtonBackgroundMouseOver, UpdateSourceTrigger=PropertyChanged}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{Binding Theme.MaximizeWindowButtonBackgroundPressed, UpdateSourceTrigger=PropertyChanged}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Button" BasedOn="{StaticResource SystemButton}" x:Key="CloseWindowButton">
+            <Setter Property="Background" Value="{Binding Theme.CloseWindowButtonBackground, UpdateSourceTrigger=PropertyChanged}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{Binding Theme.CloseWindowButtonBackgroundMouseOver, UpdateSourceTrigger=PropertyChanged}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{Binding Theme.CloseWindowButtonBackgroundPressed, UpdateSourceTrigger=PropertyChanged}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid Background="{Binding Theme.TopBarBackground, UpdateSourceTrigger=PropertyChanged}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="50"/>
+            </Grid.ColumnDefinitions>
+            <Grid Background="Transparent">
+                <i:Interaction.Behaviors>
+                    <b:MovePlaceMouseWheelBehavior/>
+                    <b:MovePlaceMouseLeftButtonDownBehavior/>
+                </i:Interaction.Behaviors>
+            </Grid>
+            <TextBlock Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TitleTextBlock}">
+                <i:Interaction.Behaviors>
+                    <b:TitleMouseLeftButtonDownBehavior/>
+                </i:Interaction.Behaviors>
+            </TextBlock>
+            <Button Grid.Column="1"
+                    Command="{Binding MinimizeWindowCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                    Style="{StaticResource MinimizeWindowButton}">
+                <Rectangle
+                    Width="15"
+                    Height="4"
+                    Fill="{Binding Theme.SystemButtonItemBackground, UpdateSourceTrigger=PropertyChanged}">
+                </Rectangle>
+            </Button>
+            <Button Grid.Column="2"
+                    Command="{Binding MaximizeWindowCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                    Style="{StaticResource MaximizeWindowButton}">
+                <Border
+                    Width="11"
+                    Height="11"
+                    BorderThickness="2"
+                    BorderBrush="{Binding Theme.SystemButtonItemBackground, UpdateSourceTrigger=PropertyChanged}">
+                </Border>
+            </Button>
+            <Button Grid.Column="3"
+                    Command="{Binding CloseWindowCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                    Style="{StaticResource CloseWindowButton}">
+                <Border
+                    Width="12"
+                    Height="12"
+                    CornerRadius="5"
+                    BorderThickness="2"
+                    BorderBrush="{Binding Theme.SystemButtonItemBackground, UpdateSourceTrigger=PropertyChanged}">
+                </Border>
+            </Button>
+        </Grid>
+        <Grid
+            Grid.Row="1"
+            Background="{Binding Theme.WindowBackground, UpdateSourceTrigger=PropertyChanged}">
+        </Grid>
     </Grid>
 </Window>
