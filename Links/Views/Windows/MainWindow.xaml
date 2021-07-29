@@ -4,8 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:fa="http://schemas.fontawesome.com/icons/"
         xmlns:b="clr-namespace:Links.Infrastructure.Behaviors"
-        xmlns:vm="clr-namespace:Links.ViewModels"    
+        xmlns:vm="clr-namespace:Links.ViewModels"
+        xmlns:cols="clr-namespace:Links.Models.Collections"    
         xmlns:local="clr-namespace:Links"
         mc:Ignorable="d"
         Width="900" Height="600"
@@ -27,55 +29,20 @@
     </Window.DataContext>
 
     <Window.Resources>
-        <Style TargetType="TextBlock" x:Key="TitleTextBlock">
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Margin" Value="10, 0"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="Foreground" Value="{Binding Theme.TitleForeground, UpdateSourceTrigger=PropertyChanged}"/>
-            <Setter Property="Effect" Value="{Binding Theme.TitleEffect, UpdateSourceTrigger=PropertyChanged}"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Foreground" Value="{Binding Theme.TitleForegroundMouseOver, UpdateSourceTrigger=PropertyChanged}"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
         <Style TargetType="Button" x:Key="SystemButton">
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Template" Value="{StaticResource SystemButtonTemplate}"/>
         </Style>
-        <Style TargetType="Button" BasedOn="{StaticResource SystemButton}" x:Key="MinimizeWindowButton">
-            <Setter Property="Background" Value="{Binding Theme.MinimizeWindowButtonBackground, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <Style TargetType="Button" BasedOn="{StaticResource SystemButton}" x:Key="IconButton">
+            <Setter Property="Background" Value="Transparent"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{Binding Theme.MinimizeWindowButtonBackgroundMouseOver, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Setter Property="Background" Value="{Binding Theme.IconButtonBackgroundMouseOver, UpdateSourceTrigger=PropertyChanged}"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="{Binding Theme.MinimizeWindowButtonBackgroundPressed, UpdateSourceTrigger=PropertyChanged}"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        <Style TargetType="Button" BasedOn="{StaticResource SystemButton}" x:Key="MaximizeWindowButton">
-            <Setter Property="Background" Value="{Binding Theme.MaximizeWindowButtonBackground, UpdateSourceTrigger=PropertyChanged}"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{Binding Theme.MaximizeWindowButtonBackgroundMouseOver, UpdateSourceTrigger=PropertyChanged}"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="{Binding Theme.MaximizeWindowButtonBackgroundPressed, UpdateSourceTrigger=PropertyChanged}"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        <Style TargetType="Button" BasedOn="{StaticResource SystemButton}" x:Key="CloseWindowButton">
-            <Setter Property="Background" Value="{Binding Theme.CloseWindowButtonBackground, UpdateSourceTrigger=PropertyChanged}"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{Binding Theme.CloseWindowButtonBackgroundMouseOver, UpdateSourceTrigger=PropertyChanged}"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="{Binding Theme.CloseWindowButtonBackgroundPressed, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Setter Property="Background" Value="{Binding Theme.IconButtonBackgroundPressed, UpdateSourceTrigger=PropertyChanged}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -86,38 +53,96 @@
             <RowDefinition Height="32"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Grid Background="{Binding Theme.TopBarBackground, UpdateSourceTrigger=PropertyChanged}">
+
+        <Grid Grid.Row="0" Background="{Binding Theme.WindowTopBarBackground, UpdateSourceTrigger=PropertyChanged}">
+            <Grid.Resources>
+                <Style TargetType="TextBlock" x:Key="TitleTextBlockStyle">
+                    <Setter Property="Cursor" Value="Hand"/>
+                    <Setter Property="FontSize" Value="14"/>
+                    <Setter Property="Margin" Value="10, 0"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="HorizontalAlignment" Value="Left"/>
+                    <Setter Property="Foreground" Value="{Binding Theme.TitleForeground, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Setter Property="Effect" Value="{Binding Theme.TitleEffect, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="{Binding Theme.TitleForegroundMouseOver, UpdateSourceTrigger=PropertyChanged}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+
+                <Style TargetType="Button" BasedOn="{StaticResource SystemButton}" x:Key="MinimizeWindowButtonStyle">
+                    <Setter Property="Background" Value="{Binding Theme.MinimizeWindowButtonBackground, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{Binding Theme.MinimizeWindowButtonBackgroundMouseOver, UpdateSourceTrigger=PropertyChanged}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="{Binding Theme.MinimizeWindowButtonBackgroundPressed, UpdateSourceTrigger=PropertyChanged}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+
+                <Style TargetType="Button" BasedOn="{StaticResource SystemButton}" x:Key="MaximizeWindowButtonStyle">
+                    <Setter Property="Background" Value="{Binding Theme.MaximizeWindowButtonBackground, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{Binding Theme.MaximizeWindowButtonBackgroundMouseOver, UpdateSourceTrigger=PropertyChanged}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="{Binding Theme.MaximizeWindowButtonBackgroundPressed, UpdateSourceTrigger=PropertyChanged}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+
+                <Style TargetType="Button" BasedOn="{StaticResource SystemButton}" x:Key="CloseWindowButtonStyle">
+                    <Setter Property="Background" Value="{Binding Theme.CloseWindowButtonBackground, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{Binding Theme.CloseWindowButtonBackgroundMouseOver, UpdateSourceTrigger=PropertyChanged}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="{Binding Theme.CloseWindowButtonBackgroundPressed, UpdateSourceTrigger=PropertyChanged}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Resources>
+
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="50"/>
                 <ColumnDefinition Width="50"/>
                 <ColumnDefinition Width="50"/>
             </Grid.ColumnDefinitions>
+
             <Grid Background="Transparent">
                 <i:Interaction.Behaviors>
                     <b:MovePlaceMouseWheelBehavior/>
                     <b:MovePlaceMouseLeftButtonDownBehavior/>
                 </i:Interaction.Behaviors>
             </Grid>
-            <TextBlock Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TitleTextBlock}">
+
+            <TextBlock Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TitleTextBlockStyle}">
                 <i:Interaction.Behaviors>
                     <b:TitleMouseLeftButtonDownBehavior/>
                 </i:Interaction.Behaviors>
             </TextBlock>
+
             <Button Grid.Column="1"
                     Command="{Binding MinimizeWindowCommand}"
                     CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                    Style="{StaticResource MinimizeWindowButton}">
+                    Style="{StaticResource MinimizeWindowButtonStyle}">
                 <Rectangle
                     Width="15"
                     Height="4"
                     Fill="{Binding Theme.SystemButtonItemBackground, UpdateSourceTrigger=PropertyChanged}">
                 </Rectangle>
             </Button>
+
             <Button Grid.Column="2"
                     Command="{Binding MaximizeWindowCommand}"
                     CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                    Style="{StaticResource MaximizeWindowButton}">
+                    Style="{StaticResource MaximizeWindowButtonStyle}">
                 <Border
                     Width="11"
                     Height="11"
@@ -125,10 +150,11 @@
                     BorderBrush="{Binding Theme.SystemButtonItemBackground, UpdateSourceTrigger=PropertyChanged}">
                 </Border>
             </Button>
+
             <Button Grid.Column="3"
                     Command="{Binding CloseWindowCommand}"
                     CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                    Style="{StaticResource CloseWindowButton}">
+                    Style="{StaticResource CloseWindowButtonStyle}">
                 <Border
                     Width="12"
                     Height="12"
@@ -138,9 +164,418 @@
                 </Border>
             </Button>
         </Grid>
-        <Grid
-            Grid.Row="1"
-            Background="{Binding Theme.WindowBackground, UpdateSourceTrigger=PropertyChanged}">
+
+        <Grid Grid.Row="1" Background="{Binding Theme.WindowBackground, UpdateSourceTrigger=PropertyChanged}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="37"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <DockPanel Name="TopBarDockPanel" Background="{Binding Theme.TopBarBackground, UpdateSourceTrigger=PropertyChanged}">
+                <Button DockPanel.Dock="Left" Command="{Binding ShowSettingsPageCommand}" Style="{StaticResource IconButton}">
+                    <fa:ImageAwesome Icon="Solid_Cog" Margin="5"/>
+                </Button>
+
+                <Button DockPanel.Dock="Left" Command="{Binding ShowGroupCreatorCommand}" Style="{StaticResource IconButton}">
+                    <fa:ImageAwesome Icon="Solid_FolderPlus" Margin="7"/>
+                </Button>
+
+                <Button DockPanel.Dock="Left" Command="{Binding ShowLinkCreatorCommand}" Style="{StaticResource IconButton}">
+                    <fa:ImageAwesome Icon="Solid_PlusSquare" Margin="7"/>
+                </Button>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*" MinWidth="100"/>
+                    </Grid.ColumnDefinitions>
+
+                    <GridSplitter
+                        Grid.Column="1"
+                        Background="{Binding ElementName=LinkSearcherTextBox, Path=Background, UpdateSourceTrigger=PropertyChanged}">
+                    </GridSplitter>
+
+                    <TextBox
+                        Name="LinkSearcherTextBox"
+                        Grid.Column="2"
+                        Margin="5">
+                    </TextBox>
+                </Grid>
+            </DockPanel>
+
+            <Grid Grid.Row="1" Margin="5">
+                <Grid.DataContext>
+                    <vm:LinkCollectionViewModel/>
+                </Grid.DataContext>
+                
+                <Grid.Resources>
+                    <CollectionViewSource
+                        x:Key="GroupCollection"
+                        Source="{Binding GroupCollection}">
+                    </CollectionViewSource>
+
+                    <CollectionViewSource
+                        x:Key="LinkCollection"
+                        Source="{Binding LinkCollection}">
+                    </CollectionViewSource>
+                </Grid.Resources>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="3*" MinWidth="313"/>
+                </Grid.ColumnDefinitions>
+
+                <GridSplitter
+                    Width="3"
+                    Grid.Column="1"
+                    Background="{Binding DataContext.Theme.WindowGridSplitterBackground, UpdateSourceTrigger=PropertyChanged,
+                        RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
+                </GridSplitter>
+
+                <Border Grid.Row="0"
+                        Margin="0, 0, 5, 0"
+                        BorderThickness="3"
+                        BorderBrush="{Binding DataContext.Theme.GroupFieldBorderBrush, UpdateSourceTrigger=PropertyChanged,
+                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
+
+                    <Border BorderThickness="2"
+                            BorderBrush="{Binding DataContext.Theme.GroupFieldSubborderBrush, UpdateSourceTrigger=PropertyChanged,
+                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
+                        
+                        <Grid>
+                            <Grid.Resources>
+                                <Style TargetType="Button" BasedOn="{StaticResource SystemButton}" x:Key="IconButton">
+                                    <Setter Property="Background" Value="{Binding DataContext.Theme.GroupFieldIconButtonBackground,
+                                        RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="{Binding DataContext.Theme.GroupFieldIconButtonBackgroundMouseOver,
+                                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </Trigger>
+                                        <Trigger Property="IsPressed" Value="True">
+                                            <Setter Property="Background" Value="{Binding DataContext.Theme.GroupFieldIconButtonBackgroundPressed,
+                                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Resources>
+                            
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="1" Margin="0, 5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="3"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Row="0">
+                                    <TextBlock Text="name"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid Height="25" Grid.Row="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+
+                                <Button Grid.Column="0"
+                                        Width="30"
+                                        Style="{StaticResource IconButton}"
+                                        Command="{Binding DeleteGroupCommand}">
+                                    <fa:ImageAwesome
+                                        Margin="6"
+                                        Icon="Solid_Times"
+                                        Foreground="{Binding DataContext.Theme.GroupFieldIconButtonItemBackground, UpdateSourceTrigger=PropertyChanged,
+                                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
+                                    </fa:ImageAwesome>
+                                </Button>
+
+                                <Button
+                                    Grid.Column="1"
+                                    Width="30"
+                                    FontSize="14"
+                                    Content="▲"
+                                    Style="{StaticResource IconButton}"
+                                    Command="{Binding ChangeGroupEditorVisibilityCommand}"
+                                    Foreground="{Binding DataContext.Theme.GroupFieldIconButtonItemBackground, UpdateSourceTrigger=PropertyChanged,
+                                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
+                                </Button>
+
+                                <TextBox Grid.Column="2"
+                                         BorderThickness="0">
+                                </TextBox>
+                            </Grid>
+
+                            <ListBox Background="Transparent"
+                                     BorderThickness="0"
+                                     ItemsSource="{Binding Source={StaticResource GroupCollection}}">
+
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="SelectionChanged">
+                                        <i:InvokeCommandAction Command="{Binding ChangeGroupCommand}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="MoseDoubleClick">
+                                        <i:InvokeCommandAction Command="{Binding ChangeGroupEditorVisibilityCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type cols:Group}">
+                                        <DockPanel>
+                                            <fa:ImageAwesome
+                                                Width="25"
+                                                Height="17"
+                                                Margin="0, 5, 5, 5"
+                                                Icon="Solid_Folder"
+                                                DockPanel.Dock="Left"
+                                                Foreground="{Binding IconForeground}">
+                                            </fa:ImageAwesome>
+                                            <TextBlock
+                                                Text="{Binding Name}"
+                                                DockPanel.Dock="Right"
+                                                VerticalAlignment="Center"
+                                                Foreground="{Binding DataContext.Theme.GroupFieldTextBlocksForeground, UpdateSourceTrigger=PropertyChanged,
+                                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
+
+                                                <TextBlock.ToolTip>
+                                                    <ItemsControl ItemsSource="{Binding Links}">
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate DataType="{x:Type cols:LinkInfo}">
+                                                                <TextBlock Text="{Binding Title}"/>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+                                                </TextBlock.ToolTip>
+                                            </TextBlock>
+                                        </DockPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+
+                        </Grid>
+                    </Border>
+                </Border>
+
+                <ItemsControl Grid.Column="2" Margin="3, 0, 0, 0" ItemsSource="{Binding Source={StaticResource LinkCollection}}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel
+                                ItemWidth="{Binding DataContext.LinksPageWrapPanelItemWidth, UpdateSourceTrigger=PropertyChanged,
+                                    RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                ItemHeight="{Binding DataContext.LinksPageWrapPanelItemHeight, UpdateSourceTrigger=PropertyChanged,
+                                    RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                            </WrapPanel>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.Template>
+                        <ControlTemplate>
+                            <ScrollViewer VerticalScrollBarVisibility="auto">
+                                <ItemsPresenter/>
+                            </ScrollViewer>
+                        </ControlTemplate>
+                    </ItemsControl.Template>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type cols:LinkInfo}">
+                            
+                            <Grid Name="LinkPresenterGrid"
+                                  Width="{Binding DataContext.LinkPresenterGridWidth, UpdateSourceTrigger=PropertyChanged,
+                                        RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                  Height="{Binding DataContext.LinkPresenterGridHeight, UpdateSourceTrigger=PropertyChanged,
+                                        RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                  Background="{Binding DataContext.LinkPresenterGridBackground, UpdateSourceTrigger=PropertyChanged,
+                                        RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+
+                                <Grid.Resources>
+                                    <Style TargetType="TextBox">
+                                        <Setter Property="FontSize" Value="15"/>
+                                        <Setter Property="Margin" Value="0, 0, 0, 3"/>
+                                        <Setter Property="Background" Value="#EAEAEA"/>
+                                    </Style>
+
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="FontSize" Value="14"/>
+                                        <Setter Property="Margin" Value="0, 0, 0, 3"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="Foreground" Value="{Binding DataContext.Theme.LinkPresenterTextBlocksForeground,
+                                            RelativeSource={RelativeSource AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </Style>
+                                </Grid.Resources>
+
+                                <Grid Margin="3">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+                                    
+                                    <StackPanel Grid.Row="0">
+                                        <TextBlock Text="{Binding DataContext.CurrentLocale.Title, UpdateSourceTrigger=PropertyChanged,
+                                             RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"/>
+                                        
+                                        <TextBox Name="TitleTextBox" Text="{Binding Title}"/>
+
+                                        <TextBlock Text="{Binding DataContext.CurrentLocale.Link, UpdateSourceTrigger=PropertyChanged,
+                                             RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"/>
+                                        
+                                        <TextBox Name="LinkTextBox" Text="{Binding Link}"/>
+
+                                        <TextBlock Text="{Binding DataContext.CurrentLocale.Group, UpdateSourceTrigger=PropertyChanged,
+                                             RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"/>
+
+                                        <ComboBox
+                                            ItemsSource="{Binding ElementName=GroupCollection, Path=ItemsSource}"
+                                            SelectedIndex="{Binding ElementName=GroupCollection, Path=SelectedIndex, UpdateSourceTrigger=PropertyChanged}">
+                                        </ComboBox>
+
+                                        <TextBlock
+                                                Margin="0, 5"
+                                                HorizontalAlignment="Center"
+                                                Style="{StaticResource BoldPressingTextBlock}"
+                                                Text="{Binding DataContext.CurrentLocale.Image, UpdateSourceTrigger=PropertyChanged,
+                                                       RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
+
+                                            <TextBlock.ToolTip>
+                                                <Image
+                                                    Width="{Binding ElementName=LinkPresenterGrid, Path=Width, UpdateSourceTrigger=PropertyChanged}"
+                                                    Height="{Binding ElementName=LinkPresenterGrid, Path=Height, UpdateSourceTrigger=PropertyChanged}"
+                                                    Source="{Binding ToolTipImage, UpdateSourceTrigger=PropertyChanged}">
+                                                </Image>
+                                            </TextBlock.ToolTip>
+
+                                            <TextBlock.InputBindings>
+                                                <MouseBinding
+                                                    MouseAction="LeftClick"
+                                                    CommandParameter="{Binding BackgroundImage}"
+                                                    Command="{Binding SetLinkImageCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                                </MouseBinding>
+                                            </TextBlock.InputBindings>
+                                        </TextBlock>
+                                    </StackPanel>
+
+                                    <Grid Grid.Row="1">
+                                    </Grid>
+
+                                    <Grid Height="30"
+                                          Grid.Row="2"
+                                          Background="{Binding DataContext.Theme.LinkPresenterBottomBarBackground, UpdateSourceTrigger=PropertyChanged,
+                                                       RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
+                                        
+                                        <TextBlock
+                                            Width="20"
+                                            Height="20"
+                                            Text="{Binding DataContext.CurrentLocale.Ok, UpdateSourceTrigger=PropertyChanged,
+                                                   RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
+                                            
+                                            <TextBlock.InputBindings>
+                                                <MouseBinding
+                                                    MouseAction="LeftClick"
+                                                    Command="{Binding ChangeLinkEditorVisibilityCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                                </MouseBinding>
+                                            </TextBlock.InputBindings>
+                                        </TextBlock>
+                                    </Grid>
+                                </Grid>
+
+                                <Grid Margin="3"
+                                      Visibility="{Binding Presenter.Visibility, UpdateSourceTrigger=PropertyChanged}"
+                                      Background="{Binding DataContext.Theme.LinkPresenterInformationGridBackground, UpdateSourceTrigger=PropertyChanged,
+                                                   RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
+                                    
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Name="TitleTextBlock"
+                                               Grid.Row="0"
+                                               Style="{StaticResource DefaultTextBlock}"
+                                               Text="{Binding ElementName=TitleTextBox, Path=Text, UpdateSourceTrigger=PropertyChanged}"
+                                               Foreground="{Binding DataContext.Theme.LinkPresenterTextBlocksForeground,
+                                                   RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}">
+                                        
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="{Binding ElementName=TitleTextBlock, Path=Text, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+
+                                    <Button
+                                        Name="DeleteLinkButton"
+                                        Width="20"
+                                        Height="20"
+                                        Grid.Row="0"
+                                        FontWeight="Bold"
+                                        HorizontalAlignment="Right"
+                                        Command="{Binding DataContext.DeleteLinkCommand, UpdateSourceTrigger=PropertyChanged,
+                                                  RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+
+                                        <fa:ImageAwesome
+                                            Margin="5, 0"
+                                            Icon="Solid_Times"
+                                            Foreground="{Binding ElementName=DeleteLinkButton, Path=Foreground}">
+                                        </fa:ImageAwesome>
+                                    </Button>
+
+                                    <Border Grid.Row="1"
+                                            Margin="0, 3"
+                                            BorderThickness="2"
+                                            BorderBrush="{Binding DataContext.Theme.LinkPresenterImageBorderBrush, UpdateSourceTrigger=PropertyChanged,
+                                                          RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
+
+                                        <Grid Background="{Binding DataContext.Theme.LinkPresenterImageBackground, UpdateSourceTrigger=PropertyChanged,
+                                                           RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
+                                            
+                                            <Image Source="{Binding BackgroundImage, UpdateSourceTrigger=PropertyChanged}">
+                                                <Image.ToolTip>
+                                                    <TextBlock Text="{Binding ElementName=LinkTextBox, Path=Text, UpdateSourceTrigger=PropertyChanged}"/>
+                                                </Image.ToolTip>
+                                            </Image>
+                                        </Grid>
+                                    </Border>
+
+                                    <Grid Grid.Row="2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="3"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Button
+                                            Content="🢂"
+                                            Command="{Binding DataContext.FollowLinkCommand, UpdateSourceTrigger=PropertyChanged,
+                                                      RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                        </Button>
+                                        
+                                        <Button
+                                            Content="▲"
+                                            Grid.Column="2"
+                                            Command="{Binding DataContext.ChangeLinkEditorVisibilityCommand, UpdateSourceTrigger=PropertyChanged,
+                                                      RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                        </Button>
+                                    </Grid>
+                                    
+                                </Grid>
+                                
+                            </Grid>
+                            
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                
+            </Grid>
+            
         </Grid>
+
     </Grid>
 </Window>

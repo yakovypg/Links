@@ -10,6 +10,8 @@ namespace Links.Models.Themes
         public static WindowTheme Light => new WindowLightTheme();
 
         public SolidColorBrush WindowBackground { get; set; }
+        public SolidColorBrush WindowTopBarBackground { get; set; }
+        public SolidColorBrush WindowGridSplitterBackground { get; set; }
         public SolidColorBrush TopBarBackground { get; set; }
 
         public Effect TitleEffect { get; set; }
@@ -29,5 +31,25 @@ namespace Links.Models.Themes
         public SolidColorBrush CloseWindowButtonBackground { get; set; }
         public SolidColorBrush CloseWindowButtonBackgroundMouseOver { get; set; }
         public SolidColorBrush CloseWindowButtonBackgroundPressed { get; set; }
+
+        public SolidColorBrush IconButtonItemBackground { get; set; }
+        public SolidColorBrush IconButtonBackgroundMouseOver { get; set; }
+        public SolidColorBrush IconButtonBackgroundPressed { get; set; }
+
+        public SolidColorBrush GroupFieldBorderBrush { get; set; }
+        public SolidColorBrush GroupFieldSubborderBrush { get; set; }
+        public SolidColorBrush GroupFieldTextBlocksForeground { get; set; }
+
+        public SolidColorBrush GroupFieldIconButtonItemBackground { get; set; }
+        public SolidColorBrush GroupFieldIconButtonBackground { get; set; }
+        public SolidColorBrush GroupFieldIconButtonBackgroundMouseOver { get; set; }
+        public SolidColorBrush GroupFieldIconButtonBackgroundPressed { get; set; }
+
+        public SolidColorBrush LinkPresenterGridBackground { get; set; }
+        public SolidColorBrush LinkPresenterBottomBarBackground { get; set; }
+        public SolidColorBrush LinkPresenterTextBlocksForeground { get; set; }
+        public SolidColorBrush LinkPresenterInformationGridBackground { get; set; }
+        public SolidColorBrush LinkPresenterImageBorderBrush { get; set; }
+        public SolidColorBrush LinkPresenterImageBackground { get; set; }
     }
 }

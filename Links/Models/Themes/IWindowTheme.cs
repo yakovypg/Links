@@ -6,6 +6,8 @@ namespace Links.Models.Themes
     internal interface IWindowTheme
     {
         SolidColorBrush WindowBackground { get; set; }
+        SolidColorBrush WindowTopBarBackground { get; set; }
+        SolidColorBrush WindowGridSplitterBackground { get; set; }
         SolidColorBrush TopBarBackground { get; set; }
 
         Effect TitleEffect { get; set; }
@@ -25,5 +27,25 @@ namespace Links.Models.Themes
         SolidColorBrush CloseWindowButtonBackground { get; set; }
         SolidColorBrush CloseWindowButtonBackgroundMouseOver { get; set; }
         SolidColorBrush CloseWindowButtonBackgroundPressed { get; set; }
+
+        SolidColorBrush IconButtonItemBackground { get; set; }
+        SolidColorBrush IconButtonBackgroundMouseOver { get; set; }
+        SolidColorBrush IconButtonBackgroundPressed { get; set; }
+
+        SolidColorBrush GroupFieldBorderBrush { get; set; }
+        SolidColorBrush GroupFieldSubborderBrush { get; set; }
+        SolidColorBrush GroupFieldTextBlocksForeground { get; set; }
+
+        SolidColorBrush GroupFieldIconButtonItemBackground { get; set; }
+        SolidColorBrush GroupFieldIconButtonBackground { get; set; }
+        SolidColorBrush GroupFieldIconButtonBackgroundMouseOver { get; set; }
+        SolidColorBrush GroupFieldIconButtonBackgroundPressed { get; set; }
+
+        SolidColorBrush LinkPresenterGridBackground { get; set; }
+        SolidColorBrush LinkPresenterBottomBarBackground { get; set; }
+        SolidColorBrush LinkPresenterTextBlocksForeground { get; set; }
+        SolidColorBrush LinkPresenterInformationGridBackground { get; set; }
+        SolidColorBrush LinkPresenterImageBorderBrush { get; set; }
+        SolidColorBrush LinkPresenterImageBackground { get; set; }
     }
 }

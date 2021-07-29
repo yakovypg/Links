@@ -8,7 +8,9 @@ namespace Links.Models.Themes
         public WindowLightTheme()
         {
             WindowBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EFF8FF"));
-            TopBarBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#464775"));
+            WindowTopBarBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#464775"));
+            WindowGridSplitterBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#464775"));
+            TopBarBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DCE0DF"));
 
             TitleEffect = new DropShadowEffect() { ShadowDepth = 3, BlurRadius = 5, Color = Colors.Black };
             TitleForeground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E2E1E6"));
@@ -27,6 +29,26 @@ namespace Links.Models.Themes
             CloseWindowButtonBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#464775"));
             CloseWindowButtonBackgroundMouseOver = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#CD5B5B"));
             CloseWindowButtonBackgroundPressed = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#853C3C"));
+
+            IconButtonItemBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#303038"));
+            IconButtonBackgroundMouseOver = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#BABABB"));
+            IconButtonBackgroundPressed = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#8B9BCF"));
+
+            GroupFieldBorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#696969"));
+            GroupFieldSubborderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#000000"));
+            GroupFieldTextBlocksForeground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#212123"));
+
+            GroupFieldIconButtonItemBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#303038"));
+            GroupFieldIconButtonBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DCE0DF"));
+            GroupFieldIconButtonBackgroundMouseOver = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#BABABB"));
+            GroupFieldIconButtonBackgroundPressed = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#8B9BCF"));
+
+            LinkPresenterGridBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AAAAAA"));
+            LinkPresenterBottomBarBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F5DEB3"));
+            LinkPresenterTextBlocksForeground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EAEAEA"));
+            LinkPresenterInformationGridBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AAAAAA"));
+            LinkPresenterImageBorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#696969"));
+            LinkPresenterImageBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF"));
         }
     }
 }
