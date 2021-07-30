@@ -33,6 +33,13 @@ namespace Links.ViewModels
             set => SetValue(ref _locale, value);
         }
 
+        private Visibility _settingsPageVisibility = Visibility.Hidden;
+        public Visibility SettingsPageVisibility
+        {
+            get => _settingsPageVisibility;
+            set => SetValue(ref _settingsPageVisibility, value);
+        }
+
         public ICommand MinimizeWindowCommand { get; }
         public ICommand MaximizeWindowCommand { get; }
         public ICommand CloseWindowCommand { get; }
@@ -40,6 +47,17 @@ namespace Links.ViewModels
         public ICommand ShowSettingsPageCommand { get; }
         public ICommand ShowGroupCreatorCommand { get; }
         public ICommand ShowLinkCreatorCommand { get; }
+
+        public ICommand ChangeGroupsSortingCommand { get; }
+
+        public ICommand ResetSettingsCommand { get; }
+        public ICommand ImportSettingsCommand { get; }
+        public ICommand ExportSettingsCommand { get; }
+        public ICommand RestoreRecycleBinItemCommand { get; }
+        public ICommand RemoveRecycleBinItemCommand { get; }
+        public ICommand EmptyRecycleBinCommand { get; }
+
+        public ObservableCollection<Group> RecycleBin { get; private set; }
 
         public MainWindowViewModel()
         {
@@ -50,6 +68,15 @@ namespace Links.ViewModels
             ShowSettingsPageCommand = new RelayCommand(delegate { }, t => true);
             ShowGroupCreatorCommand = new RelayCommand(delegate { }, t => true);
             ShowLinkCreatorCommand = new RelayCommand(delegate { }, t => true);
+
+            ChangeGroupsSortingCommand = new RelayCommand(delegate { }, t => true);
+
+            ResetSettingsCommand = new RelayCommand(delegate { }, t => true);
+            ImportSettingsCommand = new RelayCommand(delegate { }, t => true);
+            ExportSettingsCommand = new RelayCommand(delegate { }, t => true);
+            RestoreRecycleBinItemCommand = new RelayCommand(delegate { }, t => true);
+            RemoveRecycleBinItemCommand = new RelayCommand(delegate { }, t => true);
+            EmptyRecycleBinCommand = new RelayCommand(delegate { }, t => true);
         }
     }
 }

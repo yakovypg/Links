@@ -8,7 +8,11 @@ namespace Links.Models.Themes
         SolidColorBrush WindowBackground { get; set; }
         SolidColorBrush WindowTopBarBackground { get; set; }
         SolidColorBrush WindowGridSplitterBackground { get; set; }
+
         SolidColorBrush TopBarBackground { get; set; }
+
+        SolidColorBrush SettingsPageTextBlocksForeground { get; set; }
+        SolidColorBrush SettingsPageBottomBarBackground { get; set; }
 
         Effect TitleEffect { get; set; }
         SolidColorBrush TitleForeground { get; set; }

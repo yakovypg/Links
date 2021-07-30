@@ -10,7 +10,11 @@ namespace Links.Models.Themes
             WindowBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#333449"));
             WindowTopBarBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#464775"));
             WindowGridSplitterBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#696969"));
+
             TopBarBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DCE0DF"));
+
+            SettingsPageTextBlocksForeground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E2E1E6"));
+            SettingsPageBottomBarBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#464775"));
 
             TitleEffect = new DropShadowEffect() { ShadowDepth = 3, BlurRadius = 5, Color = Colors.Black };
             TitleForeground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E2E1E6"));

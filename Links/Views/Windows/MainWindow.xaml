@@ -246,9 +246,26 @@
                         
                         <Grid>
                             <Grid.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Height" Value="25"/>
+                                    <Setter Property="FontSize" Value="15"/>
+                                    <Setter Property="Margin" Value="5, 0, 0, 5"/>
+                                    <Setter Property="Foreground" Value="{Binding DataContext.Theme.GroupFieldTextBlocksForeground,
+                                        UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"/>
+                                </Style>
+
+                                <Style TargetType="TextBox" x:Key="GroupEditorMenuTextBoxStyle">
+                                    <Setter Property="Height" Value="25"/>
+                                    <Setter Property="Padding" Value="2"/>
+                                    <Setter Property="FontSize" Value="15"/>
+                                    <Setter Property="Margin" Value="0, 0, 0, 5"/>
+                                </Style>
+                                
                                 <Style TargetType="Button" BasedOn="{StaticResource SystemButton}" x:Key="IconButton">
+                                    
                                     <Setter Property="Background" Value="{Binding DataContext.Theme.GroupFieldIconButtonBackground,
                                         RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}"/>
+                                    
                                     <Style.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
                                             <Setter Property="Background" Value="{Binding DataContext.Theme.GroupFieldIconButtonBackgroundMouseOver,
@@ -271,12 +288,31 @@
                             <Grid Grid.Row="1" Margin="0, 5">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="auto"/>
-                                    <ColumnDefinition Width="3"/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
 
-                                <StackPanel Grid.Row="0">
-                                    <TextBlock Text="name"/>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock
+                                        Text="{Binding DataContext.CurrentLocale.Name, UpdateSourceTrigger=PropertyChanged,
+                                               RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
+                                    </TextBlock>
+                                    <TextBlock
+                                        Text="{Binding DataContext.CurrentLocale.Colour, UpdateSourceTrigger=PropertyChanged,
+                                               RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
+                                    </TextBlock>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" Margin="5, 0, 0, 0">
+                                    <TextBox
+                                        Style="{StaticResource GroupEditorMenuTextBoxStyle}"
+                                        Text="{Binding DataContext.SelectedGroup.Name, UpdateSourceTrigger=PropertyChanged,
+                                               RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
+                                    </TextBox>
+
+                                    <ComboBox
+                                        SelectedIndex="{Binding DataContext.SelectedGroup.ColourIndex, UpdateSourceTrigger=PropertyChanged,
+                                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
+                                    </ComboBox>
                                 </StackPanel>
                             </Grid>
 
@@ -572,6 +608,203 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+                
+            </Grid>
+
+            <Grid Grid.RowSpan="2"
+                  Background="{Binding Theme.WindowBackground}"
+                  Visibility="{Binding SettingsPageVisibility, UpdateSourceTrigger=PropertyChanged}">
+                
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" MaxWidth="400"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Column="0" Margin="5">
+                    <Grid.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Height" Value="25"/>
+                            <Setter Property="FontSize" Value="15"/>
+                            <Setter Property="Margin" Value="0, 0, 8, 5"/>
+                            <Setter Property="Foreground" Value="{Binding DataContext.Theme.SettingsPageTextBlocksForeground,
+                                UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"/>
+                        </Style>
+                        
+                        <Style TargetType="ComboBox">
+                            <Setter Property="Height" Value="25"/>
+                            <Setter Property="FontSize" Value="15"/>
+                            <Setter Property="Margin" Value="0, 0, 0, 5"/>
+                        </Style>
+                        
+                        <Style TargetType="TextBox">
+                            <Setter Property="Height" Value="25"/>
+                            <Setter Property="Padding" Value="2"/>
+                            <Setter Property="FontSize" Value="15"/>
+                            <Setter Property="Margin" Value="0, 0, 0, 5"/>
+                        </Style>
+                    </Grid.Resources>
+
+                    <ScrollViewer VerticalScrollBarVisibility="auto">
+                        <Grid Margin="0, 0, 5, 0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="{Binding CurrentLocale.GroupsSorting, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Text="{Binding CurrentLocale.SortingMode, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Text="{Binding CurrentLocale.LinksSorting, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Text="{Binding CurrentLocale.SortingMode, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Text="{Binding CurrentLocale.LinkSize, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Text="{Binding CurrentLocale.Theme, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Text="{Binding CurrentLocale.Language, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Text="{Binding CurrentLocale.UseRecycleBin, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Text="{Binding CurrentLocale.EmptyRecycleBin, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1">
+                                <ComboBox>
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="PropertyChanged">
+                                            <i:InvokeCommandAction Command="{Binding ChangeGroupsSortingCommand}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
+                                <ComboBox>
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="PropertyChanged">
+                                            <i:InvokeCommandAction Command="{Binding ChangeGroupsSortingCommand}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
+                                <ComboBox>
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="PropertyChanged">
+                                            <i:InvokeCommandAction Command="{Binding ChangeGroupsSortingCommand}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
+                                <ComboBox>
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="PropertyChanged">
+                                            <i:InvokeCommandAction Command="{Binding ChangeGroupsSortingCommand}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
+                                <ComboBox>
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="PropertyChanged">
+                                            <i:InvokeCommandAction Command="{Binding ChangeGroupsSortingCommand}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
+                                <ComboBox>
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="PropertyChanged">
+                                            <i:InvokeCommandAction Command="{Binding ChangeGroupsSortingCommand}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
+                                <ComboBox>
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="PropertyChanged">
+                                            <i:InvokeCommandAction Command="{Binding ChangeGroupsSortingCommand}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
+                                <ComboBox>
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="PropertyChanged">
+                                            <i:InvokeCommandAction Command="{Binding ChangeGroupsSortingCommand}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
+                                <ComboBox>
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="PropertyChanged">
+                                            <i:InvokeCommandAction Command="{Binding ChangeGroupsSortingCommand}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
+                            </StackPanel>
+                        </Grid>
+                    </ScrollViewer>
+                    
+                </Grid>
+
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <ListBox Name="RecycleBinListBox" Grid.Row="0">
+
+                    </ListBox>
+
+                    <Grid Grid.Row="1" Background="{Binding Theme.SettingsPageBottomBarBackground}">
+                        <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">
+                            <Grid Height="25" Margin="0, 5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="95"/>
+                                    <ColumnDefinition Width="95"/>
+                                    <ColumnDefinition Width="95"/>
+                                    <ColumnDefinition Width="95"/>
+                                    <ColumnDefinition Width="95"/>
+                                    <ColumnDefinition Width="95"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+
+                                <Button
+                                    Grid.Column="1"
+                                    Margin="0, 0, 5, 0"
+                                    Content="{Binding CurrentLocale.Reset}"
+                                    Command="{Binding ResetSettingsCommand}">
+                                </Button>
+
+                                <Button
+                                    Grid.Column="2"
+                                    Margin="0, 0, 5, 0"
+                                    Content="{Binding CurrentLocale.Import}"
+                                    Command="{Binding ImportSettingsCommand}">
+                                </Button>
+
+                                <Button
+                                    Grid.Column="3"
+                                    Margin="0, 0, 5, 0"
+                                    Content="{Binding CurrentLocale.Export}"
+                                    Command="{Binding ExportSettingsCommand}">
+                                </Button>
+
+                                <Button
+                                    Grid.Column="4"
+                                    Margin="0, 0, 5, 0"
+                                    Content="{Binding CurrentLocale.Restore}"
+                                    Command="{Binding RestoreRecycleBinItemCommand}"
+                                    CommandParameter="{Binding ElementName=RecycleBinListBox, Path=SelectedItem}">
+                                </Button>
+
+                                <Button
+                                    Grid.Column="5"
+                                    Margin="0, 0, 5, 0"
+                                    Content="{Binding CurrentLocale.Remove}"
+                                    Command="{Binding RemoveRecycleBinItemCommand}"
+                                    CommandParameter="{Binding ElementName=RecycleBinListBox, Path=SelectedItem}">
+                                </Button>
+
+                                <Button
+                                    Grid.Column="6"
+                                    Margin="0, 0, 5, 0"
+                                    Content="{Binding CurrentLocale.Empty}"
+                                    Command="{Binding EmptyRecycleBinCommand}">
+                                </Button>
+                            </Grid>
+                        </ScrollViewer>
+                    </Grid>
+                    
+                </Grid>
                 
             </Grid>
             
