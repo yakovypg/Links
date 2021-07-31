@@ -1,17 +1,15 @@
-﻿using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Collections.ObjectModel;
-using Links.Models.Localization;
-using Links.Models.Collections;
-using Links.Models.Themes;
+﻿using Links.Infrastructure.Commands;
 using Links.ViewModels.Base;
-using Links.Infrastructure.Commands;
+using System.Windows;
+using System.Windows.Input;
 
 namespace Links.ViewModels
 {
-    internal class MainWindowViewModel : ViewModel
+    internal class MainWindowViewModel : CustomizedViewModel
     {
+        public SettingsViewModel SettingsVM { get; }
+        public LinkCollectionViewModel LinkCollectionVM { get; }
+
         private string _title = "Links";
         public string Title
         {
@@ -19,64 +17,87 @@ namespace Links.ViewModels
             set => SetValue(ref _title, value);
         }
 
-        private IWindowTheme _theme = WindowTheme.Dark;
-        public IWindowTheme Theme
+        #region FieldsVisibility
+
+        private Visibility _settingsFieldVisibility = Visibility.Hidden;
+        public Visibility SettingsFieldVisibility
         {
-            get => _theme;
-            set => SetValue(ref _theme, value);
+            get => _settingsFieldVisibility;
+            set => SetValue(ref _settingsFieldVisibility, value);
         }
 
-        private ILocale _locale = Locale.English;
-        public ILocale CurrentLocale
+        private Visibility _groupCreatorMenuVisibility = Visibility.Hidden;
+        public Visibility GroupCreatorMenuVisibility
         {
-            get => _locale;
-            set => SetValue(ref _locale, value);
+            get => _groupCreatorMenuVisibility;
+            set => SetValue(ref _groupCreatorMenuVisibility, value);
         }
 
-        private Visibility _settingsPageVisibility = Visibility.Hidden;
-        public Visibility SettingsPageVisibility
+        private Visibility _linkCreatorMenuVisibility = Visibility.Hidden;
+        public Visibility LinkCreatorMenuVisibility
         {
-            get => _settingsPageVisibility;
-            set => SetValue(ref _settingsPageVisibility, value);
+            get => _linkCreatorMenuVisibility;
+            set => SetValue(ref _linkCreatorMenuVisibility, value);
         }
+
+        #endregion
+
+        #region VisibilityCommands
+
+        public ICommand ShowSettingsPageCommand { get; }
+        public void OnShowSettingsPageCommandExecuted(object parameter)
+        {
+            SettingsFieldVisibility = _settingsFieldVisibility == Visibility.Hidden
+                ? Visibility.Visible
+                : Visibility.Hidden;
+        }
+
+        public ICommand ShowGroupCreatorCommand { get; }
+        public void OnShowGroupCreatorCommandExecuted(object parameter)
+        {
+            if (_groupCreatorMenuVisibility == Visibility.Visible)
+                return;
+
+            if (_linkCreatorMenuVisibility == Visibility.Visible)
+                LinkCreatorMenuVisibility = Visibility.Hidden;
+
+            GroupCreatorMenuVisibility = Visibility.Visible;
+        }
+
+        public ICommand ShowLinkCreatorCommand { get; }
+        public void OnShowLinkCreatorCommandExecuted(object parameter)
+        {
+            if (_linkCreatorMenuVisibility == Visibility.Visible)
+                return;
+
+            if (_groupCreatorMenuVisibility == Visibility.Visible)
+                GroupCreatorMenuVisibility = Visibility.Hidden;
+
+            LinkCreatorMenuVisibility = Visibility.Visible;
+        }
+
+        #endregion
+
+        #region SystemCommands
 
         public ICommand MinimizeWindowCommand { get; }
         public ICommand MaximizeWindowCommand { get; }
         public ICommand CloseWindowCommand { get; }
 
-        public ICommand ShowSettingsPageCommand { get; }
-        public ICommand ShowGroupCreatorCommand { get; }
-        public ICommand ShowLinkCreatorCommand { get; }
-
-        public ICommand ChangeGroupsSortingCommand { get; }
-
-        public ICommand ResetSettingsCommand { get; }
-        public ICommand ImportSettingsCommand { get; }
-        public ICommand ExportSettingsCommand { get; }
-        public ICommand RestoreRecycleBinItemCommand { get; }
-        public ICommand RemoveRecycleBinItemCommand { get; }
-        public ICommand EmptyRecycleBinCommand { get; }
-
-        public ObservableCollection<Group> RecycleBin { get; private set; }
+        #endregion
 
         public MainWindowViewModel()
         {
+            SettingsVM = new SettingsViewModel();
+            LinkCollectionVM = new LinkCollectionViewModel();
+
             MinimizeWindowCommand = new MinimizeWindowCommand();
             MaximizeWindowCommand = new MaximizeWindowCommand();
             CloseWindowCommand = new CloseWindowCommand();
 
-            ShowSettingsPageCommand = new RelayCommand(delegate { }, t => true);
-            ShowGroupCreatorCommand = new RelayCommand(delegate { }, t => true);
-            ShowLinkCreatorCommand = new RelayCommand(delegate { }, t => true);
-
-            ChangeGroupsSortingCommand = new RelayCommand(delegate { }, t => true);
-
-            ResetSettingsCommand = new RelayCommand(delegate { }, t => true);
-            ImportSettingsCommand = new RelayCommand(delegate { }, t => true);
-            ExportSettingsCommand = new RelayCommand(delegate { }, t => true);
-            RestoreRecycleBinItemCommand = new RelayCommand(delegate { }, t => true);
-            RemoveRecycleBinItemCommand = new RelayCommand(delegate { }, t => true);
-            EmptyRecycleBinCommand = new RelayCommand(delegate { }, t => true);
+            ShowSettingsPageCommand = new RelayCommand(OnShowSettingsPageCommandExecuted, t => true);
+            ShowGroupCreatorCommand = new RelayCommand(OnShowGroupCreatorCommandExecuted, t => true);
+            ShowLinkCreatorCommand = new RelayCommand(OnShowLinkCreatorCommandExecuted, t => true);
         }
     }
 }

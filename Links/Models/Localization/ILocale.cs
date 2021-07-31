@@ -16,6 +16,7 @@
         string UseRecycleBin { get; set; }
         string EmptyRecycleBin { get; set; }
 
+        string Close { get; set; }
         string Reset { get; set; }
         string Import { get; set; }
         string Export { get; set; }

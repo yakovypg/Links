@@ -10,13 +10,8 @@ namespace Links.Models.Themes
         public static WindowTheme Light => new WindowLightTheme();
 
         public SolidColorBrush WindowBackground { get; set; }
-        public SolidColorBrush WindowTopBarBackground { get; set; }
+        public SolidColorBrush WindowSystemTopBarBackground { get; set; }
         public SolidColorBrush WindowGridSplitterBackground { get; set; }
-
-        public SolidColorBrush TopBarBackground { get; set; }
-
-        public SolidColorBrush SettingsPageTextBlocksForeground { get; set; }
-        public SolidColorBrush SettingsPageBottomBarBackground { get; set; }
 
         public Effect TitleEffect { get; set; }
         public SolidColorBrush TitleForeground { get; set; }
@@ -40,14 +35,19 @@ namespace Links.Models.Themes
         public SolidColorBrush IconButtonBackgroundMouseOver { get; set; }
         public SolidColorBrush IconButtonBackgroundPressed { get; set; }
 
-        public SolidColorBrush GroupFieldBorderBrush { get; set; }
-        public SolidColorBrush GroupFieldSubborderBrush { get; set; }
-        public SolidColorBrush GroupFieldTextBlocksForeground { get; set; }
+        public SolidColorBrush SettingsFieldTextBlocksForeground { get; set; }
+        public SolidColorBrush SettingsFieldBottomBarBackground { get; set; }
 
-        public SolidColorBrush GroupFieldIconButtonItemBackground { get; set; }
-        public SolidColorBrush GroupFieldIconButtonBackground { get; set; }
-        public SolidColorBrush GroupFieldIconButtonBackgroundMouseOver { get; set; }
-        public SolidColorBrush GroupFieldIconButtonBackgroundPressed { get; set; }
+        public SolidColorBrush GroupsFieldBorderBrush { get; set; }
+        public SolidColorBrush GroupsFieldSubborderBrush { get; set; }
+        public SolidColorBrush GroupsFieldTextBlocksForeground { get; set; }
+
+        public SolidColorBrush GroupsFieldIconButtonItemBackground { get; set; }
+        public SolidColorBrush GroupsFieldIconButtonBackground { get; set; }
+        public SolidColorBrush GroupsFieldIconButtonBackgroundMouseOver { get; set; }
+        public SolidColorBrush GroupsFieldIconButtonBackgroundPressed { get; set; }
+
+        public SolidColorBrush LinksFieldTopBarBackground { get; set; }
 
         public SolidColorBrush LinkPresenterGridBackground { get; set; }
         public SolidColorBrush LinkPresenterBottomBarBackground { get; set; }

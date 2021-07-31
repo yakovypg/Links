@@ -1,63 +1,144 @@
-﻿using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Collections.ObjectModel;
-using Links.Models.Localization;
+﻿using Links.Infrastructure.Commands;
+using Links.Infrastructure.Extensions;
 using Links.Models.Collections;
-using Links.Models.Themes;
 using Links.ViewModels.Base;
-using Links.Infrastructure.Commands;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Windows.Data;
+using System.Windows.Input;
 
 namespace Links.ViewModels
 {
-    internal class LinkCollectionViewModel : ViewModel
+    internal class LinkCollectionViewModel : CustomizedViewModel
     {
-        private SolidColorBrush _linkPresenterGridBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFAAAAAA"));
-        public SolidColorBrush LinkPresenterGridBackground
+        public int LinkPresenterGridWidth => _linkPresenterGridWidth;
+        public int LinkPresenterGridHeight => _linkPresenterGridHeight;
+        public int LinksFieldWrapPanelItemWidth => _linkPresenterGridWidth + 5;
+        public int LinksFieldWrapPanelItemHeight => _linkPresenterGridHeight + 5;
+
+        public IEnumerable<string> GroupIconColors => Enum.GetValues(typeof(GroupIcon.Colors)).Cast<GroupIcon.Colors>().ToStringEnumerable();
+
+        private readonly CollectionViewSource _groups;
+        public ICollectionView Groups => _groups?.View;
+
+        private readonly CollectionViewSource _selectedGroupLinks;
+        public ICollectionView SelectedGroupLinks => _selectedGroupLinks?.View;
+
+        private Group _selectedGroup;
+        public Group SelectedGroup
         {
-            get => _linkPresenterGridBackground;
-            set => SetValue(ref _linkPresenterGridBackground, value);
+            get => _selectedGroup;
+            set
+            {
+                if (!SetValue(ref _selectedGroup, value))
+                    return;
+
+                _selectedGroupLinks.Source = value?.Links;
+                OnPropertyChanged(nameof(SelectedGroupLinks));
+            }
         }
 
-        private int _linkPresenterGridWidth = 150;
-        public int LinkPresenterGridWidth
+        private string _groupFilterText = string.Empty;
+        public string GroupFilterText
         {
-            get => _linkPresenterGridWidth;
-            set => SetValue(ref _linkPresenterGridWidth, value);
+            get => _groupFilterText;
+            set
+            {
+                if (SetValue(ref _groupFilterText, value))
+                    _groups?.View.Refresh();
+            }
         }
 
-        private int _linkPresenterGridHeight = 230;
-        public int LinkPresenterGridHeight
+        private string _linkFilterText = string.Empty;
+        public string LinkFilterText
         {
-            get => _linkPresenterGridHeight;
-            set => SetValue(ref _linkPresenterGridHeight, value);
+            get => _linkFilterText;
+            set
+            {
+                if (SetValue(ref _linkFilterText, value))
+                    _selectedGroupLinks?.View.Refresh();
+            }
         }
-
-        public int LinksPageWrapPanelItemWidth => _linkPresenterGridWidth + 5;
-        public int LinksPageWrapPanelItemHeight => _linkPresenterGridHeight + 5;
 
         public ICommand DeleteGroupCommand { get; }
-        public ICommand ChangeGroupCommand { get; }
         public ICommand ChangeGroupEditorVisibilityCommand { get; }
 
         public ICommand DeleteLinkCommand { get; }
         public ICommand ChangeLinkEditorVisibilityCommand { get; }
         public ICommand SetLinkImageCommand { get; }
 
-        public Group SelectedGroup { get; set; }
-
-        public ObservableCollection<Group> GroupCollection { get; private set; } = new ObservableCollection<Group>() { new Group("TestGroup", new ObservableCollection<LinkInfo>() { new LinkInfo(5, System.DateTime.Now, "Link", "Title"), new LinkInfo(55, System.DateTime.Now, "link", "title") }) };
-        public ObservableCollection<LinkInfo> LinkCollection { get; private set; } = new ObservableCollection<LinkInfo>() { new LinkInfo(0, System.DateTime.Now, "Link", "Title"), new LinkInfo(1, System.DateTime.Now, "link", "title") };
+        public ObservableCollection<Group> GroupCollection { get; private set; } = new ObservableCollection<Group>() { new Group("TestGroup", new ObservableCollection<LinkInfo>() { new LinkInfo(5, DateTime.Now, "google", "GitHub"), new LinkInfo(55, DateTime.Now, "yandex", "Gmail") }) };
+        public ObservableCollection<LinkInfo> LinkCollection { get; private set; } = new ObservableCollection<LinkInfo>() { new LinkInfo(0, System.DateTime.Now, "yandex", "GitHub"), new LinkInfo(1, DateTime.Now, "google", "Gmail") };
 
         public LinkCollectionViewModel()
         {
+            _groups = new CollectionViewSource()
+            {
+                IsLiveSortingRequested = true,
+                IsLiveFilteringRequested = true
+            };
+
+            _groups.Source = GroupCollection;
+            _groups.Filter += OnGroupFiltered;
+
+            _selectedGroupLinks = new CollectionViewSource()
+            {
+                IsLiveSortingRequested = true,
+                IsLiveFilteringRequested = true
+            };
+
+            _selectedGroupLinks.Filter += OnLinkFiltered;
+
             DeleteGroupCommand = new RelayCommand(delegate { }, t => true);
-            ChangeGroupCommand = new RelayCommand(delegate { }, t => true);
             ChangeGroupEditorVisibilityCommand = new RelayCommand(delegate { }, t => true);
 
             DeleteLinkCommand = new RelayCommand(delegate { }, t => true);
             ChangeLinkEditorVisibilityCommand = new RelayCommand(delegate { }, t => true);
             SetLinkImageCommand = new RelayCommand(delegate { }, t => true);
+        }
+
+        private void OnGroupFiltered(object sender, FilterEventArgs e)
+        {
+            if (!(e.Item is Group group))
+            {
+                e.Accepted = false;
+                return;
+            }
+
+            string filter = GroupFilterText;
+
+            if (string.IsNullOrEmpty(filter))
+                return;
+
+            if (group.Name.Contains(filter, StringComparison.OrdinalIgnoreCase))
+                return;
+
+            e.Accepted = false;
+        }
+
+        private void OnLinkFiltered(object sender, FilterEventArgs e)
+        {
+            if (!(e.Item is LinkInfo linkInfo))
+            {
+                e.Accepted = false;
+                return;
+            }
+
+            string filter = LinkFilterText;
+
+            if (string.IsNullOrEmpty(filter))
+                return;
+
+            if (linkInfo.Title.Contains(filter, StringComparison.OrdinalIgnoreCase))
+                return;
+
+            if (linkInfo.Link.Contains(filter, StringComparison.OrdinalIgnoreCase))
+                return;
+
+            e.Accepted = false;
         }
     }
 }

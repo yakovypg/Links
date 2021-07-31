@@ -6,13 +6,8 @@ namespace Links.Models.Themes
     internal interface IWindowTheme
     {
         SolidColorBrush WindowBackground { get; set; }
-        SolidColorBrush WindowTopBarBackground { get; set; }
+        SolidColorBrush WindowSystemTopBarBackground { get; set; }
         SolidColorBrush WindowGridSplitterBackground { get; set; }
-
-        SolidColorBrush TopBarBackground { get; set; }
-
-        SolidColorBrush SettingsPageTextBlocksForeground { get; set; }
-        SolidColorBrush SettingsPageBottomBarBackground { get; set; }
 
         Effect TitleEffect { get; set; }
         SolidColorBrush TitleForeground { get; set; }
@@ -36,14 +31,19 @@ namespace Links.Models.Themes
         SolidColorBrush IconButtonBackgroundMouseOver { get; set; }
         SolidColorBrush IconButtonBackgroundPressed { get; set; }
 
-        SolidColorBrush GroupFieldBorderBrush { get; set; }
-        SolidColorBrush GroupFieldSubborderBrush { get; set; }
-        SolidColorBrush GroupFieldTextBlocksForeground { get; set; }
+        SolidColorBrush SettingsFieldTextBlocksForeground { get; set; }
+        SolidColorBrush SettingsFieldBottomBarBackground { get; set; }
 
-        SolidColorBrush GroupFieldIconButtonItemBackground { get; set; }
-        SolidColorBrush GroupFieldIconButtonBackground { get; set; }
-        SolidColorBrush GroupFieldIconButtonBackgroundMouseOver { get; set; }
-        SolidColorBrush GroupFieldIconButtonBackgroundPressed { get; set; }
+        SolidColorBrush GroupsFieldBorderBrush { get; set; }
+        SolidColorBrush GroupsFieldSubborderBrush { get; set; }
+        SolidColorBrush GroupsFieldTextBlocksForeground { get; set; }
+
+        SolidColorBrush GroupsFieldIconButtonItemBackground { get; set; }
+        SolidColorBrush GroupsFieldIconButtonBackground { get; set; }
+        SolidColorBrush GroupsFieldIconButtonBackgroundMouseOver { get; set; }
+        SolidColorBrush GroupsFieldIconButtonBackgroundPressed { get; set; }
+
+        SolidColorBrush LinksFieldTopBarBackground { get; set; }
 
         SolidColorBrush LinkPresenterGridBackground { get; set; }
         SolidColorBrush LinkPresenterBottomBarBackground { get; set; }

@@ -15,6 +15,7 @@
             UseRecycleBin = "Use recycle bin";
             EmptyRecycleBin = "Empty";
 
+            Close = "Close";
             Reset = "Reset";
             Import = "Import";
             Export = "Export";

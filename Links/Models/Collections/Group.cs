@@ -1,14 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows.Media;
 
 namespace Links.Models.Collections
 {
     internal class Group : IGroup, IEnumerable<LinkInfo>
     {
         public string Name { get; set; }
-        public SolidColorBrush IconForeground { get; set; }
+        public GroupIcon Icon { get; set; }
         public ObservableCollection<LinkInfo> Links { get; }
 
         public Group() : this(string.Empty)
@@ -19,10 +18,10 @@ namespace Links.Models.Collections
         {
         }
 
-        public Group(string name, SolidColorBrush iconForeground, ObservableCollection<LinkInfo> links)
+        public Group(string name, GroupIcon icon, ObservableCollection<LinkInfo> links)
         {
             Name = name;
-            IconForeground = iconForeground ?? Brushes.Gold;
+            Icon = icon ?? new GroupIcon();
             Links = links ?? new ObservableCollection<LinkInfo>();
         }
 
