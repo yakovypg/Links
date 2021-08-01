@@ -81,7 +81,7 @@ namespace Links.ViewModels
         public ICommand ChangeLinkEditorVisibilityCommand { get; }
         public ICommand SetLinkImageCommand { get; }
 
-        public ObservableCollection<Group> GroupCollection = new ObservableCollection<Group>() { new Group("TestGroup", new ObservableCollection<LinkInfo>() { new LinkInfo(DateTime.Now, "google", "GitHub"), new LinkInfo(DateTime.Now, "yandex", "Gmail") }) };
+        public ObservableCollection<Group> GroupCollection { get; private set; } = new ObservableCollection<Group>() { new Group("TestGroup", new ObservableCollection<LinkInfo>() { new LinkInfo(DateTime.Now, "google", "GitHub"), new LinkInfo(DateTime.Now, "yandex", "Gmail") }) };
 
         public LinkCollectionViewModel()
         {

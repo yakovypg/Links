@@ -490,9 +490,9 @@
                                       Background="{Binding DataContext.Theme.LinkPresenterInformationGridBackground, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                     
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="20"/>
                                         <RowDefinition/>
-                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="22"/>
                                     </Grid.RowDefinitions>
 
                                     <TextBlock Name="TitleTextBlock"
@@ -596,7 +596,7 @@
 
                                 <ComboBox
                                     ItemsSource="{Binding GroupIconColors}"
-                                    SelectedIndex="0">
+                                    SelectedIndex="{Binding GroupCreator.Icon.ColorIndex, UpdateSourceTrigger=PropertyChanged}">
                                 </ComboBox>
 
                                 <Grid Margin="3, 5, 3, 3">
@@ -606,18 +606,24 @@
                                         <ColumnDefinition/>
                                     </Grid.ColumnDefinitions>
 
-                                    <TextBlock
-                                        Grid.Column="0"
-                                        HorizontalAlignment="Center"
-                                        Text="{Binding CurrentLocale.Close}"
-                                        Style="{StaticResource BoldPressingTextBlock}">
+                                    <TextBlock Grid.Column="0"
+                                               HorizontalAlignment="Center"
+                                               Text="{Binding CurrentLocale.Close}"
+                                               Style="{StaticResource BoldPressingTextBlock}">
+                                        
+                                        <TextBlock.InputBindings>
+                                            <MouseBinding MouseAction="LeftClick" Command="{Binding ChangeGroupCreatorMenuVisibilityCommand}"/>
+                                        </TextBlock.InputBindings>
                                     </TextBlock>
 
-                                    <TextBlock
-                                        Grid.Column="2"
-                                        HorizontalAlignment="Center"
-                                        Text="{Binding CurrentLocale.Add}"
-                                        Style="{StaticResource BoldPressingTextBlock}">
+                                    <TextBlock Grid.Column="2"
+                                               HorizontalAlignment="Center"
+                                               Text="{Binding CurrentLocale.Add}"
+                                               Style="{StaticResource BoldPressingTextBlock}">
+
+                                        <TextBlock.InputBindings>
+                                            <MouseBinding MouseAction="LeftClick" Command="{Binding AddGroupCommand}"/>
+                                        </TextBlock.InputBindings>
                                     </TextBlock>
                                 </Grid>
                             </StackPanel>
@@ -688,7 +694,6 @@
                                     <TextBlock.InputBindings>
                                         <MouseBinding
                                             MouseAction="LeftClick"
-                                            CommandParameter="{Binding LinkCreator.BackgroundImage}"
                                             Command="{Binding SetLinkCreatorImageCommand}">
                                         </MouseBinding>
                                     </TextBlock.InputBindings>
@@ -701,18 +706,24 @@
                                         <ColumnDefinition/>
                                     </Grid.ColumnDefinitions>
 
-                                    <TextBlock
-                                        Grid.Column="0"
-                                        HorizontalAlignment="Center"
-                                        Text="{Binding CurrentLocale.Close}"
-                                        Style="{StaticResource BoldPressingTextBlock}">
+                                    <TextBlock Grid.Column="0"
+                                               HorizontalAlignment="Center"
+                                               Text="{Binding CurrentLocale.Close}"
+                                               Style="{StaticResource BoldPressingTextBlock}">
+
+                                        <TextBlock.InputBindings>
+                                            <MouseBinding MouseAction="LeftClick" Command="{Binding ChangeLinkCreatorMenuVisibilityCommand}"/>
+                                        </TextBlock.InputBindings>
                                     </TextBlock>
 
-                                    <TextBlock
-                                        Grid.Column="2"
-                                        HorizontalAlignment="Center"
-                                        Text="{Binding CurrentLocale.Add}"
-                                        Style="{StaticResource BoldPressingTextBlock}">
+                                    <TextBlock Grid.Column="2"
+                                               HorizontalAlignment="Center"
+                                               Text="{Binding CurrentLocale.Add}"
+                                               Style="{StaticResource BoldPressingTextBlock}">
+
+                                        <TextBlock.InputBindings>
+                                            <MouseBinding MouseAction="LeftClick" Command="{Binding AddLinkCommand}"/>
+                                        </TextBlock.InputBindings>
                                     </TextBlock>
                                 </Grid>
 

@@ -1,10 +1,11 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
 
 namespace Links.Models.Collections
 {
-    internal class GroupIcon : INotifyPropertyChanged
+    internal class GroupIcon : INotifyPropertyChanged, ICloneable
     {
         public enum Colors
         {
@@ -30,9 +31,9 @@ namespace Links.Models.Collections
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        public void OnPropertyChanged([CallerMemberName] string property = "")
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
         public string DisplayName => ((Colors)ColorIndex).ToString();
@@ -44,7 +45,7 @@ namespace Links.Models.Collections
             private set
             {
                 _foreground = value;
-                OnPropertyChanged("Foreground");
+                OnPropertyChanged(nameof(Foreground));
             }
         }
 
@@ -90,6 +91,26 @@ namespace Links.Models.Collections
 
                 default: return Brushes.Gold;
             }
+        }
+
+        public object Clone()
+        {
+            return new GroupIcon(_colorIndex);
+        }
+
+        public override string ToString()
+        {
+            return DisplayName;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is GroupIcon groupIcon && ColorIndex == groupIcon.ColorIndex;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(DisplayName, _foreground, Foreground, _colorIndex, ColorIndex);
         }
     }
 }

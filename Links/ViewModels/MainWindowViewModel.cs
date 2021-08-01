@@ -1,5 +1,7 @@
-﻿using Links.Infrastructure.Commands;
+﻿using Links.Data;
+using Links.Infrastructure.Commands;
 using Links.Models;
+using Links.Models.Collections;
 using Links.ViewModels.Base;
 using System.Collections.Generic;
 using System.Windows;
@@ -12,8 +14,8 @@ namespace Links.ViewModels
         public SettingsViewModel SettingsVM { get; }
         public LinkCollectionViewModel LinkCollectionVM { get; }
 
-        public GroupCreator GroupCreator { get; }
-        public LinkCreator LinkCreator { get; }
+        public GroupCreator GroupCreator { get; } = new GroupCreator();
+        public LinkCreator LinkCreator { get; } = new LinkCreator();
 
         public IEnumerable<string> GroupIconColors => LinkCollectionVM.GroupIconColors;
 
@@ -62,25 +64,23 @@ namespace Links.ViewModels
         public ICommand ChangeGroupCreatorMenuVisibilityCommand { get; }
         public void OnChangeGroupCreatorMenuVisibilityCommandExecuted(object parameter)
         {
-            if (_groupCreatorMenuVisibility == Visibility.Visible)
-                return;
-
             if (_linkCreatorMenuVisibility == Visibility.Visible)
                 LinkCreatorMenuVisibility = Visibility.Hidden;
 
-            GroupCreatorMenuVisibility = Visibility.Visible;
+            GroupCreatorMenuVisibility = _groupCreatorMenuVisibility == Visibility.Hidden
+                ? Visibility.Visible
+                : Visibility.Hidden;
         }
 
         public ICommand ChangeLinkCreatorMenuVisibilityCommand { get; }
         public void OnChangeLinkCreatorMenuVisibilityCommandExecuted(object parameter)
         {
-            if (_linkCreatorMenuVisibility == Visibility.Visible)
-                return;
-
             if (_groupCreatorMenuVisibility == Visibility.Visible)
                 GroupCreatorMenuVisibility = Visibility.Hidden;
 
-            LinkCreatorMenuVisibility = Visibility.Visible;
+            LinkCreatorMenuVisibility = _linkCreatorMenuVisibility == Visibility.Hidden
+                ? Visibility.Visible
+                : Visibility.Hidden;
         }
 
         #endregion
@@ -88,6 +88,35 @@ namespace Links.ViewModels
         #region Commands
 
         public ICommand SetLinkCreatorImageCommand { get; }
+        public void OnSetLinkCreatorImageCommandExecuted(object parameter)
+        {
+            string path = DialogProvider.GetFilePath();
+
+            int width = _maxLinkPresenterGridWidth - 3 - 2;
+            int height = _maxLinkPresenterGridHeight - 3 - 2;
+            var size = new System.Drawing.Size(width, height);
+
+            if (ImageTransformer.TryGetBitmapImage(path, size, out System.Windows.Media.Imaging.BitmapImage newImage))
+                LinkCreator.BackgroundImage = newImage;
+        }
+
+        public ICommand AddGroupCommand { get; }
+        public void OnAddGroupCommandExecuted(object parameter)
+        {
+            Group group = GroupCreator.CreateGroup();
+            LinkCollectionVM.GroupCollection.Add(group);
+
+            ChangeGroupCreatorMenuVisibilityCommand.Execute(null);
+        }
+
+        public ICommand AddLinkCommand { get; }
+        public void OnAddLinkCommandExecuted(object parameter)
+        {
+            LinkInfo linkInfo = LinkCreator.CreateLink();
+            linkInfo.ParentGroup.Links.Add(linkInfo);
+
+            ChangeLinkCreatorMenuVisibilityCommand.Execute(null);
+        }
 
         #endregion
 
@@ -104,12 +133,13 @@ namespace Links.ViewModels
             SettingsVM = new SettingsViewModel();
             LinkCollectionVM = new LinkCollectionViewModel();
 
-            GroupCreator = new GroupCreator();
-            LinkCreator = new LinkCreator();
-
             MinimizeWindowCommand = new MinimizeWindowCommand();
             MaximizeWindowCommand = new MaximizeWindowCommand();
             CloseWindowCommand = new CloseWindowCommand();
+
+            SetLinkCreatorImageCommand = new RelayCommand(OnSetLinkCreatorImageCommandExecuted, t => true);
+            AddGroupCommand = new RelayCommand(OnAddGroupCommandExecuted, t => true);
+            AddLinkCommand = new RelayCommand(OnAddLinkCommandExecuted, t => true);
 
             ChangeSettingsFieldVisibilityCommand = new RelayCommand(OnChangeSettingsFieldVisibilityCommandExecuted, t => true);
             ChangeGroupCreatorMenuVisibilityCommand = new RelayCommand(OnChangeGroupCreatorMenuVisibilityCommandExecuted, t => true);

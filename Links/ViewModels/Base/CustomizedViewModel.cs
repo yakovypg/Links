@@ -13,5 +13,8 @@ namespace Links.ViewModels.Base
 
         protected int _linkPresenterGridWidth = 150;
         protected int _linkPresenterGridHeight = 230;
+
+        protected int _maxLinkPresenterGridWidth = 270;
+        protected int _maxLinkPresenterGridHeight = 414;
     }
 }

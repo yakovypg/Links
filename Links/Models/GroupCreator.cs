@@ -1,20 +1,48 @@
 ﻿using Links.Models.Collections;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Links.Models
 {
-    internal class GroupCreator
+    internal class GroupCreator : INotifyPropertyChanged
     {
-        public string Name { get; set; }
-        public GroupIcon Icon { get; set; }
-
-        public GroupCreator()
+        private string _name = string.Empty;
+        public string Name
         {
-            Icon = new GroupIcon();
+            get => _name;
+            set
+            {
+                _name = value;
+                OnPropertyChanged(nameof(Name));
+            }
         }
 
-        public Group Create()
+        private GroupIcon _icon = new GroupIcon();
+        public GroupIcon Icon
         {
-            return new Group(Name, Icon, null);
+            get => _icon;
+            set
+            {
+                _icon = value;
+                OnPropertyChanged(nameof(Icon));
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string property = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+        }
+
+        public Group CreateGroup()
+        {
+            string name = Name;
+            GroupIcon icon = Icon;
+
+            Name = string.Empty;
+            Icon = new GroupIcon();
+
+            return new Group(name, icon, null);
         }
     }
 }
