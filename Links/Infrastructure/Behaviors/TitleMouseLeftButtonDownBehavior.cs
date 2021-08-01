@@ -1,8 +1,8 @@
-﻿using System.Windows;
-using System.Windows.Input;
-using System.Windows.Controls;
+﻿using Links.Infrastructure.Extensions.Windows;
 using Microsoft.Xaml.Behaviors;
-using Links.Infrastructure.Extensions.Windows;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Links.Infrastructure.Behaviors
 {

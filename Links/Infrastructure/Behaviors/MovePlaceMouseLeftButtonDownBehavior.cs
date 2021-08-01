@@ -1,10 +1,10 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Controls;
-using System.Threading.Tasks;
+﻿using Links.Infrastructure.Extensions.Windows;
 using Microsoft.Xaml.Behaviors;
-using Links.Infrastructure.Extensions.Windows;
+using System;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Links.Infrastructure.Behaviors
 {

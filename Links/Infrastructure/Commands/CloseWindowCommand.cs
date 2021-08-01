@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Links.Infrastructure.Commands.Base;
+using System;
 using System.Windows;
-using Links.Infrastructure.Commands.Base;
 
 namespace Links.Infrastructure.Commands
 {

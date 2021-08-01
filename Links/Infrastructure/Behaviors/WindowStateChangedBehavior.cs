@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Microsoft.Xaml.Behaviors;
+using System;
 using System.Windows;
-using System.Windows.Interop;
 using System.Windows.Controls;
-using Microsoft.Xaml.Behaviors;
+using System.Windows.Interop;
 
 namespace Links.Infrastructure.Behaviors
 {

@@ -1,5 +1,5 @@
-﻿using System;
-using Links.Infrastructure.Commands.Base;
+﻿using Links.Infrastructure.Commands.Base;
+using System;
 
 namespace Links.Infrastructure.Commands
 {
