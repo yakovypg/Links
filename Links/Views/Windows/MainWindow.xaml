@@ -39,10 +39,10 @@
             <Setter Property="Background" Value="Transparent"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{Binding Theme.IconButtonBackgroundMouseOver, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Setter Property="Background" Value="{Binding Theme.IconButtonBackgroundMouseOver}"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="{Binding Theme.IconButtonBackgroundPressed, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Setter Property="Background" Value="{Binding Theme.IconButtonBackgroundPressed}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -54,7 +54,7 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Background="{Binding Theme.WindowSystemTopBarBackground, UpdateSourceTrigger=PropertyChanged}">
+        <Grid Grid.Row="0" Background="{Binding Theme.WindowSystemTopBarBackground}">
             <Grid.Resources>
                 <Style TargetType="TextBlock" x:Key="TitleTextBlockStyle">
                     <Setter Property="Cursor" Value="Hand"/>
@@ -62,47 +62,47 @@
                     <Setter Property="Margin" Value="10, 0"/>
                     <Setter Property="VerticalAlignment" Value="Center"/>
                     <Setter Property="HorizontalAlignment" Value="Left"/>
-                    <Setter Property="Foreground" Value="{Binding Theme.TitleForeground, UpdateSourceTrigger=PropertyChanged}"/>
-                    <Setter Property="Effect" Value="{Binding Theme.TitleEffect, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Setter Property="Foreground" Value="{Binding Theme.TitleForeground}"/>
+                    <Setter Property="Effect" Value="{Binding Theme.TitleEffect}"/>
                     <Style.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Foreground" Value="{Binding Theme.TitleForegroundMouseOver, UpdateSourceTrigger=PropertyChanged}"/>
+                            <Setter Property="Foreground" Value="{Binding Theme.TitleForegroundMouseOver}"/>
                         </Trigger>
                     </Style.Triggers>
                 </Style>
 
                 <Style TargetType="Button" BasedOn="{StaticResource SystemButton}" x:Key="MinimizeWindowButtonStyle">
-                    <Setter Property="Background" Value="{Binding Theme.MinimizeWindowButtonBackground, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Setter Property="Background" Value="{Binding Theme.MinimizeWindowButtonBackground}"/>
                     <Style.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="{Binding Theme.MinimizeWindowButtonBackgroundMouseOver, UpdateSourceTrigger=PropertyChanged}"/>
+                            <Setter Property="Background" Value="{Binding Theme.MinimizeWindowButtonBackgroundMouseOver}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Background" Value="{Binding Theme.MinimizeWindowButtonBackgroundPressed, UpdateSourceTrigger=PropertyChanged}"/>
+                            <Setter Property="Background" Value="{Binding Theme.MinimizeWindowButtonBackgroundPressed}"/>
                         </Trigger>
                     </Style.Triggers>
                 </Style>
 
                 <Style TargetType="Button" BasedOn="{StaticResource SystemButton}" x:Key="MaximizeWindowButtonStyle">
-                    <Setter Property="Background" Value="{Binding Theme.MaximizeWindowButtonBackground, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Setter Property="Background" Value="{Binding Theme.MaximizeWindowButtonBackground}"/>
                     <Style.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="{Binding Theme.MaximizeWindowButtonBackgroundMouseOver, UpdateSourceTrigger=PropertyChanged}"/>
+                            <Setter Property="Background" Value="{Binding Theme.MaximizeWindowButtonBackgroundMouseOver}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Background" Value="{Binding Theme.MaximizeWindowButtonBackgroundPressed, UpdateSourceTrigger=PropertyChanged}"/>
+                            <Setter Property="Background" Value="{Binding Theme.MaximizeWindowButtonBackgroundPressed}"/>
                         </Trigger>
                     </Style.Triggers>
                 </Style>
 
                 <Style TargetType="Button" BasedOn="{StaticResource SystemButton}" x:Key="CloseWindowButtonStyle">
-                    <Setter Property="Background" Value="{Binding Theme.CloseWindowButtonBackground, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Setter Property="Background" Value="{Binding Theme.CloseWindowButtonBackground}"/>
                     <Style.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="{Binding Theme.CloseWindowButtonBackgroundMouseOver, UpdateSourceTrigger=PropertyChanged}"/>
+                            <Setter Property="Background" Value="{Binding Theme.CloseWindowButtonBackgroundMouseOver}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Background" Value="{Binding Theme.CloseWindowButtonBackgroundPressed, UpdateSourceTrigger=PropertyChanged}"/>
+                            <Setter Property="Background" Value="{Binding Theme.CloseWindowButtonBackgroundPressed}"/>
                         </Trigger>
                     </Style.Triggers>
                 </Style>
@@ -122,7 +122,7 @@
                 </i:Interaction.Behaviors>
             </Grid>
 
-            <TextBlock Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TitleTextBlockStyle}">
+            <TextBlock Text="{Binding Title}" Style="{StaticResource TitleTextBlockStyle}">
                 <i:Interaction.Behaviors>
                     <b:TitleMouseLeftButtonDownBehavior/>
                 </i:Interaction.Behaviors>
@@ -135,7 +135,7 @@
                 <Rectangle
                     Width="15"
                     Height="4"
-                    Fill="{Binding Theme.SystemButtonItemBackground, UpdateSourceTrigger=PropertyChanged}">
+                    Fill="{Binding Theme.SystemButtonItemBackground}">
                 </Rectangle>
             </Button>
 
@@ -147,7 +147,7 @@
                     Width="11"
                     Height="11"
                     BorderThickness="2"
-                    BorderBrush="{Binding Theme.SystemButtonItemBackground, UpdateSourceTrigger=PropertyChanged}">
+                    BorderBrush="{Binding Theme.SystemButtonItemBackground}">
                 </Border>
             </Button>
 
@@ -160,27 +160,27 @@
                     Height="12"
                     CornerRadius="5"
                     BorderThickness="2"
-                    BorderBrush="{Binding Theme.SystemButtonItemBackground, UpdateSourceTrigger=PropertyChanged}">
+                    BorderBrush="{Binding Theme.SystemButtonItemBackground}">
                 </Border>
             </Button>
         </Grid>
 
-        <Grid Grid.Row="1" Background="{Binding Theme.WindowBackground, UpdateSourceTrigger=PropertyChanged}">
+        <Grid Grid.Row="1" Background="{Binding Theme.WindowBackground}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="37"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <DockPanel Background="{Binding Theme.LinksFieldTopBarBackground, UpdateSourceTrigger=PropertyChanged}">
-                <Button DockPanel.Dock="Left" Command="{Binding ShowSettingsPageCommand}" Style="{StaticResource IconButton}">
+            <DockPanel Background="{Binding Theme.LinksFieldTopBarBackground}">
+                <Button DockPanel.Dock="Left" Command="{Binding ChangeSettingsFieldVisibilityCommand}" Style="{StaticResource IconButton}">
                     <fa:ImageAwesome Icon="Solid_Cog" Margin="5"/>
                 </Button>
 
-                <Button DockPanel.Dock="Left" Command="{Binding ShowGroupCreatorCommand}" Style="{StaticResource IconButton}">
+                <Button DockPanel.Dock="Left" Command="{Binding ChangeGroupCreatorMenuVisibilityCommand}" Style="{StaticResource IconButton}">
                     <fa:ImageAwesome Icon="Solid_FolderPlus" Margin="7"/>
                 </Button>
 
-                <Button DockPanel.Dock="Left" Command="{Binding ShowLinkCreatorCommand}" Style="{StaticResource IconButton}">
+                <Button DockPanel.Dock="Left" Command="{Binding ChangeLinkCreatorMenuVisibilityCommand}" Style="{StaticResource IconButton}">
                     <fa:ImageAwesome Icon="Solid_PlusSquare" Margin="7"/>
                 </Button>
 
@@ -193,7 +193,7 @@
 
                     <GridSplitter
                         Grid.Column="1"
-                        Background="{Binding ElementName=LinkFilterTextBox, Path=Background, UpdateSourceTrigger=PropertyChanged}">
+                        Background="{Binding ElementName=LinkFilterTextBox, Path=Background}">
                     </GridSplitter>
 
                     <TextBox
@@ -215,24 +215,24 @@
                 <GridSplitter
                     Width="3"
                     Grid.Column="1"
-                    Background="{Binding Theme.WindowGridSplitterBackground, UpdateSourceTrigger=PropertyChanged}">
+                    Background="{Binding Theme.WindowGridSplitterBackground}">
                 </GridSplitter>
 
                 <Border Grid.Row="0"
                         Margin="0, 0, 5, 0"
                         BorderThickness="3"
-                        BorderBrush="{Binding Theme.GroupsFieldBorderBrush, UpdateSourceTrigger=PropertyChanged}">
+                        BorderBrush="{Binding Theme.GroupsFieldBorderBrush}">
 
                     <Border BorderThickness="2"
-                            BorderBrush="{Binding Theme.GroupsFieldSubborderBrush, UpdateSourceTrigger=PropertyChanged}">
-                        
+                            BorderBrush="{Binding Theme.GroupsFieldSubborderBrush}">
+
                         <Grid>
                             <Grid.Resources>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Height" Value="25"/>
                                     <Setter Property="FontSize" Value="15"/>
                                     <Setter Property="Margin" Value="5, 0, 0, 5"/>
-                                    <Setter Property="Foreground" Value="{Binding Theme.GroupsFieldTextBlocksForeground, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <Setter Property="Foreground" Value="{Binding Theme.GroupsFieldTextBlocksForeground}"/>
                                 </Style>
 
                                 <Style TargetType="TextBox" x:Key="GroupEditorMenuTextBoxStyle">
@@ -243,15 +243,13 @@
                                 </Style>
 
                                 <Style TargetType="Button" BasedOn="{StaticResource SystemButton}" x:Key="IconButton">
-                                    <Setter Property="Background" Value="{Binding Theme.GroupsFieldIconButtonBackground, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <Setter Property="Background" Value="{Binding Theme.GroupsFieldIconButtonBackground}"/>
                                     <Style.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="{Binding Theme.GroupsFieldIconButtonBackgroundMouseOver,
-                                                UpdateSourceTrigger=PropertyChanged}"/>
+                                            <Setter Property="Background" Value="{Binding Theme.GroupsFieldIconButtonBackgroundMouseOver}"/>
                                         </Trigger>
                                         <Trigger Property="IsPressed" Value="True">
-                                            <Setter Property="Background" Value="{Binding Theme.GroupsFieldIconButtonBackgroundPressed,
-                                                UpdateSourceTrigger=PropertyChanged}"/>
+                                            <Setter Property="Background" Value="{Binding Theme.GroupsFieldIconButtonBackgroundPressed}"/>
                                         </Trigger>
                                     </Style.Triggers>
                                 </Style>
@@ -263,27 +261,34 @@
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
 
-                            <Grid Grid.Row="1" Margin="0, 5">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto"/>
-                                    <ColumnDefinition/>
-                                </Grid.ColumnDefinitions>
+                            <Grid Grid.Row="1"
+                                  Margin="0, 5, 0, 0"
+                                  Height="{Binding GroupEditorHeight}"
+                                  Background="{Binding Theme.GroupEditorBackground}">
+                                
+                                <Grid Margin="0, 5, 5, 5">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
 
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Text="{Binding CurrentLocale.Name, UpdateSourceTrigger=PropertyChanged}"/>
-                                    <TextBlock Text="{Binding CurrentLocale.Colour, UpdateSourceTrigger=PropertyChanged}"/>
-                                </StackPanel>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="{Binding CurrentLocale.Name}"/>
+                                        <TextBlock Text="{Binding CurrentLocale.Colour}"/>
+                                    </StackPanel>
 
-                                <StackPanel Grid.Column="1" Margin="5, 0, 0, 0">
-                                    <TextBox
-                                        Style="{StaticResource GroupEditorMenuTextBoxStyle}"
-                                        Text="{Binding SelectedGroup.Name, UpdateSourceTrigger=PropertyChanged}">
-                                    </TextBox>
+                                    <StackPanel Grid.Column="1" Margin="5, 0, 0, 0">
+                                        <TextBox
+                                            Style="{StaticResource GroupEditorMenuTextBoxStyle}"
+                                            Text="{Binding SelectedGroup.Name, UpdateSourceTrigger=PropertyChanged}">
+                                        </TextBox>
 
-                                    <ComboBox ItemsSource="{Binding GroupIconColors}"
-                                              SelectedIndex="{Binding SelectedGroup.Icon.ColorIndex, UpdateSourceTrigger=PropertyChanged}">
-                                    </ComboBox>
-                                </StackPanel>
+                                        <ComboBox
+                                            ItemsSource="{Binding GroupIconColors}"
+                                            SelectedIndex="{Binding SelectedGroup.Icon.ColorIndex, UpdateSourceTrigger=PropertyChanged}">
+                                        </ComboBox>
+                                    </StackPanel>
+                                </Grid>
                             </Grid>
 
                             <Grid Height="25" Grid.Row="2">
@@ -300,7 +305,7 @@
                                     <fa:ImageAwesome
                                         Margin="6"
                                         Icon="Solid_Times"
-                                        Foreground="{Binding Theme.GroupsFieldIconButtonItemBackground, UpdateSourceTrigger=PropertyChanged}">
+                                        Foreground="{Binding Theme.GroupsFieldIconButtonItemBackground}">
                                     </fa:ImageAwesome>
                                 </Button>
 
@@ -310,8 +315,7 @@
                                     FontSize="14"
                                     Content="▲"
                                     Style="{StaticResource IconButton}"
-                                    Command="{Binding ChangeGroupEditorVisibilityCommand}"
-                                    Foreground="{Binding Theme.GroupsFieldIconButtonItemBackground, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                    Command="{Binding ChangeGroupEditorVisibilityCommand}">
                                 </Button>
 
                                 <TextBox
@@ -342,14 +346,15 @@
                                                 Margin="0, 5, 5, 5"
                                                 Icon="Solid_Folder"
                                                 DockPanel.Dock="Left"
-                                                Foreground="{Binding Icon.Foreground, UpdateSourceTrigger=PropertyChanged}">
+                                                Foreground="{Binding Icon.Foreground}">
                                             </fa:ImageAwesome>
+                                            
                                             <TextBlock
                                                 DockPanel.Dock="Right"
                                                 VerticalAlignment="Center"
                                                 Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
-                                                Foreground="{Binding DataContext.Theme.GroupsFieldTextBlocksForeground, UpdateSourceTrigger=PropertyChanged,
-                                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
+                                                Foreground="{Binding DataContext.Theme.GroupsFieldTextBlocksForeground,
+                                                             RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
 
                                                 <TextBlock.ToolTip>
                                                     <ItemsControl ItemsSource="{Binding Links}">
@@ -361,6 +366,7 @@
                                                     </ItemsControl>
                                                 </TextBlock.ToolTip>
                                             </TextBlock>
+                                            
                                         </DockPanel>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
@@ -374,10 +380,8 @@
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel
-                                ItemWidth="{Binding DataContext.LinksFieldWrapPanelItemWidth, UpdateSourceTrigger=PropertyChanged,
-                                    RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                ItemHeight="{Binding DataContext.LinksFieldWrapPanelItemHeight, UpdateSourceTrigger=PropertyChanged,
-                                    RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                ItemWidth="{Binding DataContext.LinksFieldWrapPanelItemWidth, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                ItemHeight="{Binding DataContext.LinksFieldWrapPanelItemHeight, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                             </WrapPanel>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
@@ -392,30 +396,11 @@
 
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="{x:Type cols:LinkInfo}">
-                            
+
                             <Grid Name="LinkPresenterGrid"
-                                  Width="{Binding DataContext.LinkPresenterGridWidth, UpdateSourceTrigger=PropertyChanged,
-                                        RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                  Height="{Binding DataContext.LinkPresenterGridHeight, UpdateSourceTrigger=PropertyChanged,
-                                        RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                  Background="{Binding DataContext.Theme.LinkPresenterGridBackground, UpdateSourceTrigger=PropertyChanged,
-                                        RelativeSource={RelativeSource AncestorType=ItemsControl}}">
-
-                                <Grid.Resources>
-                                    <Style TargetType="TextBox">
-                                        <Setter Property="FontSize" Value="15"/>
-                                        <Setter Property="Margin" Value="0, 0, 0, 3"/>
-                                        <Setter Property="Background" Value="#EAEAEA"/>
-                                    </Style>
-
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="FontSize" Value="14"/>
-                                        <Setter Property="Margin" Value="0, 0, 0, 3"/>
-                                        <Setter Property="VerticalAlignment" Value="Center"/>
-                                        <Setter Property="Foreground" Value="{Binding DataContext.Theme.LinkPresenterTextBlocksForeground,
-                                            RelativeSource={RelativeSource AncestorType=ItemsControl}, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </Style>
-                                </Grid.Resources>
+                                  Width="{Binding DataContext.LinkPresenterGridWidth, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                  Height="{Binding DataContext.LinkPresenterGridHeight, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                  Background="{Binding DataContext.Theme.LinkPresenterGridBackground, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
 
                                 <Grid Margin="3">
                                     <Grid.RowDefinitions>
@@ -425,36 +410,46 @@
                                     </Grid.RowDefinitions>
                                     
                                     <StackPanel Grid.Row="0">
-                                        <TextBlock Text="{Binding DataContext.CurrentLocale.Title, UpdateSourceTrigger=PropertyChanged,
-                                             RelativeSource={RelativeSource AncestorType=ItemsControl}}"/>
-                                        
-                                        <TextBox Name="TitleTextBox" Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"/>
+                                        <TextBlock
+                                            Style="{StaticResource LinkPresenterTextBlock}"
+                                            Text="{Binding DataContext.CurrentLocale.Title, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                        </TextBlock>
+                                        <TextBox
+                                            Name="TitleTextBox"
+                                            Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"
+                                            Style="{StaticResource LinkPresenterTextBox}">
+                                        </TextBox>
 
-                                        <TextBlock Text="{Binding DataContext.CurrentLocale.Link, UpdateSourceTrigger=PropertyChanged,
-                                             RelativeSource={RelativeSource AncestorType=ItemsControl}}"/>
-                                        
-                                        <TextBox Name="LinkTextBox" Text="{Binding Link, UpdateSourceTrigger=PropertyChanged}"/>
+                                        <TextBlock
+                                            Style="{StaticResource LinkPresenterTextBlock}"
+                                            Text="{Binding DataContext.CurrentLocale.Link, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                        </TextBlock>
+                                        <TextBox
+                                            Name="LinkTextBox"
+                                            Text="{Binding Link, UpdateSourceTrigger=PropertyChanged}"
+                                            Style="{StaticResource LinkPresenterTextBox}">
+                                        </TextBox>
 
-                                        <TextBlock Text="{Binding DataContext.CurrentLocale.Group, UpdateSourceTrigger=PropertyChanged,
-                                             RelativeSource={RelativeSource AncestorType=ItemsControl}}"/>
-
+                                        <TextBlock
+                                            Style="{StaticResource LinkPresenterTextBlock}"
+                                            Text="{Binding DataContext.CurrentLocale.Group, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                        </TextBlock>
                                         <ComboBox
                                             ItemsSource="{Binding ElementName=GroupsListBox, Path=ItemsSource}"
-                                            SelectedIndex="{Binding ElementName=GroupsListBox, Path=SelectedIndex, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                            SelectedIndex="{Binding ElementName=GroupsListBox, Path=SelectedIndex, Mode=OneWay}">
                                         </ComboBox>
 
                                         <TextBlock
                                                 Margin="0, 5"
                                                 HorizontalAlignment="Center"
                                                 Style="{StaticResource BoldPressingTextBlock}"
-                                                Text="{Binding DataContext.CurrentLocale.Image, UpdateSourceTrigger=PropertyChanged,
-                                                       RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                                Text="{Binding DataContext.CurrentLocale.Image, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
 
                                             <TextBlock.ToolTip>
                                                 <Image
-                                                    Width="{Binding ElementName=LinkPresenterGrid, Path=Width, UpdateSourceTrigger=PropertyChanged}"
-                                                    Height="{Binding ElementName=LinkPresenterGrid, Path=Height, UpdateSourceTrigger=PropertyChanged}"
-                                                    Source="{Binding ToolTipImage, UpdateSourceTrigger=PropertyChanged}">
+                                                    Width="{Binding ElementName=LinkPresenterGrid, Path=Width}"
+                                                    Height="{Binding ElementName=LinkPresenterGrid, Path=Height}"
+                                                    Source="{Binding ToolTipImage}">
                                                 </Image>
                                             </TextBlock.ToolTip>
 
@@ -473,14 +468,12 @@
 
                                     <Grid Height="30"
                                           Grid.Row="2"
-                                          Background="{Binding DataContext.Theme.LinkPresenterBottomBarBackground, UpdateSourceTrigger=PropertyChanged,
-                                                       RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                          Background="{Binding DataContext.Theme.LinkPresenterBottomBarBackground, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                         
                                         <TextBlock
                                             Width="20"
                                             Height="20"
-                                            Text="{Binding DataContext.CurrentLocale.Ok, UpdateSourceTrigger=PropertyChanged,
-                                                   RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                            Text="{Binding DataContext.CurrentLocale.Ok, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                             
                                             <TextBlock.InputBindings>
                                                 <MouseBinding
@@ -493,9 +486,8 @@
                                 </Grid>
 
                                 <Grid Margin="3"
-                                      Visibility="{Binding Presenter.Visibility, UpdateSourceTrigger=PropertyChanged}"
-                                      Background="{Binding DataContext.Theme.LinkPresenterInformationGridBackground, UpdateSourceTrigger=PropertyChanged,
-                                                   RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                      Visibility="{Binding Presenter.Visibility}"
+                                      Background="{Binding DataContext.Theme.LinkPresenterInformationGridBackground, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                     
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="auto"/>
@@ -506,12 +498,11 @@
                                     <TextBlock Name="TitleTextBlock"
                                                Grid.Row="0"
                                                Style="{StaticResource DefaultTextBlock}"
-                                               Text="{Binding ElementName=TitleTextBox, Path=Text, UpdateSourceTrigger=PropertyChanged}"
-                                               Foreground="{Binding DataContext.Theme.LinkPresenterTextBlocksForeground,
-                                                   RelativeSource={RelativeSource AncestorType=ItemsControl}, UpdateSourceTrigger=PropertyChanged}">
+                                               Text="{Binding ElementName=TitleTextBox, Path=Text}"
+                                               Foreground="{Binding DataContext.Theme.LinkPresenterTextBlocksForeground, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                         
                                         <TextBlock.ToolTip>
-                                            <TextBlock Text="{Binding ElementName=TitleTextBlock, Path=Text, UpdateSourceTrigger=PropertyChanged}"/>
+                                            <TextBlock Text="{Binding ElementName=TitleTextBlock, Path=Text}"/>
                                         </TextBlock.ToolTip>
                                     </TextBlock>
 
@@ -522,8 +513,7 @@
                                         Grid.Row="0"
                                         FontWeight="Bold"
                                         HorizontalAlignment="Right"
-                                        Command="{Binding DataContext.DeleteLinkCommand, UpdateSourceTrigger=PropertyChanged,
-                                                  RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                        Command="{Binding DataContext.DeleteLinkCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
 
                                         <fa:ImageAwesome
                                             Margin="5, 0"
@@ -535,15 +525,12 @@
                                     <Border Grid.Row="1"
                                             Margin="0, 3"
                                             BorderThickness="2"
-                                            BorderBrush="{Binding DataContext.Theme.LinkPresenterImageBorderBrush, UpdateSourceTrigger=PropertyChanged,
-                                                          RelativeSource={RelativeSource AncestorType=ItemsControl}}">
-
-                                        <Grid Background="{Binding DataContext.Theme.LinkPresenterImageBackground, UpdateSourceTrigger=PropertyChanged,
-                                                           RelativeSource={RelativeSource AncestorType=ItemsControl}}">
-                                            
-                                            <Image Source="{Binding BackgroundImage, UpdateSourceTrigger=PropertyChanged}">
+                                            BorderBrush="{Binding DataContext.Theme.LinkPresenterImageBorderBrush, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                        
+                                        <Grid Background="{Binding DataContext.Theme.LinkPresenterImageBackground,  RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                            <Image Source="{Binding BackgroundImage}">
                                                 <Image.ToolTip>
-                                                    <TextBlock Text="{Binding ElementName=LinkTextBox, Path=Text, UpdateSourceTrigger=PropertyChanged}"/>
+                                                    <TextBlock Text="{Binding ElementName=LinkTextBox, Path=Text}"/>
                                                 </Image.ToolTip>
                                             </Image>
                                         </Grid>
@@ -558,15 +545,14 @@
 
                                         <Button
                                             Content="🢂"
-                                            Command="{Binding DataContext.FollowLinkCommand, UpdateSourceTrigger=PropertyChanged,
-                                                      RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                            Grid.Column="0"
+                                            Command="{Binding DataContext.FollowLinkCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                         </Button>
                                         
                                         <Button
                                             Content="▲"
                                             Grid.Column="2"
-                                            Command="{Binding DataContext.ChangeLinkEditorVisibilityCommand, UpdateSourceTrigger=PropertyChanged,
-                                                      RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                            Command="{Binding DataContext.ChangeLinkEditorVisibilityCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                         </Button>
                                     </Grid>
                                     
@@ -580,10 +566,167 @@
                 
             </Grid>
 
+            <Grid Grid.Row="1">
+                <Border Name="GroupCreatorMenu"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Left"
+                        BorderThickness="3"
+                        BorderBrush="{Binding Theme.CreatorMenuBorderBrush}"
+                        Visibility="{Binding GroupCreatorMenuVisibility}">
+
+                    <Border BorderThickness="2"
+                            BorderBrush="{Binding Theme.CreatorMenuSubborderBrush}">
+
+                        <Grid Background="{Binding Theme.CreatorMenuBackground}">
+                            <StackPanel Margin="5" Width="198">
+                                <TextBlock
+                                    Text="{Binding CurrentLocale.Name}"
+                                    Style="{StaticResource LinkPresenterTextBlock}">
+                                </TextBlock>
+
+                                <TextBox
+                                    Text="{Binding GroupCreator.Name, UpdateSourceTrigger=PropertyChanged}"
+                                    Style="{StaticResource LinkPresenterTextBox}">
+                                </TextBox>
+
+                                <TextBlock
+                                    Text="{Binding CurrentLocale.Colour}"
+                                    Style="{StaticResource LinkPresenterTextBlock}">
+                                </TextBlock>
+
+                                <ComboBox
+                                    ItemsSource="{Binding GroupIconColors}"
+                                    SelectedIndex="0">
+                                </ComboBox>
+
+                                <Grid Margin="3, 5, 3, 3">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="5"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock
+                                        Grid.Column="0"
+                                        HorizontalAlignment="Center"
+                                        Text="{Binding CurrentLocale.Close}"
+                                        Style="{StaticResource BoldPressingTextBlock}">
+                                    </TextBlock>
+
+                                    <TextBlock
+                                        Grid.Column="2"
+                                        HorizontalAlignment="Center"
+                                        Text="{Binding CurrentLocale.Add}"
+                                        Style="{StaticResource BoldPressingTextBlock}">
+                                    </TextBlock>
+                                </Grid>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Border>
+
+                <Border Name="LinkCreatorMenu"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Left"
+                        BorderThickness="3"
+                        BorderBrush="{Binding Theme.CreatorMenuBorderBrush}"
+                        Visibility="{Binding LinkCreatorMenuVisibility}">
+
+                    <Border BorderThickness="2"
+                            BorderBrush="{Binding Theme.CreatorMenuSubborderBrush}">
+
+                        <Grid Background="{Binding Theme.CreatorMenuBackground}">
+                            <StackPanel Margin="5" Width="198">
+                                <TextBlock
+                                    Text="{Binding CurrentLocale.Title}"
+                                    Style="{StaticResource LinkPresenterTextBlock}">
+                                </TextBlock>
+
+                                <TextBox
+                                    Text="{Binding LinkCreator.Title, UpdateSourceTrigger=PropertyChanged}"
+                                    Style="{StaticResource LinkPresenterTextBox}">
+                                </TextBox>
+
+                                <TextBlock
+                                    Text="{Binding CurrentLocale.Link}"
+                                    Style="{StaticResource LinkPresenterTextBlock}">
+                                </TextBlock>
+
+                                <TextBox
+                                    Text="{Binding LinkCreator.Link, UpdateSourceTrigger=PropertyChanged}"
+                                    Style="{StaticResource LinkPresenterTextBox}">
+                                </TextBox>
+
+                                <TextBlock
+                                    Text="{Binding CurrentLocale.Group}"
+                                    Style="{StaticResource LinkPresenterTextBlock}">
+                                </TextBlock>
+
+                                <ComboBox ItemsSource="{Binding ElementName=GroupsListBox, Path=ItemsSource}"
+                                          SelectedItem="{Binding LinkCreator.ParentGroup, UpdateSourceTrigger=PropertyChanged}">
+
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type cols:Group}">
+                                            <TextBlock Text="{Binding Name}"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+
+                                <TextBlock Margin="0, 5"
+                                           HorizontalAlignment="Center"
+                                           Style="{StaticResource BoldPressingTextBlock}"
+                                           Text="{Binding CurrentLocale.Image}">
+
+                                    <TextBlock.ToolTip>
+                                        <Image
+                                            Width="150"
+                                            Height="230"
+                                            Source="{Binding LinkCreator.BackgroundImage}">
+                                        </Image>
+                                    </TextBlock.ToolTip>
+
+                                    <TextBlock.InputBindings>
+                                        <MouseBinding
+                                            MouseAction="LeftClick"
+                                            CommandParameter="{Binding LinkCreator.BackgroundImage}"
+                                            Command="{Binding SetLinkCreatorImageCommand}">
+                                        </MouseBinding>
+                                    </TextBlock.InputBindings>
+                                </TextBlock>
+
+                                <Grid Margin="3">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="5"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock
+                                        Grid.Column="0"
+                                        HorizontalAlignment="Center"
+                                        Text="{Binding CurrentLocale.Close}"
+                                        Style="{StaticResource BoldPressingTextBlock}">
+                                    </TextBlock>
+
+                                    <TextBlock
+                                        Grid.Column="2"
+                                        HorizontalAlignment="Center"
+                                        Text="{Binding CurrentLocale.Add}"
+                                        Style="{StaticResource BoldPressingTextBlock}">
+                                    </TextBlock>
+                                </Grid>
+
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Border>
+
+            </Grid>
+
             <Grid Grid.RowSpan="2"
                   DataContext="{Binding SettingsVM}"
                   Background="{Binding Theme.WindowBackground}"
-                  Visibility="{Binding DataContext.SettingsFieldVisibility, UpdateSourceTrigger=PropertyChanged,
+                  Visibility="{Binding DataContext.SettingsFieldVisibility,
                                RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
                 
                 <Grid.ColumnDefinitions>
@@ -622,15 +765,15 @@
                             </Grid.ColumnDefinitions>
 
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="{Binding CurrentLocale.GroupsSorting, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBlock Text="{Binding CurrentLocale.SortingMode, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBlock Text="{Binding CurrentLocale.LinksSorting, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBlock Text="{Binding CurrentLocale.SortingMode, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBlock Text="{Binding CurrentLocale.LinkSize, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBlock Text="{Binding CurrentLocale.Theme, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBlock Text="{Binding CurrentLocale.Language, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBlock Text="{Binding CurrentLocale.UseRecycleBin, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBlock Text="{Binding CurrentLocale.EmptyRecycleBin, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Text="{Binding CurrentLocale.GroupsSorting}"/>
+                                <TextBlock Text="{Binding CurrentLocale.SortingMode}"/>
+                                <TextBlock Text="{Binding CurrentLocale.LinksSorting}"/>
+                                <TextBlock Text="{Binding CurrentLocale.SortingMode}"/>
+                                <TextBlock Text="{Binding CurrentLocale.LinkSize}"/>
+                                <TextBlock Text="{Binding CurrentLocale.Theme}"/>
+                                <TextBlock Text="{Binding CurrentLocale.Language}"/>
+                                <TextBlock Text="{Binding CurrentLocale.UseRecycleBin}"/>
+                                <TextBlock Text="{Binding CurrentLocale.EmptyRecycleBin}"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="1">
@@ -641,6 +784,7 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </ComboBox>
+                                
                                 <ComboBox>
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="PropertyChanged">
@@ -648,6 +792,7 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </ComboBox>
+                                
                                 <ComboBox>
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="PropertyChanged">
@@ -655,6 +800,7 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </ComboBox>
+                                
                                 <ComboBox>
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="PropertyChanged">
@@ -662,6 +808,7 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </ComboBox>
+                                
                                 <ComboBox>
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="PropertyChanged">
@@ -669,6 +816,7 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </ComboBox>
+                                
                                 <ComboBox>
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="PropertyChanged">
@@ -676,6 +824,7 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </ComboBox>
+                                
                                 <ComboBox>
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="PropertyChanged">
@@ -683,6 +832,7 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </ComboBox>
+                                
                                 <ComboBox>
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="PropertyChanged">
@@ -690,6 +840,7 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </ComboBox>
+                                
                                 <ComboBox>
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="PropertyChanged">
@@ -697,6 +848,7 @@
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </ComboBox>
+                                
                             </StackPanel>
                         </Grid>
                     </ScrollViewer>
@@ -779,6 +931,7 @@
                                     Content="{Binding CurrentLocale.Empty}"
                                     Command="{Binding EmptyRecycleBinCommand}">
                                 </Button>
+                                
                             </Grid>
                         </ScrollViewer>
                     </Grid>

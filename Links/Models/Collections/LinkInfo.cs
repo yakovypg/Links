@@ -5,7 +5,6 @@ namespace Links.Models.Collections
 {
     internal class LinkInfo
     {
-        public int ID { get; }
         public DateTime DateCreation { get; }
 
         public string Link { get; set; }
@@ -22,10 +21,9 @@ namespace Links.Models.Collections
 
         public LinkPresenter Presenter { get; }
 
-        public LinkInfo(int id, DateTime dateCreation,
-                        string link = null, string title = null, Group parentGroup = null, ImageSource backgroundImage = null)
+        public LinkInfo(DateTime dateCreation, string link = null, string title = null,
+            Group parentGroup = null, ImageSource backgroundImage = null)
         {
-            ID = id;
             DateCreation = dateCreation;
 
             Link = link;

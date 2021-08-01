@@ -32,6 +32,9 @@
             Image = "Image";
 
             Ok = "Ok";
+            Add = "Add";
+
+            Unsorted = "Unsorted";
         }
     }
 }

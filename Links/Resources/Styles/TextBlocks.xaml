@@ -7,9 +7,16 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
 
+    <Style TargetType="TextBlock" x:Key="LinkPresenterTextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Margin" Value="0, 0, 0, 3"/>
+        <Setter Property="Foreground" Value="{Binding LinkPresenterTextBlocksForeground}"/>
+    </Style>
+
     <Style TargetType="TextBlock" x:Key="BoldPressingTextBlock">
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{Binding LinkPresenterTextBlocksForeground}"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="FontWeight" Value="Bold"/>

@@ -43,6 +43,12 @@ namespace Links.Models.Themes
         SolidColorBrush GroupsFieldIconButtonBackgroundMouseOver { get; set; }
         SolidColorBrush GroupsFieldIconButtonBackgroundPressed { get; set; }
 
+        SolidColorBrush GroupEditorBackground { get; set; }
+
+        SolidColorBrush CreatorMenuBackground { get; set; }
+        SolidColorBrush CreatorMenuBorderBrush { get; set; }
+        SolidColorBrush CreatorMenuSubborderBrush { get; set; }
+
         SolidColorBrush LinksFieldTopBarBackground { get; set; }
 
         SolidColorBrush LinkPresenterGridBackground { get; set; }

@@ -1,5 +1,7 @@
 ﻿using Links.Infrastructure.Commands;
+using Links.Models;
 using Links.ViewModels.Base;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 
@@ -10,11 +12,16 @@ namespace Links.ViewModels
         public SettingsViewModel SettingsVM { get; }
         public LinkCollectionViewModel LinkCollectionVM { get; }
 
+        public GroupCreator GroupCreator { get; }
+        public LinkCreator LinkCreator { get; }
+
+        public IEnumerable<string> GroupIconColors => LinkCollectionVM.GroupIconColors;
+
         private string _title = "Links";
         public string Title
         {
             get => _title;
-            set => SetValue(ref _title, value);
+            private set => SetValue(ref _title, value);
         }
 
         #region FieldsVisibility
@@ -44,16 +51,16 @@ namespace Links.ViewModels
 
         #region VisibilityCommands
 
-        public ICommand ShowSettingsPageCommand { get; }
-        public void OnShowSettingsPageCommandExecuted(object parameter)
+        public ICommand ChangeSettingsFieldVisibilityCommand { get; }
+        public void OnChangeSettingsFieldVisibilityCommandExecuted(object parameter)
         {
             SettingsFieldVisibility = _settingsFieldVisibility == Visibility.Hidden
                 ? Visibility.Visible
                 : Visibility.Hidden;
         }
 
-        public ICommand ShowGroupCreatorCommand { get; }
-        public void OnShowGroupCreatorCommandExecuted(object parameter)
+        public ICommand ChangeGroupCreatorMenuVisibilityCommand { get; }
+        public void OnChangeGroupCreatorMenuVisibilityCommandExecuted(object parameter)
         {
             if (_groupCreatorMenuVisibility == Visibility.Visible)
                 return;
@@ -64,8 +71,8 @@ namespace Links.ViewModels
             GroupCreatorMenuVisibility = Visibility.Visible;
         }
 
-        public ICommand ShowLinkCreatorCommand { get; }
-        public void OnShowLinkCreatorCommandExecuted(object parameter)
+        public ICommand ChangeLinkCreatorMenuVisibilityCommand { get; }
+        public void OnChangeLinkCreatorMenuVisibilityCommandExecuted(object parameter)
         {
             if (_linkCreatorMenuVisibility == Visibility.Visible)
                 return;
@@ -75,6 +82,12 @@ namespace Links.ViewModels
 
             LinkCreatorMenuVisibility = Visibility.Visible;
         }
+
+        #endregion
+
+        #region Commands
+
+        public ICommand SetLinkCreatorImageCommand { get; }
 
         #endregion
 
@@ -91,13 +104,16 @@ namespace Links.ViewModels
             SettingsVM = new SettingsViewModel();
             LinkCollectionVM = new LinkCollectionViewModel();
 
+            GroupCreator = new GroupCreator();
+            LinkCreator = new LinkCreator();
+
             MinimizeWindowCommand = new MinimizeWindowCommand();
             MaximizeWindowCommand = new MaximizeWindowCommand();
             CloseWindowCommand = new CloseWindowCommand();
 
-            ShowSettingsPageCommand = new RelayCommand(OnShowSettingsPageCommandExecuted, t => true);
-            ShowGroupCreatorCommand = new RelayCommand(OnShowGroupCreatorCommandExecuted, t => true);
-            ShowLinkCreatorCommand = new RelayCommand(OnShowLinkCreatorCommandExecuted, t => true);
+            ChangeSettingsFieldVisibilityCommand = new RelayCommand(OnChangeSettingsFieldVisibilityCommandExecuted, t => true);
+            ChangeGroupCreatorMenuVisibilityCommand = new RelayCommand(OnChangeGroupCreatorMenuVisibilityCommandExecuted, t => true);
+            ChangeLinkCreatorMenuVisibilityCommand = new RelayCommand(OnChangeLinkCreatorMenuVisibilityCommandExecuted, t => true);
         }
     }
 }

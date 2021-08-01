@@ -45,11 +45,17 @@ namespace Links.Models.Themes
             GroupsFieldIconButtonBackgroundMouseOver = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#BABABB"));
             GroupsFieldIconButtonBackgroundPressed = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#8B9BCF"));
 
+            GroupEditorBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DCE0DF"));
+
+            CreatorMenuBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DCE0DF"));
+            CreatorMenuBorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFD700"));
+            CreatorMenuSubborderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#000000"));
+
             LinksFieldTopBarBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DCE0DF"));
 
             LinkPresenterGridBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AAAAAA"));
             LinkPresenterBottomBarBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F5DEB3"));
-            LinkPresenterTextBlocksForeground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EAEAEA"));
+            LinkPresenterTextBlocksForeground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#000000"));
             LinkPresenterInformationGridBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AAAAAA"));
             LinkPresenterImageBorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#696969"));
             LinkPresenterImageBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF"));

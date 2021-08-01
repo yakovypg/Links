@@ -35,6 +35,9 @@
         public string Image { get; set; }
 
         public string Ok { get; set; }
+        public string Add { get; set; }
+
+        public string Unsorted { get; set; }
 
         public Locale(string displayName, string cultureName)
         {

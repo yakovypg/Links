@@ -63,6 +63,17 @@ namespace Links.ViewModels
             }
         }
 
+        private int _groupEditorHeight = 0;
+        public int GroupEditorHeight
+        {
+            get => _groupEditorHeight;
+            private set
+            {
+                int height = value <= 0 ? 0 : 70;
+                _ = SetValue(ref _groupEditorHeight, height);
+            }
+        }
+
         public ICommand DeleteGroupCommand { get; }
         public ICommand ChangeGroupEditorVisibilityCommand { get; }
 
@@ -70,8 +81,7 @@ namespace Links.ViewModels
         public ICommand ChangeLinkEditorVisibilityCommand { get; }
         public ICommand SetLinkImageCommand { get; }
 
-        public ObservableCollection<Group> GroupCollection { get; private set; } = new ObservableCollection<Group>() { new Group("TestGroup", new ObservableCollection<LinkInfo>() { new LinkInfo(5, DateTime.Now, "google", "GitHub"), new LinkInfo(55, DateTime.Now, "yandex", "Gmail") }) };
-        public ObservableCollection<LinkInfo> LinkCollection { get; private set; } = new ObservableCollection<LinkInfo>() { new LinkInfo(0, System.DateTime.Now, "yandex", "GitHub"), new LinkInfo(1, DateTime.Now, "google", "Gmail") };
+        public ObservableCollection<Group> GroupCollection = new ObservableCollection<Group>() { new Group("TestGroup", new ObservableCollection<LinkInfo>() { new LinkInfo(DateTime.Now, "google", "GitHub"), new LinkInfo(DateTime.Now, "yandex", "Gmail") }) };
 
         public LinkCollectionViewModel()
         {

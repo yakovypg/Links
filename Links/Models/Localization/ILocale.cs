@@ -33,5 +33,8 @@
         string Image { get; set; }
 
         string Ok { get; set; }
+        string Add { get; set; }
+
+        string Unsorted { get; set; }
     }
 }
