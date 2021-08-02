@@ -1,4 +1,5 @@
 ﻿using Links.Infrastructure.Commands;
+using Links.Infrastructure.Converters;
 using Links.Infrastructure.Extensions;
 using Links.Models.Collections;
 using Links.ViewModels.Base;
@@ -20,6 +21,7 @@ namespace Links.ViewModels
         public int LinksFieldWrapPanelItemHeight => _linkPresenterGridHeight + 5;
 
         public IEnumerable<string> GroupIconColors => Enum.GetValues(typeof(GroupIcon.Colors)).Cast<GroupIcon.Colors>().ToStringEnumerable();
+        public DeleteGroupParamMultiConverter DeleteGroupParamMultiConverter { get; } = new DeleteGroupParamMultiConverter();
 
         private int _groupEditorHeight = 0;
         public int GroupEditorHeight
@@ -85,7 +87,16 @@ namespace Links.ViewModels
         }
         public void OnDeleteGroupCommandExecuted(object parameter)
         {
-            _ = GroupCollection.Remove(SelectedGroup);
+            var paramTuple = parameter as Tuple<object, object>;
+
+            var linkCreatorGroup = paramTuple?.Item1 as Group;
+            ICommand resetLinkCreatorGroupIndexCommand = (paramTuple?.Item2 as MainWindowViewModel)?.ResetLinkCreatorGroupIndexCommand;
+
+            bool isGroupsEqual = linkCreatorGroup == SelectedGroup;
+            bool isGroupRemoved = GroupCollection.Remove(SelectedGroup);
+
+            if (isGroupRemoved && isGroupsEqual)
+                resetLinkCreatorGroupIndexCommand?.Execute(null);
         }
 
         public ICommand ChangeGroupEditorVisibilityCommand { get; }

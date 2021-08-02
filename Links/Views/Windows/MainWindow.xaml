@@ -6,7 +6,8 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:fa="http://schemas.fontawesome.com/icons/"
         xmlns:b="clr-namespace:Links.Infrastructure.Behaviors"
-        xmlns:cols="clr-namespace:Links.Models.Collections"    
+        xmlns:conv="clr-namespace:Links.Infrastructure.Converters"  
+        xmlns:cols="clr-namespace:Links.Models.Collections"  
         xmlns:vm="clr-namespace:Links.ViewModels"   
         xmlns:local="clr-namespace:Links"
         mc:Ignorable="d"
@@ -302,6 +303,18 @@
                                         Width="30"
                                         Style="{StaticResource IconButton}"
                                         Command="{Binding DeleteGroupCommand}">
+                                    
+                                    <Button.Resources>
+                                        <conv:DeleteGroupParamMultiConverter x:Key="Converter"/>
+                                    </Button.Resources>
+
+                                    <Button.CommandParameter>
+                                        <MultiBinding Converter="{StaticResource Converter}">
+                                            <Binding ElementName="LinkCreatorGroupComboBox" Path="SelectedItem"/>
+                                            <Binding ElementName="LinkCreatorGroupComboBox" Path="DataContext"/>
+                                        </MultiBinding>
+                                    </Button.CommandParameter>
+
                                     <fa:ImageAwesome
                                         Margin="6"
                                         Icon="Solid_Times"
@@ -595,7 +608,7 @@
                                 </TextBlock>
 
                                 <ComboBox
-                                    ItemsSource="{Binding GroupIconColors}"
+                                    ItemsSource="{Binding LinkCollectionVM.GroupIconColors}"
                                     SelectedIndex="{Binding GroupCreator.Icon.ColorIndex, UpdateSourceTrigger=PropertyChanged}">
                                 </ComboBox>
 
@@ -668,7 +681,10 @@
                                     Style="{StaticResource LinkPresenterTextBlock}">
                                 </TextBlock>
 
-                                <ComboBox ItemsSource="{Binding ElementName=GroupsListBox, Path=ItemsSource}"
+                                <!-- do not change the order of the properties -->
+                                <ComboBox Name="LinkCreatorGroupComboBox"
+                                          SelectedIndex="{Binding LinkCreatorGroupIndex, UpdateSourceTrigger=PropertyChanged}"
+                                          ItemsSource="{Binding LinkCollectionVM.GroupCollection}"
                                           SelectedItem="{Binding LinkCreator.ParentGroup, UpdateSourceTrigger=PropertyChanged}">
 
                                     <ComboBox.ItemTemplate>

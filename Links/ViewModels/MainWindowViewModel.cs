@@ -3,7 +3,6 @@ using Links.Infrastructure.Commands;
 using Links.Models;
 using Links.Models.Collections;
 using Links.ViewModels.Base;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 
@@ -17,13 +16,18 @@ namespace Links.ViewModels
         public GroupCreator GroupCreator { get; } = new GroupCreator();
         public LinkCreator LinkCreator { get; } = new LinkCreator();
 
-        public IEnumerable<string> GroupIconColors => LinkCollectionVM.GroupIconColors;
-
         private string _title = "Links";
         public string Title
         {
             get => _title;
             private set => SetValue(ref _title, value);
+        }
+
+        private int _linkCreatorGroupIndex = 0;
+        public int LinkCreatorGroupIndex
+        {
+            get => _linkCreatorGroupIndex;
+            set => SetValue(ref _linkCreatorGroupIndex, value);
         }
 
         #region FieldsVisibility
@@ -118,6 +122,12 @@ namespace Links.ViewModels
             ChangeLinkCreatorMenuVisibilityCommand.Execute(null);
         }
 
+        public ICommand ResetLinkCreatorGroupIndexCommand { get; }
+        public void OnResetLinkCreatorGroupIndexCommandExecuted(object parameter)
+        {
+            LinkCreatorGroupIndex = 0;
+        }
+
         #endregion
 
         #region SystemCommands
@@ -140,6 +150,7 @@ namespace Links.ViewModels
             SetLinkCreatorImageCommand = new RelayCommand(OnSetLinkCreatorImageCommandExecuted, t => true);
             AddGroupCommand = new RelayCommand(OnAddGroupCommandExecuted, t => true);
             AddLinkCommand = new RelayCommand(OnAddLinkCommandExecuted, t => true);
+            ResetLinkCreatorGroupIndexCommand = new RelayCommand(OnResetLinkCreatorGroupIndexCommandExecuted, t => true);
 
             ChangeSettingsFieldVisibilityCommand = new RelayCommand(OnChangeSettingsFieldVisibilityCommandExecuted, t => true);
             ChangeGroupCreatorMenuVisibilityCommand = new RelayCommand(OnChangeGroupCreatorMenuVisibilityCommandExecuted, t => true);
