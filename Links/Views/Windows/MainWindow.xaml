@@ -332,7 +332,7 @@
                                      SelectedItem="{Binding SelectedGroup, UpdateSourceTrigger=PropertyChanged}">
 
                                 <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="MoseDoubleClick">
+                                    <i:EventTrigger EventName="PreviewMouseRightButtonDown">
                                         <i:InvokeCommandAction Command="{Binding ChangeGroupEditorVisibilityCommand}"/>
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>

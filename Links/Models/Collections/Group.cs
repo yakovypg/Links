@@ -46,18 +46,5 @@ namespace Links.Models.Collections
         {
             return Name;
         }
-
-        public override bool Equals(object obj)
-        {
-            return obj is Group other &&
-                   Name == other.Name &&
-                   Icon.Equals(other.Icon) &&
-                   Links.Equals(other.Links);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Name, Icon, Links);
-        }
     }
 }

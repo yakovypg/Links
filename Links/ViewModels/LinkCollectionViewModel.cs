@@ -21,6 +21,19 @@ namespace Links.ViewModels
 
         public IEnumerable<string> GroupIconColors => Enum.GetValues(typeof(GroupIcon.Colors)).Cast<GroupIcon.Colors>().ToStringEnumerable();
 
+        private int _groupEditorHeight = 0;
+        public int GroupEditorHeight
+        {
+            get => _groupEditorHeight;
+            private set
+            {
+                int height = value <= 0 ? 0 : 70;
+                _ = SetValue(ref _groupEditorHeight, height);
+            }
+        }
+
+        #region Groups&LinksFiltering
+
         private readonly CollectionViewSource _groups;
         public ICollectionView Groups => _groups?.View;
 
@@ -63,19 +76,27 @@ namespace Links.ViewModels
             }
         }
 
-        private int _groupEditorHeight = 0;
-        public int GroupEditorHeight
-        {
-            get => _groupEditorHeight;
-            private set
-            {
-                int height = value <= 0 ? 0 : 70;
-                _ = SetValue(ref _groupEditorHeight, height);
-            }
-        }
+        #endregion
 
         public ICommand DeleteGroupCommand { get; }
+        public bool CanDeleteGroupCommandExecute(object parameter)
+        {
+            return SelectedGroup != null;
+        }
+        public void OnDeleteGroupCommandExecuted(object parameter)
+        {
+            _ = GroupCollection.Remove(SelectedGroup);
+        }
+
         public ICommand ChangeGroupEditorVisibilityCommand { get; }
+        public bool CanChangeGroupEditorVisibilityCommandExecute(object parameter)
+        {
+            return SelectedGroup != null;
+        }
+        public void OnChangeGroupEditorVisibilityCommandExecuted(object parameter)
+        {
+            GroupEditorHeight = GroupEditorHeight != 0 ? 0 : 70;
+        }
 
         public ICommand DeleteLinkCommand { get; }
         public ICommand ChangeLinkEditorVisibilityCommand { get; }
@@ -102,8 +123,8 @@ namespace Links.ViewModels
 
             _selectedGroupLinks.Filter += OnLinkFiltered;
 
-            DeleteGroupCommand = new RelayCommand(delegate { }, t => true);
-            ChangeGroupEditorVisibilityCommand = new RelayCommand(delegate { }, t => true);
+            DeleteGroupCommand = new RelayCommand(OnDeleteGroupCommandExecuted, CanDeleteGroupCommandExecute);
+            ChangeGroupEditorVisibilityCommand = new RelayCommand(OnChangeGroupEditorVisibilityCommandExecuted, CanChangeGroupEditorVisibilityCommandExecute);
 
             DeleteLinkCommand = new RelayCommand(delegate { }, t => true);
             ChangeLinkEditorVisibilityCommand = new RelayCommand(delegate { }, t => true);

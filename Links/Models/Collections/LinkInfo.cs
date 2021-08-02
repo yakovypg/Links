@@ -45,7 +45,7 @@ namespace Links.Models.Collections
                    DateCreation == other.DateCreation &&
                    Link == other.Link &&
                    Title == other.Title &&
-                   BackgroundImage.Equals(other.BackgroundImage);
+                   (BackgroundImage?.Equals(other.BackgroundImage) ?? true);
         }
 
         public override int GetHashCode()
