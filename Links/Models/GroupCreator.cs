@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace Links.Models
 {
-    internal class GroupCreator : INotifyPropertyChanged
+    internal sealed class GroupCreator : IGroupCreator, INotifyPropertyChanged
     {
         private string _name = string.Empty;
         public string Name

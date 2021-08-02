@@ -5,7 +5,7 @@ using System.Windows.Media;
 
 namespace Links.Models.Collections
 {
-    internal class GroupIcon : INotifyPropertyChanged, ICloneable
+    internal class GroupIcon : IGroupIcon, INotifyPropertyChanged, ICloneable
     {
         public enum Colors
         {
@@ -30,12 +30,6 @@ namespace Links.Models.Collections
             Purple
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string property = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-        }
-
         public string DisplayName => ((Colors)ColorIndex).ToString();
 
         private Brush _foreground;
@@ -58,6 +52,12 @@ namespace Links.Models.Collections
                 _colorIndex = value;
                 Foreground = GetBrushFromIndex(value);
             }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string property = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
         public GroupIcon(int colorIndex = 8)
@@ -105,7 +105,7 @@ namespace Links.Models.Collections
 
         public override bool Equals(object obj)
         {
-            return obj is GroupIcon groupIcon && ColorIndex == groupIcon.ColorIndex;
+            return obj is GroupIcon other && ColorIndex == other.ColorIndex;
         }
 
         public override int GetHashCode()

@@ -3,7 +3,7 @@ using System.Windows.Media;
 
 namespace Links.Models.Collections
 {
-    internal class LinkInfo
+    internal class LinkInfo : ILinkInfo
     {
         public DateTime DateCreation { get; }
 
@@ -32,6 +32,25 @@ namespace Links.Models.Collections
             BackgroundImage = backgroundImage;
 
             Presenter = new LinkPresenter();
+        }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is LinkInfo other &&
+                   DateCreation == other.DateCreation &&
+                   Link == other.Link &&
+                   Title == other.Title &&
+                   BackgroundImage.Equals(other.BackgroundImage);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(DateCreation, Link, Title, ParentGroup, _backgroundImage, ToolTipImage, BackgroundImage, Presenter);
         }
     }
 }

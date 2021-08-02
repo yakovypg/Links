@@ -6,7 +6,7 @@ using System.Windows.Media;
 
 namespace Links.Models
 {
-    internal class LinkCreator : INotifyPropertyChanged
+    internal sealed class LinkCreator : ILinkCreator, INotifyPropertyChanged
     {
         public Group ParentGroup { get; set; }
 

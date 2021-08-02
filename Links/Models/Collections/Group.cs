@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -39,6 +40,24 @@ namespace Links.Models.Collections
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Group other &&
+                   Name == other.Name &&
+                   Icon.Equals(other.Icon) &&
+                   Links.Equals(other.Links);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Name, Icon, Links);
         }
     }
 }
