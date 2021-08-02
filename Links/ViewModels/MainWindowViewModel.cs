@@ -1,4 +1,5 @@
 ﻿using Links.Data;
+using Links.Data.App;
 using Links.Infrastructure.Commands;
 using Links.Models;
 using Links.Models.Collections;
@@ -16,7 +17,7 @@ namespace Links.ViewModels
         public GroupCreator GroupCreator { get; } = new GroupCreator();
         public LinkCreator LinkCreator { get; } = new LinkCreator();
 
-        private string _title = "Links";
+        private string _title = AppInfo.Name;
         public string Title
         {
             get => _title;

@@ -1,4 +1,5 @@
-﻿using Links.Infrastructure.Extensions.Windows;
+﻿using Links.Data.App;
+using Links.Infrastructure.Extensions.Windows;
 using Microsoft.Xaml.Behaviors;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,8 +21,11 @@ namespace Links.Infrastructure.Behaviors
 
         private void TitleMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (!(AssociatedObject.GetParent(3) is Window window))
+            if (!(AssociatedObject.GetParent(3) is Window))
                 return;
+
+            string caption = $"About {AppInfo.Name}";
+            _ = MessageBox.Show(AppInfo.GenerateString(), caption, MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }
