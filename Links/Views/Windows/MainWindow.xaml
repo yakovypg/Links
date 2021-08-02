@@ -232,14 +232,12 @@
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Height" Value="25"/>
                                     <Setter Property="FontSize" Value="15"/>
-                                    <Setter Property="Margin" Value="5, 0, 0, 5"/>
+                                    <Setter Property="Margin" Value="0, 0, 0, 5"/>
                                     <Setter Property="Foreground" Value="{Binding Theme.GroupsFieldTextBlocksForeground}"/>
                                 </Style>
 
-                                <Style TargetType="TextBox" x:Key="GroupEditorMenuTextBoxStyle">
-                                    <Setter Property="Height" Value="25"/>
+                                <Style TargetType="TextBox" BasedOn="{StaticResource LinkPresenterTextBox}" x:Key="GroupEditorMenuTextBoxStyle">
                                     <Setter Property="Padding" Value="2"/>
-                                    <Setter Property="FontSize" Value="15"/>
                                     <Setter Property="Margin" Value="0, 0, 0, 5"/>
                                 </Style>
 
@@ -267,7 +265,7 @@
                                   Height="{Binding GroupEditorHeight}"
                                   Background="{Binding Theme.GroupEditorBackground}">
                                 
-                                <Grid Margin="0, 5, 5, 5">
+                                <Grid Margin="5, 7, 5, 5">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="auto"/>
                                         <ColumnDefinition/>
@@ -338,8 +336,7 @@
                                 </TextBox>
                             </Grid>
 
-                            <ListBox Name="GroupsListBox"
-                                     BorderThickness="0"
+                            <ListBox BorderThickness="0"
                                      Background="Transparent"
                                      ItemsSource="{Binding Groups}"
                                      SelectedItem="{Binding SelectedGroup, UpdateSourceTrigger=PropertyChanged}">
@@ -365,7 +362,7 @@
                                             <TextBlock
                                                 DockPanel.Dock="Right"
                                                 VerticalAlignment="Center"
-                                                Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                                                Text="{Binding Name}"
                                                 Foreground="{Binding DataContext.Theme.GroupsFieldTextBlocksForeground,
                                                              RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
 
@@ -410,8 +407,7 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="{x:Type cols:LinkInfo}">
 
-                            <Grid Name="LinkPresenterGrid"
-                                  Width="{Binding DataContext.LinkPresenterGridWidth, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                            <Grid Width="{Binding DataContext.LinkPresenterGridWidth, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                   Height="{Binding DataContext.LinkPresenterGridHeight, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                   Background="{Binding DataContext.Theme.LinkPresenterGridBackground, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
 
@@ -419,7 +415,7 @@
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="auto"/>
                                         <RowDefinition Height="*"/>
-                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="22"/>
                                     </Grid.RowDefinitions>
                                     
                                     <StackPanel Grid.Row="0">
@@ -427,8 +423,9 @@
                                             Style="{StaticResource LinkPresenterTextBlock}"
                                             Text="{Binding DataContext.CurrentLocale.Title, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                         </TextBlock>
+                                        
                                         <TextBox
-                                            Name="TitleTextBox"
+                                            Name="LinkTitleTextBox"
                                             Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"
                                             Style="{StaticResource LinkPresenterTextBox}">
                                         </TextBox>
@@ -437,8 +434,8 @@
                                             Style="{StaticResource LinkPresenterTextBlock}"
                                             Text="{Binding DataContext.CurrentLocale.Link, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                         </TextBlock>
+                                        
                                         <TextBox
-                                            Name="LinkTextBox"
                                             Text="{Binding Link, UpdateSourceTrigger=PropertyChanged}"
                                             Style="{StaticResource LinkPresenterTextBox}">
                                         </TextBox>
@@ -447,9 +444,10 @@
                                             Style="{StaticResource LinkPresenterTextBlock}"
                                             Text="{Binding DataContext.CurrentLocale.Group, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                         </TextBlock>
+                                        
                                         <ComboBox
-                                            ItemsSource="{Binding ElementName=GroupsListBox, Path=ItemsSource}"
-                                            SelectedIndex="{Binding ElementName=GroupsListBox, Path=SelectedIndex, Mode=OneWay}">
+                                            ItemsSource="{Binding DataContext.GroupCollection, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                            SelectedItem="{Binding ParentGroup, UpdateSourceTrigger=PropertyChanged}">
                                         </ComboBox>
 
                                         <TextBlock
@@ -459,18 +457,14 @@
                                                 Text="{Binding DataContext.CurrentLocale.Image, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
 
                                             <TextBlock.ToolTip>
-                                                <Image
-                                                    Width="{Binding ElementName=LinkPresenterGrid, Path=Width}"
-                                                    Height="{Binding ElementName=LinkPresenterGrid, Path=Height}"
-                                                    Source="{Binding ToolTipImage}">
-                                                </Image>
+                                                <Image Source="{Binding BackgroundImage}"/>
                                             </TextBlock.ToolTip>
 
                                             <TextBlock.InputBindings>
                                                 <MouseBinding
                                                     MouseAction="LeftClick"
-                                                    CommandParameter="{Binding BackgroundImage}"
-                                                    Command="{Binding SetLinkImageCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                                    CommandParameter="{Binding Self}"
+                                                    Command="{Binding DataContext.SetLinkImageCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                                 </MouseBinding>
                                             </TextBlock.InputBindings>
                                         </TextBlock>
@@ -479,19 +473,20 @@
                                     <Grid Grid.Row="1">
                                     </Grid>
 
-                                    <Grid Height="30"
-                                          Grid.Row="2"
+                                    <Grid Grid.Row="2"
                                           Background="{Binding DataContext.Theme.LinkPresenterBottomBarBackground, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                         
                                         <TextBlock
                                             Width="20"
                                             Height="20"
+                                            Style="{StaticResource BoldPressingTextBlock}"
                                             Text="{Binding DataContext.CurrentLocale.Ok, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                             
                                             <TextBlock.InputBindings>
                                                 <MouseBinding
                                                     MouseAction="LeftClick"
-                                                    Command="{Binding ChangeLinkEditorVisibilityCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                                    CommandParameter="{Binding Self}"
+                                                    Command="{Binding DataContext.HideLinkEditorCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                                 </MouseBinding>
                                             </TextBlock.InputBindings>
                                         </TextBlock>
@@ -499,7 +494,7 @@
                                 </Grid>
 
                                 <Grid Margin="3"
-                                      Visibility="{Binding Presenter.Visibility}"
+                                      Visibility="{Binding PresenterVisibility, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                       Background="{Binding DataContext.Theme.LinkPresenterInformationGridBackground, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                     
                                     <Grid.RowDefinitions>
@@ -508,14 +503,13 @@
                                         <RowDefinition Height="22"/>
                                     </Grid.RowDefinitions>
 
-                                    <TextBlock Name="TitleTextBlock"
-                                               Grid.Row="0"
+                                    <TextBlock Grid.Row="0"
                                                Style="{StaticResource DefaultTextBlock}"
-                                               Text="{Binding ElementName=TitleTextBox, Path=Text}"
+                                               Text="{Binding ElementName=LinkTitleTextBox, Path=Text}"
                                                Foreground="{Binding DataContext.Theme.LinkPresenterTextBlocksForeground, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                         
                                         <TextBlock.ToolTip>
-                                            <TextBlock Text="{Binding ElementName=TitleTextBlock, Path=Text}"/>
+                                            <TextBlock Text="{Binding Title}" FontSize="14"/>
                                         </TextBlock.ToolTip>
                                     </TextBlock>
 
@@ -526,6 +520,7 @@
                                         Grid.Row="0"
                                         FontWeight="Bold"
                                         HorizontalAlignment="Right"
+                                        CommandParameter="{Binding Self}"
                                         Command="{Binding DataContext.DeleteLinkCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
 
                                         <fa:ImageAwesome
@@ -543,7 +538,10 @@
                                         <Grid Background="{Binding DataContext.Theme.LinkPresenterImageBackground,  RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                             <Image Source="{Binding BackgroundImage}">
                                                 <Image.ToolTip>
-                                                    <TextBlock Text="{Binding ElementName=LinkTextBox, Path=Text}"/>
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding Title}" FontSize="14"/>
+                                                        <TextBlock Text="{Binding Link}" FontSize="14"/>
+                                                    </StackPanel>
                                                 </Image.ToolTip>
                                             </Image>
                                         </Grid>
@@ -559,12 +557,14 @@
                                         <Button
                                             Content="🢂"
                                             Grid.Column="0"
+                                            CommandParameter="{Binding Link}"
                                             Command="{Binding DataContext.FollowLinkCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                         </Button>
                                         
                                         <Button
                                             Content="▲"
                                             Grid.Column="2"
+                                            CommandParameter="{Binding Self}"
                                             Command="{Binding DataContext.ChangeLinkEditorVisibilityCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                         </Button>
                                     </Grid>
@@ -580,8 +580,7 @@
             </Grid>
 
             <Grid Grid.Row="1">
-                <Border Name="GroupCreatorMenu"
-                        VerticalAlignment="Top"
+                <Border VerticalAlignment="Top"
                         HorizontalAlignment="Left"
                         BorderThickness="3"
                         BorderBrush="{Binding Theme.CreatorMenuBorderBrush}"
@@ -644,8 +643,7 @@
                     </Border>
                 </Border>
 
-                <Border Name="LinkCreatorMenu"
-                        VerticalAlignment="Top"
+                <Border VerticalAlignment="Top"
                         HorizontalAlignment="Left"
                         BorderThickness="3"
                         BorderBrush="{Binding Theme.CreatorMenuBorderBrush}"
@@ -682,8 +680,7 @@
                                 </TextBlock>
 
                                 <!-- do not change the order of the properties -->
-                                <ComboBox Name="LinkCreatorGroupComboBox"
-                                          SelectedIndex="{Binding LinkCreatorGroupIndex, UpdateSourceTrigger=PropertyChanged}"
+                                <ComboBox SelectedIndex="{Binding LinkCreatorGroupIndex, UpdateSourceTrigger=PropertyChanged}"
                                           ItemsSource="{Binding LinkCollectionVM.GroupCollection}"
                                           SelectedItem="{Binding LinkCreator.ParentGroup, UpdateSourceTrigger=PropertyChanged}">
 
@@ -889,7 +886,6 @@
                     </Grid.RowDefinitions>
 
                     <ListBox
-                        Name="RecycleBinListBox"
                         Grid.Row="0"
                         ItemsSource="{Binding RecycleBin}">
                     </ListBox>

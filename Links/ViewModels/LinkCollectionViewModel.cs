@@ -1,4 +1,5 @@
-﻿using Links.Infrastructure.Commands;
+﻿using Links.Data;
+using Links.Infrastructure.Commands;
 using Links.Infrastructure.Converters;
 using Links.Infrastructure.Extensions;
 using Links.Models.Collections;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 
@@ -80,6 +82,8 @@ namespace Links.ViewModels
 
         #endregion
 
+        #region GroupCommands
+
         public ICommand DeleteGroupCommand { get; }
         public bool CanDeleteGroupCommandExecute(object parameter)
         {
@@ -109,14 +113,110 @@ namespace Links.ViewModels
             GroupEditorHeight = GroupEditorHeight != 0 ? 0 : 70;
         }
 
-        public ICommand DeleteLinkCommand { get; }
-        public ICommand ChangeLinkEditorVisibilityCommand { get; }
-        public ICommand SetLinkImageCommand { get; }
+        #endregion
 
-        public ObservableCollection<Group> GroupCollection { get; private set; } = new ObservableCollection<Group>() { new Group("TestGroup", new ObservableCollection<LinkInfo>() { new LinkInfo(DateTime.Now, "google", "GitHub"), new LinkInfo(DateTime.Now, "yandex", "Gmail") }) };
+        #region LinkCommands
+
+        public ICommand DeleteLinkCommand { get; }
+        public void OnDeleteLinkCommandExecuted(object parameter)
+        {
+            if (!(parameter is LinkInfo linkInfo))
+                return;
+
+            if (!linkInfo.ParentGroup.Links.Remove(linkInfo))
+            {
+                _ = MessageBox.Show(_locale.LocaleMessages.DeleteLinkError, _locale.Error,
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        public ICommand SetLinkImageCommand { get; }
+        public void OnSetLinkImageCommandExecuted(object parameter)
+        {
+            if (!(parameter is LinkInfo linkInfo))
+                return;
+
+            string path = DialogProvider.GetFilePath();
+
+            int width = _maxLinkPresenterGridWidth - 3 - 2 * 2;
+            int height = _maxLinkPresenterGridHeight - 3 - 20 - 22 - 2 * 2;
+            var size = new System.Drawing.Size(width, height);
+
+            if (ImageTransformer.TryGetBitmapImage(path, size, out System.Windows.Media.Imaging.BitmapImage newImage))
+                linkInfo.BackgroundImage = newImage;
+        }
+
+        public ICommand FollowLinkCommand { get; }
+        public void OnFollowLinkCommandExecuted(object parameter)
+        {
+            try
+            {
+                _ = System.Diagnostics.Process.Start(parameter as string);
+            }
+            catch (Exception ex)
+            {
+                string message = $"{_locale.Error}: {_locale.LocaleMessages.FollowLinkError}\n\n" +
+                                 $"{_locale.Comment}: {ex.Message}";
+
+                _ = MessageBox.Show(message, _locale.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        public ICommand ChangeLinkEditorVisibilityCommand { get; }
+        public void OnChangeLinkEditorVisibilityCommandExecuted(object parameter)
+        {
+            if (!(parameter is LinkInfo linkInfo))
+                return;
+
+            linkInfo.PresenterVisibility = linkInfo.PresenterVisibility == Visibility.Hidden
+                ? Visibility.Visible
+                : Visibility.Hidden;
+        }
+
+        public ICommand HideLinkEditorCommand { get; }
+        public void OnHideLinkEditorCommandExecuted(object parameter)
+        {
+            if (!(parameter is LinkInfo linkInfo))
+                return;
+
+            if (linkInfo.IsLinkMoved)
+            {
+                if (linkInfo.PrimaryGroup.Links.Remove(linkInfo))
+                {
+                    linkInfo.ParentGroup.Links.Add(linkInfo);
+                    linkInfo.ResetPrimaryGroup();
+                }
+                else
+                {
+                    linkInfo.CancelMove();
+                }
+            }
+
+            linkInfo.PresenterVisibility = Visibility.Visible;
+        }
+
+        #endregion
+
+        public ObservableCollection<Group> GroupCollection { get; private set; }
 
         public LinkCollectionViewModel()
         {
+            var group1 = new Group("Math");
+            var group2 = new Group("Programming");
+            var group3 = new Group("Chemistry");
+            var group4 = new Group("Empty");
+
+            group1.Links.Add(new LinkInfo("https://www.wolframalpha.com/", "Wolfram", group1));
+            group1.Links.Add(new LinkInfo("https://allcalc.ru/", "Allcalc", group1));
+            group1.Links.Add(new LinkInfo("https://www.geogebra.org/3d", "GeoGebra", group1));
+
+            group2.Links.Add(new LinkInfo("https://google.com", "Google", group2));
+            group2.Links.Add(new LinkInfo("https://yandex.ru", "Yandex", group2));
+
+            group3.Links.Add(new LinkInfo("https://chemiday.com/", "ChemiDay", group3));
+
+            GroupCollection = new ObservableCollection<Group>() { group1, group2, group3, group4 };
+
             _groups = new CollectionViewSource()
             {
                 IsLiveSortingRequested = true,
@@ -137,9 +237,12 @@ namespace Links.ViewModels
             DeleteGroupCommand = new RelayCommand(OnDeleteGroupCommandExecuted, CanDeleteGroupCommandExecute);
             ChangeGroupEditorVisibilityCommand = new RelayCommand(OnChangeGroupEditorVisibilityCommandExecuted, CanChangeGroupEditorVisibilityCommandExecute);
 
-            DeleteLinkCommand = new RelayCommand(delegate { }, t => true);
-            ChangeLinkEditorVisibilityCommand = new RelayCommand(delegate { }, t => true);
-            SetLinkImageCommand = new RelayCommand(delegate { }, t => true);
+            DeleteLinkCommand = new RelayCommand(OnDeleteLinkCommandExecuted, t => true);
+            SetLinkImageCommand = new RelayCommand(OnSetLinkImageCommandExecuted, t => true);
+            FollowLinkCommand = new RelayCommand(OnFollowLinkCommandExecuted, t => true);
+
+            ChangeLinkEditorVisibilityCommand = new RelayCommand(OnChangeLinkEditorVisibilityCommandExecuted, t => true);
+            HideLinkEditorCommand = new RelayCommand(OnHideLinkEditorCommandExecuted, t => true);
         }
 
         private void OnGroupFiltered(object sender, FilterEventArgs e)

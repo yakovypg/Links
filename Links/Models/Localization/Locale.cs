@@ -37,7 +37,10 @@
         public string Ok { get; set; }
         public string Add { get; set; }
 
-        public string Unsorted { get; set; }
+        public string Error { get; set; }
+        public string Comment { get; set; }
+
+        public LocaleMessages LocaleMessages { get; set; }
 
         public Locale(string displayName, string cultureName)
         {

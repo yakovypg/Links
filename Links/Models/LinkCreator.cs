@@ -1,5 +1,4 @@
 ﻿using Links.Models.Collections;
-using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
@@ -64,7 +63,7 @@ namespace Links.Models
             Title = string.Empty;
             BackgroundImage = null;
 
-            return new LinkInfo(DateTime.Now, link, title, ParentGroup, backgroundImage);
+            return new LinkInfo(link, title, ParentGroup, backgroundImage);
         }
     }
 }

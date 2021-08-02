@@ -97,8 +97,8 @@ namespace Links.ViewModels
         {
             string path = DialogProvider.GetFilePath();
 
-            int width = _maxLinkPresenterGridWidth - 3 - 2;
-            int height = _maxLinkPresenterGridHeight - 3 - 2;
+            int width = _maxLinkPresenterGridWidth - 3 - 2 * 2;
+            int height = _maxLinkPresenterGridHeight - 3 - 20 - 22 - 2 * 2;
             var size = new System.Drawing.Size(width, height);
 
             if (ImageTransformer.TryGetBitmapImage(path, size, out System.Windows.Media.Imaging.BitmapImage newImage))

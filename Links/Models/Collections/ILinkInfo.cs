@@ -9,10 +9,6 @@ namespace Links.Models.Collections
 
         string Title { get; set; }
         Group ParentGroup { get; set; }
-
-        ImageSource ToolTipImage { get; }
         ImageSource BackgroundImage { get; set; }
-
-        LinkPresenter Presenter { get; }
     }
 }

@@ -34,7 +34,14 @@
             Ok = "Ok";
             Add = "Add";
 
-            Unsorted = "Unsorted";
+            Error = "Error";
+            Comment = "Comment";
+
+            LocaleMessages = new LocaleMessages()
+            {
+                FollowLinkError = "Failed to follow the link.",
+                DeleteLinkError = "Failed to delete the link."
+            };
         }
     }
 }

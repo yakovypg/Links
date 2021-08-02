@@ -59,8 +59,10 @@ namespace Links.Data
             {
                 Size fittedSize = Fit(sourceImage.Size, size);
 
-                using var fittedImage = new Bitmap(sourceImage, fittedSize);
-                output = ToBitmapImage(fittedImage);
+                using (var fittedImage = new Bitmap(sourceImage, fittedSize))
+                {
+                    output = ToBitmapImage(fittedImage);
+                }
             }
 
             return output;

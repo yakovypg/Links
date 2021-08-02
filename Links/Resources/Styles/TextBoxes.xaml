@@ -2,6 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Style TargetType="TextBox" x:Key="LinkPresenterTextBox">
+        <Setter Property="Height" Value="25"/>
+        <Setter Property="Padding" Value="2"/>
         <Setter Property="FontSize" Value="15"/>
         <Setter Property="Margin" Value="0, 0, 0, 3"/>
         <Setter Property="Background" Value="#EAEAEA"/>

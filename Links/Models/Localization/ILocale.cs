@@ -35,6 +35,9 @@
         string Ok { get; set; }
         string Add { get; set; }
 
-        string Unsorted { get; set; }
+        string Error { get; set; }
+        string Comment { get; set; }
+
+        LocaleMessages LocaleMessages { get; set; }
     }
 }
