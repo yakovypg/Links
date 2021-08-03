@@ -24,8 +24,7 @@ namespace Links.Infrastructure.Behaviors
             if (!(AssociatedObject.GetParent(3) is Window))
                 return;
 
-            string caption = $"About {AppInfo.Name}";
-            _ = MessageBox.Show(AppInfo.GenerateString(), caption, MessageBoxButton.OK, MessageBoxImage.Information);
+            AppInfo.ShowInfo();
         }
     }
 }

@@ -17,6 +17,8 @@ namespace Links.ViewModels
 {
     internal class LinkCollectionViewModel : CustomizedViewModel
     {
+        public ObservableCollection<Group> GroupCollection { get; private set; }
+
         public int LinkPresenterGridWidth => _linkPresenterGridWidth;
         public int LinkPresenterGridHeight => _linkPresenterGridHeight;
         public int LinksFieldWrapPanelItemWidth => _linkPresenterGridWidth + 5;
@@ -196,8 +198,6 @@ namespace Links.ViewModels
         }
 
         #endregion
-
-        public ObservableCollection<Group> GroupCollection { get; private set; }
 
         public LinkCollectionViewModel()
         {

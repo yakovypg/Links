@@ -1,4 +1,6 @@
-﻿namespace Links.Data.App
+﻿using System.Windows;
+
+namespace Links.Data.App
 {
     internal static class AppInfo
     {
@@ -11,6 +13,12 @@
             return $"Name: {Name}\n" +
                    $"Version: {Version}\n" +
                    $"Developer: {Developer}";
+        }
+
+        public static void ShowInfo()
+        {
+            string caption = $"About {Name}";
+            _ = MessageBox.Show(GenerateString(), caption, MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

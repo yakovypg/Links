@@ -6,7 +6,7 @@ using System.Windows.Interop;
 
 namespace Links.Infrastructure.Behaviors
 {
-    internal class WindowStateChangedBehavior : Behavior<MainWindow>
+    internal class WindowStateChangedBehavior : Behavior<Window>
     {
         protected override void OnAttached()
         {
@@ -20,7 +20,7 @@ namespace Links.Infrastructure.Behaviors
 
         private void WindowStateChanged(object sender, EventArgs e)
         {
-            MainWindow window = AssociatedObject;
+            Window window = AssociatedObject;
             IntPtr handle = new WindowInteropHelper(window).Handle;
             var containerBorder = window.Template.FindName("PART_Container", window) as Border;
 

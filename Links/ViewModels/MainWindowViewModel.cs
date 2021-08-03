@@ -4,6 +4,7 @@ using Links.Infrastructure.Commands;
 using Links.Models;
 using Links.Models.Collections;
 using Links.ViewModels.Base;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 
@@ -11,6 +12,8 @@ namespace Links.ViewModels
 {
     internal class MainWindowViewModel : CustomizedViewModel
     {
+        public static StringSaver StringSaver { get; } = new StringSaver();
+
         public SettingsViewModel SettingsVM { get; }
         public LinkCollectionViewModel LinkCollectionVM { get; }
 
@@ -129,6 +132,23 @@ namespace Links.ViewModels
             LinkCreatorGroupIndex = 0;
         }
 
+        public ICommand FindAllLinksCommand { get; }
+        public void OnFindAllLinksCommandExecuted(object parameter)
+        {
+            if (!(parameter is string data))
+                return;
+
+            if (!string.IsNullOrEmpty(data))
+                StringSaver.Add(data);
+
+            var linkFinder = new LinkFinder(data);
+            var foundLinksList = linkFinder.FindAmong(LinkCollectionVM.GroupCollection);
+            var groupItems = new ObservableCollection<LinkInfo>(foundLinksList);
+
+            LinkCollectionVM.LinkFilterText = string.Empty;
+            LinkCollectionVM.SelectedGroup = new Group(null, groupItems);
+        }
+
         #endregion
 
         #region SystemCommands
@@ -152,6 +172,7 @@ namespace Links.ViewModels
             AddGroupCommand = new RelayCommand(OnAddGroupCommandExecuted, t => true);
             AddLinkCommand = new RelayCommand(OnAddLinkCommandExecuted, t => true);
             ResetLinkCreatorGroupIndexCommand = new RelayCommand(OnResetLinkCreatorGroupIndexCommandExecuted, t => true);
+            FindAllLinksCommand = new RelayCommand(OnFindAllLinksCommandExecuted, t => true);
 
             ChangeSettingsFieldVisibilityCommand = new RelayCommand(OnChangeSettingsFieldVisibilityCommandExecuted, t => true);
             ChangeGroupCreatorMenuVisibilityCommand = new RelayCommand(OnChangeGroupCreatorMenuVisibilityCommandExecuted, t => true);
