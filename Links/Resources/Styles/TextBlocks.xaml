@@ -24,4 +24,13 @@
         </Style.Triggers>
     </Style>
 
+    <Style TargetType="TextBlock" x:Key="WatermarkTextBlock">
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="Gray"/>
+        <Setter Property="IsHitTestVisible" Value="False"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+    </Style>
+
 </ResourceDictionary>

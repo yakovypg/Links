@@ -34,6 +34,10 @@
             Ok = "Ok";
             Add = "Add";
 
+            Find = "Find";
+            Links = "Links";
+            Groups = "Groups";
+
             Error = "Error";
             Comment = "Comment";
 

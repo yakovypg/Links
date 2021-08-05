@@ -60,6 +60,13 @@ namespace Links.ViewModels
             }
         }
 
+        private int _selectedGroupIndex;
+        public int SelectedGroupIndex
+        {
+            get => _selectedGroupIndex;
+            set => SetValue(ref _selectedGroupIndex, value);
+        }
+
         private string _groupFilterText = string.Empty;
         public string GroupFilterText
         {
@@ -78,7 +85,7 @@ namespace Links.ViewModels
             set
             {
                 if (SetValue(ref _linkFilterText, value))
-                    _selectedGroupLinks?.View.Refresh();
+                    _selectedGroupLinks?.View?.Refresh();
             }
         }
 

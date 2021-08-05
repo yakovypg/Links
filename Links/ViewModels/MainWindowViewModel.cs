@@ -146,6 +146,7 @@ namespace Links.ViewModels
             var groupItems = new ObservableCollection<LinkInfo>(foundLinksList);
 
             LinkCollectionVM.LinkFilterText = string.Empty;
+            LinkCollectionVM.SelectedGroupIndex = -1;
             LinkCollectionVM.SelectedGroup = new Group(null, groupItems);
         }
 

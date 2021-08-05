@@ -187,6 +187,18 @@
                 </Button>
 
                 <Grid>
+                    <Grid.Resources>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource WatermarkTextBlock}" x:Key="LinkFilterWaretmark">
+                            <Setter Property="Margin" Value="10, 5, 5, 5"/>
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=LinkFilterTextBox, Path=Text}" Value="">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Resources>
+                    
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="auto"/>
@@ -217,6 +229,12 @@
                             </KeyBinding>
                         </TextBox.InputBindings>
                     </TextBox>
+
+                    <TextBlock Grid.Column="2" Style="{StaticResource LinkFilterWaretmark}">           
+                        <Run Text="{Binding CurrentLocale.Find}"/>
+                        <Run Text="{Binding CurrentLocale.Links}"/>
+                    </TextBlock>
+                    
                 </Grid>
             </DockPanel>
 
@@ -305,6 +323,17 @@
                             </Grid>
 
                             <Grid Height="25" Grid.Row="2">
+                                <Grid.Resources>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource WatermarkTextBlock}" x:Key="GroupFilterWaretmark">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ElementName=GroupFilterTextBox, Path=Text}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Resources>
+
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="auto"/>
                                     <ColumnDefinition Width="auto"/>
@@ -344,16 +373,23 @@
                                 </Button>
 
                                 <TextBox
+                                    Name="GroupFilterTextBox"
                                     Grid.Column="2"
                                     BorderThickness="0"
                                     Text="{Binding GroupFilterText, UpdateSourceTrigger=PropertyChanged}">
                                 </TextBox>
+
+                                <TextBlock Grid.Column="2" Style="{StaticResource GroupFilterWaretmark}">           
+                                    <Run Text="{Binding CurrentLocale.Find}"/>
+                                    <Run Text="{Binding CurrentLocale.Groups}"/>
+                                </TextBlock>
                             </Grid>
 
                             <ListBox BorderThickness="0"
                                      Background="Transparent"
                                      ItemsSource="{Binding Groups}"
-                                     SelectedItem="{Binding SelectedGroup, UpdateSourceTrigger=PropertyChanged}">
+                                     SelectedItem="{Binding SelectedGroup, UpdateSourceTrigger=PropertyChanged}"
+                                     SelectedIndex="{Binding SelectedGroupIndex, UpdateSourceTrigger=PropertyChanged}">
 
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="PreviewMouseRightButtonDown">

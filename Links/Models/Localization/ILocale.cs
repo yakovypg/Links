@@ -35,6 +35,10 @@
         string Ok { get; set; }
         string Add { get; set; }
 
+        string Find { get; set; }
+        string Links { get; set; }
+        string Groups { get; set; }
+
         string Error { get; set; }
         string Comment { get; set; }
 
