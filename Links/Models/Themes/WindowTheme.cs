@@ -1,10 +1,13 @@
-﻿using System.Windows.Media;
+﻿using System.Reflection;
+using System.Windows.Media;
 using System.Windows.Media.Effects;
 
 namespace Links.Models.Themes
 {
     internal class WindowTheme : IWindowTheme
     {
+        public string DisplayName { get; }
+
         public static WindowTheme Dark => new WindowDarkTheme();
         public static WindowTheme Blue => new WindowBlueTheme();
         public static WindowTheme Light => new WindowLightTheme();
@@ -61,5 +64,38 @@ namespace Links.Models.Themes
         public SolidColorBrush LinkPresenterInformationGridBackground { get; set; }
         public SolidColorBrush LinkPresenterImageBorderBrush { get; set; }
         public SolidColorBrush LinkPresenterImageBackground { get; set; }
+
+        public WindowTheme(string displayName)
+        {
+            DisplayName = displayName;
+        }
+
+        public override string ToString()
+        {
+            return DisplayName;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (!(obj is WindowTheme other))
+                return false;
+
+            if (DisplayName != other.DisplayName)
+                return false;
+
+            PropertyInfo[] currProps = GetType().GetProperties();
+            PropertyInfo[] otherProps = other.GetType().GetProperties();
+
+            if (currProps.Length != otherProps.Length)
+                return false;
+
+            for (int i = 0; i < currProps.Length; ++i)
+            {
+                if (!currProps[i].Equals(otherProps[i]))
+                    return false;
+            }
+
+            return true;
+        }
     }
 }

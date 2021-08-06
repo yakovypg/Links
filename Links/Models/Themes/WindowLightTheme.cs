@@ -5,7 +5,7 @@ namespace Links.Models.Themes
 {
     internal sealed class WindowLightTheme : WindowTheme
     {
-        public WindowLightTheme()
+        public WindowLightTheme() : base("Light")
         {
             WindowBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EFF8FF"));
             WindowSystemTopBarBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#464775"));

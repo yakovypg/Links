@@ -1,7 +1,6 @@
-﻿using Links.Models.Collections;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 
-namespace Links.Models
+namespace Links.Models.Collections.Creators
 {
     internal interface ILinkCreator
     {

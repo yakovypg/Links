@@ -1,8 +1,7 @@
-﻿using Links.Models.Collections;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Links.Models
+namespace Links.Models.Collections.Creators
 {
     internal sealed class GroupCreator : IGroupCreator, INotifyPropertyChanged
     {

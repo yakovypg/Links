@@ -1,9 +1,8 @@
-﻿using Links.Models.Collections;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
 
-namespace Links.Models
+namespace Links.Models.Collections.Creators
 {
     internal sealed class LinkCreator : ILinkCreator, INotifyPropertyChanged
     {

@@ -1,6 +1,4 @@
-﻿using Links.Models.Collections;
-
-namespace Links.Models
+﻿namespace Links.Models.Collections.Creators
 {
     internal interface IGroupCreator
     {

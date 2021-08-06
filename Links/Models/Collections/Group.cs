@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Links.Models.Collections
 {
@@ -8,7 +9,7 @@ namespace Links.Models.Collections
     {
         public string Name { get; set; }
         public GroupIcon Icon { get; set; }
-        public ObservableCollection<LinkInfo> Links { get; }
+        public ObservableCollection<LinkInfo> Links { get; private set; }
 
         public Group() : this(string.Empty)
         {
@@ -29,6 +30,26 @@ namespace Links.Models.Collections
         {
             get => Links[index];
             set => Links[index] = value;
+        }
+
+        public void AddLinks(params LinkInfo[] links)
+        {
+            if (links == null)
+                return;
+
+            foreach (LinkInfo link in links)
+                Links.Add(link);
+        }
+
+        public void RedefineLinks(params LinkInfo[] newLinks)
+        {
+            if (newLinks == null || newLinks.Length == 0)
+            {
+                Links = new ObservableCollection<LinkInfo>(Links);
+                return;
+            }
+
+            Links = new ObservableCollection<LinkInfo>(Links.Concat(newLinks));
         }
 
         public IEnumerator<LinkInfo> GetEnumerator()

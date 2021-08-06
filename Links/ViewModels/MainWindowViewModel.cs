@@ -3,6 +3,9 @@ using Links.Data.App;
 using Links.Infrastructure.Commands;
 using Links.Models;
 using Links.Models.Collections;
+using Links.Models.Collections.Creators;
+using Links.Models.Localization;
+using Links.Models.Themes;
 using Links.ViewModels.Base;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -10,7 +13,7 @@ using System.Windows.Input;
 
 namespace Links.ViewModels
 {
-    internal class MainWindowViewModel : CustomizedViewModel
+    internal class MainWindowViewModel : ViewModel
     {
         public static StringSaver StringSaver { get; } = new StringSaver();
 
@@ -19,6 +22,20 @@ namespace Links.ViewModels
 
         public GroupCreator GroupCreator { get; } = new GroupCreator();
         public LinkCreator LinkCreator { get; } = new LinkCreator();
+
+        private IWindowTheme _theme = WindowTheme.Dark;
+        public IWindowTheme Theme
+        {
+            get => _theme;
+            set => SetValue(ref _theme, value);
+        }
+
+        private ILocale _locale = Locale.English;
+        public ILocale CurrentLocale
+        {
+            get => _locale;
+            set => SetValue(ref _locale, value);
+        }
 
         private string _title = AppInfo.Name;
         public string Title
@@ -100,8 +117,8 @@ namespace Links.ViewModels
         {
             string path = DialogProvider.GetFilePath();
 
-            int width = _maxLinkPresenterGridWidth - 3 - 2 * 2;
-            int height = _maxLinkPresenterGridHeight - 3 - 20 - 22 - 2 * 2;
+            int width = SettingsVM.MaxLinkPresenterGridWidth - 3 - 2 * 2;
+            int height = SettingsVM.MaxLinkPresenterGridHeight - 3 - 20 - 22 - 2 * 2;
             var size = new System.Drawing.Size(width, height);
 
             if (ImageTransformer.TryGetBitmapImage(path, size, out System.Windows.Media.Imaging.BitmapImage newImage))
@@ -162,8 +179,8 @@ namespace Links.ViewModels
 
         public MainWindowViewModel()
         {
-            SettingsVM = new SettingsViewModel();
-            LinkCollectionVM = new LinkCollectionViewModel();
+            SettingsVM = new SettingsViewModel(this);
+            LinkCollectionVM = new LinkCollectionViewModel(this);
 
             MinimizeWindowCommand = new MinimizeWindowCommand();
             MaximizeWindowCommand = new MaximizeWindowCommand();

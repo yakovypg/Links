@@ -15,17 +15,18 @@ using System.Windows.Input;
 
 namespace Links.ViewModels
 {
-    internal class LinkCollectionViewModel : CustomizedViewModel
+    internal class LinkCollectionViewModel : ViewModel
     {
+        public MainWindowViewModel MainWindowVM { get; }
         public ObservableCollection<Group> GroupCollection { get; private set; }
 
-        public int LinkPresenterGridWidth => _linkPresenterGridWidth;
-        public int LinkPresenterGridHeight => _linkPresenterGridHeight;
-        public int LinksFieldWrapPanelItemWidth => _linkPresenterGridWidth + 5;
-        public int LinksFieldWrapPanelItemHeight => _linkPresenterGridHeight + 5;
-
-        public IEnumerable<string> GroupIconColors => Enum.GetValues(typeof(GroupIcon.Colors)).Cast<GroupIcon.Colors>().ToStringEnumerable();
         public DeleteGroupParamMultiConverter DeleteGroupParamMultiConverter { get; } = new DeleteGroupParamMultiConverter();
+        public IEnumerable<string> GroupIconColors => Enum.GetValues(typeof(GroupIcon.Colors)).Cast<GroupIcon.Colors>().ToStringEnumerable();
+
+        public double LinkPresenterGridWidth => MainWindowVM.SettingsVM.LinkPresenterGridWidth;
+        public double LinkPresenterGridHeight => MainWindowVM.SettingsVM.LinkPresenterGridHeight;
+        public double LinksFieldWrapPanelItemWidth => MainWindowVM.SettingsVM.LinkPresenterGridWidth + 5;
+        public double LinksFieldWrapPanelItemHeight => MainWindowVM.SettingsVM.LinkPresenterGridHeight + 5;
 
         private int _groupEditorHeight = 0;
         public int GroupEditorHeight
@@ -100,16 +101,40 @@ namespace Links.ViewModels
         }
         public void OnDeleteGroupCommandExecuted(object parameter)
         {
+            MessageBoxResult msgResult = MessageBox.Show(MainWindowVM.CurrentLocale.LocaleMessages.DeleteGroupQuestion,
+                MainWindowVM.CurrentLocale.Question, MessageBoxButton.YesNo, MessageBoxImage.Question);
+
             var paramTuple = parameter as Tuple<object, object>;
 
             var linkCreatorGroup = paramTuple?.Item1 as Group;
             ICommand resetLinkCreatorGroupIndexCommand = (paramTuple?.Item2 as MainWindowViewModel)?.ResetLinkCreatorGroupIndexCommand;
+
+            Group deletedGroup = SelectedGroup;
 
             bool isGroupsEqual = linkCreatorGroup == SelectedGroup;
             bool isGroupRemoved = GroupCollection.Remove(SelectedGroup);
 
             if (isGroupRemoved && isGroupsEqual)
                 resetLinkCreatorGroupIndexCommand?.Execute(null);
+
+            if (isGroupRemoved && msgResult == MessageBoxResult.No)
+            {
+                Group unsortedLinksGroup = GroupCollection.FirstOrDefault(t => t.Name == MainWindowVM.CurrentLocale.Unsorted);
+
+                if (unsortedLinksGroup == null)
+                {
+                    unsortedLinksGroup = new Group(MainWindowVM.CurrentLocale.Unsorted);
+                    GroupCollection.Add(unsortedLinksGroup);
+                }
+
+                unsortedLinksGroup.RedefineLinks(deletedGroup.Links.ToArray());
+            }
+            
+            if (!isGroupRemoved)
+            {
+                _ = MessageBox.Show(MainWindowVM.CurrentLocale.LocaleMessages.DeleteGroupError,
+                        MainWindowVM.CurrentLocale.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         public ICommand ChangeGroupEditorVisibilityCommand { get; }
@@ -132,10 +157,19 @@ namespace Links.ViewModels
             if (!(parameter is LinkInfo linkInfo))
                 return;
 
+            if (MainWindowVM.SettingsVM.IsWarningsEnable)
+            {
+                MessageBoxResult msgResult = MessageBox.Show(MainWindowVM.CurrentLocale.LocaleMessages.DeleteLinkWarning,
+                    MainWindowVM.CurrentLocale.Warning, MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+                if (msgResult == MessageBoxResult.No)
+                    return;
+            }
+
             if (!linkInfo.ParentGroup.Links.Remove(linkInfo))
             {
-                _ = MessageBox.Show(_locale.LocaleMessages.DeleteLinkError, _locale.Error,
-                        MessageBoxButton.OK, MessageBoxImage.Error);
+                _ = MessageBox.Show(MainWindowVM.CurrentLocale.LocaleMessages.DeleteLinkError,
+                        MainWindowVM.CurrentLocale.Error, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -147,8 +181,8 @@ namespace Links.ViewModels
 
             string path = DialogProvider.GetFilePath();
 
-            int width = _maxLinkPresenterGridWidth - 3 - 2 * 2;
-            int height = _maxLinkPresenterGridHeight - 3 - 20 - 22 - 2 * 2;
+            int width = MainWindowVM.SettingsVM.MaxLinkPresenterGridWidth - 3 - 2 * 2;
+            int height = MainWindowVM.SettingsVM.MaxLinkPresenterGridHeight - 3 - 20 - 22 - 2 * 2;
             var size = new System.Drawing.Size(width, height);
 
             if (ImageTransformer.TryGetBitmapImage(path, size, out System.Windows.Media.Imaging.BitmapImage newImage))
@@ -164,10 +198,10 @@ namespace Links.ViewModels
             }
             catch (Exception ex)
             {
-                string message = $"{_locale.Error}: {_locale.LocaleMessages.FollowLinkError}\n\n" +
-                                 $"{_locale.Comment}: {ex.Message}";
+                string message = $"{MainWindowVM.CurrentLocale.Error}: {MainWindowVM.CurrentLocale.LocaleMessages.FollowLinkError}\n\n" +
+                                 $"{MainWindowVM.CurrentLocale.Comment}: {ex.Message}";
 
-                _ = MessageBox.Show(message, _locale.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                _ = MessageBox.Show(message, MainWindowVM.CurrentLocale.Error, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -206,7 +240,7 @@ namespace Links.ViewModels
 
         #endregion
 
-        public LinkCollectionViewModel()
+        public LinkCollectionViewModel(MainWindowViewModel mainWindowVM)
         {
             var group1 = new Group("Math");
             var group2 = new Group("Programming");
@@ -222,6 +256,7 @@ namespace Links.ViewModels
 
             group3.Links.Add(new LinkInfo("https://chemiday.com/", "ChemiDay", group3));
 
+            MainWindowVM = mainWindowVM ?? throw new ArgumentNullException();
             GroupCollection = new ObservableCollection<Group>() { group1, group2, group3, group4 };
 
             _groups = new CollectionViewSource()

@@ -5,6 +5,8 @@ namespace Links.Models.Themes
 {
     internal interface IWindowTheme
     {
+        string DisplayName { get; }
+
         SolidColorBrush WindowBackground { get; set; }
         SolidColorBrush WindowSystemTopBarBackground { get; set; }
         SolidColorBrush WindowGridSplitterBackground { get; set; }

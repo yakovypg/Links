@@ -8,12 +8,19 @@
             LinksSorting = "Links sorting";
             SortingMode = "Sorting mode";
 
-            LinkSize = "Link size";
+            Warnings = "Warnings";
+            PresenterSize = "Presenter size";
             Theme = "Theme";
             Language = "Language";
 
-            UseRecycleBin = "Use recycle bin";
-            EmptyRecycleBin = "Empty";
+            RecycleBin = "Recycle bin";
+            EmptyRecycleBin = "Empty recycle bin";
+
+            Days = "Days";
+            Every = "Every";
+            Never = "Never";
+
+            Unsorted = "Unsorted";
 
             Close = "Close";
             Reset = "Reset";
@@ -26,25 +33,36 @@
             Name = "Name";
             Colour = "Colour";
 
+            Date = "Date";
             Title = "Title";
             Link = "Link";
             Group = "Group";
             Image = "Image";
 
             Ok = "Ok";
-            Add = "Add";
+            On = "On";
+            Off = "Off";
 
+            Add = "Add";
             Find = "Find";
-            Links = "Links";
-            Groups = "Groups";
+
+            Ascending = "Ascending";
+            Descending = "Descending";
 
             Error = "Error";
+            Warning = "Warning";
+            Question = "Question";
             Comment = "Comment";
 
             LocaleMessages = new LocaleMessages()
             {
+                DeleteGroupQuestion = "Delete all links from the group?",
+                DeleteLinkWarning = "Are you sure you want to delete the link?",
+
+                DeleteGroupError = "Failed to delete the group.",
                 FollowLinkError = "Failed to follow the link.",
-                DeleteLinkError = "Failed to delete the link."
+                DeleteLinkError = "Failed to delete the link.",
+                RestoreLinkError = "Failed to restore the link."
             };
         }
     }

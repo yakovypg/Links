@@ -7,5 +7,8 @@ namespace Links.Models.Collections
         string Name { get; set; }
         GroupIcon Icon { get; set; }
         ObservableCollection<LinkInfo> Links { get; }
+
+        void AddLinks(params LinkInfo[] links);
+        void RedefineLinks(params LinkInfo[] newLinks);
     }
 }
