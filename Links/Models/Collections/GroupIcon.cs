@@ -60,7 +60,11 @@ namespace Links.Models.Collections
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
-        public GroupIcon(int colorIndex = 8)
+        public GroupIcon() : this(8)
+        {
+        }
+
+        public GroupIcon(int colorIndex)
         {
             ColorIndex = colorIndex;
         }

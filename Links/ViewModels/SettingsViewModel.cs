@@ -2,14 +2,17 @@
 using Links.Data.App;
 using Links.Infrastructure.Commands;
 using Links.Models.Collections;
+using Links.Models.Collections.Comparers;
 using Links.Models.Configuration;
 using Links.Models.Localization;
+using Links.Models.Messages;
 using Links.Models.Themes;
 using Links.ViewModels.Base;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
@@ -17,6 +20,8 @@ namespace Links.ViewModels
 {
     internal class SettingsViewModel : ViewModel
     {
+        private ILocale CurrLocale => MainWindowVM.CurrentLocale;
+
         public MainWindowViewModel MainWindowVM { get; }
         public ObservableCollection<LinkInfo> RecycleBin { get; }
 
@@ -29,13 +34,6 @@ namespace Links.ViewModels
         public ObservableCollection<string> OnOffParams { get; private set; }
         public ObservableCollection<string> EmptyRecycleBinParams { get; private set; }
 
-        private LinkInfo _selectedDeletedLink;
-        public LinkInfo SelectedDeletedLink
-        {
-            get => _selectedDeletedLink;
-            set => SetValue(ref _selectedDeletedLink, value);
-        }
-
         private int _selectedDeletedLinkIndex;
         public int SelectedDeletedLinkIndex
         {
@@ -43,10 +41,81 @@ namespace Links.ViewModels
             set => SetValue(ref _selectedDeletedLinkIndex, value);
         }
 
+        private LinkInfo _selectedDeletedLink;
+        public LinkInfo SelectedDeletedLink
+        {
+            get => _selectedDeletedLink;
+            set => SetValue(ref _selectedDeletedLink, value);
+        }
+
+        private GroupViewModel[] _impexGroups;
+        public GroupViewModel[] ImpexGroups
+        {
+            get => _impexGroups;
+            private set => SetValue(ref _impexGroups, value);
+        }
+
+        public (IEnumerable<Group> NonemptyImpexGroups, IEnumerable<LinkInfo> SelectedImpexGroupsLinks) ImpexLinksTreeData
+        {
+            get
+            {
+                var nonemptyGroups = new List<Group>();
+                var selectedImpexGroupsLinks = new List<LinkInfo>();
+
+                if (ImpexGroups == null)
+                    return (null, null);
+
+                foreach (GroupViewModel group in ImpexGroups)
+                {
+                    if (group.Links == null)
+                        continue;
+
+                    IEnumerable<LinkInfo> links = group.Links.Where(t => t.IsChecked).Select(t => t.Source);
+
+                    if (links == null || links.Count() == 0)
+                        continue;
+
+                    var icon = group.Icon.Clone() as GroupIcon;
+                    var items = new ObservableCollection<LinkInfo>(links);
+                    var newGroup = new Group(group.Name, icon, items);
+
+                    nonemptyGroups.Add(newGroup);
+                    selectedImpexGroupsLinks.AddRange(links);
+                }
+
+                return (nonemptyGroups, selectedImpexGroupsLinks);
+            }
+        }
+
+        #region FieldsVisibility
+
+        private Visibility _impexMenuVisibility = Visibility.Hidden;
+        public Visibility ImpexMenuVisibility
+        {
+            get => _impexMenuVisibility;
+            set => SetValue(ref _impexMenuVisibility, value);
+        }
+
+        private Visibility _exportLinksBottomBarVisibility = Visibility.Hidden;
+        public Visibility ExportLinksBottomBarVisibility
+        {
+            get => _exportLinksBottomBarVisibility;
+            set => SetValue(ref _exportLinksBottomBarVisibility, value);
+        }
+
+        private Visibility _importLinksBottomBarVisibility = Visibility.Hidden;
+        public Visibility ImportLinksBottomBarVisibility
+        {
+            get => _importLinksBottomBarVisibility;
+            set => SetValue(ref _importLinksBottomBarVisibility, value);
+        }
+
+        #endregion
+
         #region SettingFieldsGetters
 
-        public int MaxLinkPresenterGridWidth => 270;
-        public int MaxLinkPresenterGridHeight => 414;
+        public double MaxLinkPresenterGridWidth => PresenterSizes[PresenterSizes.Count - 1].Width;
+        public double MaxLinkPresenterGridHeight => PresenterSizes[PresenterSizes.Count - 1].Height;
 
         public double LinkPresenterGridWidth => PresenterSize.Width;
         public double LinkPresenterGridHeight => PresenterSize.Height;
@@ -63,19 +132,19 @@ namespace Links.ViewModels
         public ListSortDirection LinkListSortDescription => _groupListSortDescriptionParam == MainWindowVM.CurrentLocale.Ascending
             ? ListSortDirection.Ascending : ListSortDirection.Descending;
 
-        public int EmptyRecycleBinDifference
+        public double EmptyRecycleBinDifference
         {
             get
             {
                 int index = _emptyRecycleBinParam?.LastIndexOf(" ") ?? -1;
 
                 if (index < 0 || index >= _emptyRecycleBinParam.Length - 1)
-                    return int.MaxValue;
+                    return double.PositiveInfinity;
 
                 string numStr = _emptyRecycleBinParam.Substring(index + 1);
 
-                return !int.TryParse(numStr, out int diff)
-                    ? int.MaxValue
+                return !double.TryParse(numStr, out double diff)
+                    ? double.PositiveInfinity
                     : diff;
             }
         }
@@ -144,7 +213,122 @@ namespace Links.ViewModels
 
         #region Commands
 
+        public ICommand ImportLinksCommand { get; }
+        public void OnImportLinksCommandExecuted(object parameter)
+        {
+            (IEnumerable<Group> nonemptyImpexGroups, IEnumerable<LinkInfo> selectedImpexGroupsLinks) = ImpexLinksTreeData;
+
+            if (selectedImpexGroupsLinks?.Count() == 0)
+            {
+                new FastMessage(CurrLocale.LocaleMessages.NoSelectedLinksInfo, CurrLocale).ShowInformation();
+                return;
+            }
+
+            MessageBoxResult msgResult = new FastMessage(CurrLocale.LocaleMessages.AutoLinksDistributionQuestion, CurrLocale).GetQuestionResult();
+
+            ObservableCollection<Group> groups = MainWindowVM.LinkCollectionVM.GroupCollection;
+
+            if (msgResult == MessageBoxResult.Yes)
+            {
+                var designComparer = new GroupDesignEqualityComparer();
+
+                foreach (Group group in nonemptyImpexGroups)
+                {
+                    Group availableGroup = groups.FirstOrDefault(t => designComparer.Equals(t, group));
+
+                    if (availableGroup == null)
+                        groups.Add(group);
+                    else
+                        availableGroup.MergeWith(group);
+                }
+            }
+            else
+            {
+                var nonIconComparer = new GroupNonIconEqualityComparer();
+                var links = new ObservableCollection<LinkInfo>(selectedImpexGroupsLinks);
+                var groupUnsorted = new Group(MainWindowVM.CurrentLocale.Unsorted, links);
+
+                Group availableGroup = groups.FirstOrDefault(t => nonIconComparer.Equals(t, groupUnsorted));
+
+                if (availableGroup == null)
+                    groups.Add(groupUnsorted);
+                else
+                    availableGroup.MergeWith(groupUnsorted);
+            }
+
+            MainWindowVM.LinkCollectionVM.UpdateSelectedGroup();
+
+            new FastMessage(CurrLocale.LocaleMessages.SuccessfulLinksImportingInfo, CurrLocale).ShowInformation();
+        }
+
+        public ICommand ExportLinksCommand { get; }
+        public void OnExportLinksCommandExecuted(object parameter)
+        {
+            (IEnumerable<Group> nonemptyImpexGroups, IEnumerable<LinkInfo> selectedImpexGroupsLinks) = ImpexLinksTreeData;
+
+            if (selectedImpexGroupsLinks == null || selectedImpexGroupsLinks.Count() == 0)
+            {
+                new FastMessage(CurrLocale.LocaleMessages.NoSelectedLinksInfo, CurrLocale).ShowInformation();
+                return;
+            }
+
+            bool res = DataParser.TryExportGroups(nonemptyImpexGroups, out System.Windows.Forms.DialogResult dialogResult);
+
+            if (res)
+            {
+                new FastMessage(CurrLocale.LocaleMessages.SuccessfulLinksExportingInfo, CurrLocale).ShowInformation();
+            }
+            else if (dialogResult == System.Windows.Forms.DialogResult.OK)
+            {
+                new FastMessage(CurrLocale.LocaleMessages.LinksExportingError, CurrLocale).ShowError();
+            }
+        }
+
+        public ICommand CheckAllLinksCommand { get; }
+        public void OnCheckAllLinksCommandExecuted(object parameter)
+        {
+            if (ImpexGroups == null)
+                return;
+
+            foreach (GroupViewModel group in ImpexGroups)
+            {
+                if (group.Links == null)
+                    continue;
+
+                foreach (LinkViewModel link in group.Links)
+                {
+                    link.IsChecked = true;
+                }
+            }
+
+            OnPropertyChanged(nameof(ImpexGroups));
+        }
+
         public ICommand ChangeGroupsSortingCommand { get; }
+
+        #endregion
+
+        #region VisibilityCommands
+
+        public ICommand ChangeImportLinksBottomBarVisibilityCommand { get; }
+        public void OnChangeImportLinksBottomBarVisibilityCommandExecuted(object parameter)
+        {
+            ImportLinksBottomBarVisibility = ImportLinksBottomBarVisibility == Visibility.Hidden
+                ? Visibility.Visible
+                : Visibility.Hidden;
+
+            ImpexMenuVisibility = ImportLinksBottomBarVisibility;
+        }
+
+        public ICommand ChangeExportLinksBottomBarVisibilityCommand { get; }
+        public void OnChangeExportLinksBottomBarVisibilityCommandExecuted(object parameter)
+        {
+            ExportLinksBottomBarVisibility = ExportLinksBottomBarVisibility == Visibility.Hidden
+                ? Visibility.Visible
+                : Visibility.Hidden;
+
+            ImpexMenuVisibility = ExportLinksBottomBarVisibility;
+        }
 
         #endregion
 
@@ -156,8 +340,69 @@ namespace Links.ViewModels
             MainWindowVM.ChangeSettingsFieldVisibilityCommand?.Execute(null);
         }
 
-        public ICommand ImportLinksCommand { get; }
-        public ICommand ExportLinksCommand { get; }
+        public ICommand ShowImportMenuCommand { get; }
+        public void OnShowImportMenuCommandExecuted(object parameter)
+        {
+            bool isImported = false;
+
+            if (ImpexMenuVisibility == Visibility.Hidden)
+            {
+                isImported = DataParser.TryImportGroups(out IEnumerable<Group> groups, out System.Windows.Forms.DialogResult dialogResult);
+
+                if (isImported)
+                {
+                    int groupsCount = groups.Count();
+
+                    if (groups == null || groupsCount == 0)
+                        ImpexGroups = null;
+
+                    _impexGroups = new GroupViewModel[groupsCount];
+
+                    int index = 0;
+
+                    foreach (Group group in groups)
+                    {
+                        _impexGroups[index++] = new GroupViewModel(group);
+                    }
+
+                    OnPropertyChanged(nameof(ImpexGroups));
+                }
+                else if (dialogResult == System.Windows.Forms.DialogResult.OK)
+                {
+                    new FastMessage(CurrLocale.LocaleMessages.LinksImportingError, CurrLocale).ShowError();
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            if (isImported)
+            {
+                ChangeImportLinksBottomBarVisibilityCommand?.Execute(null);
+            }
+        }
+
+        public ICommand ShowExportMenuCommand { get; }
+        public void OnShowExportMenuCommandExecuted(object parameter)
+        {
+            if (ExportLinksBottomBarVisibility == Visibility.Hidden)
+            {
+                ObservableCollection<Group> groups = MainWindowVM.LinkCollectionVM.GroupCollection;
+
+                if (groups == null || groups.Count == 0)
+                    ImpexGroups = null;
+
+                _impexGroups = new GroupViewModel[groups.Count];
+
+                for (int i = 0; i < _impexGroups.Length; ++i)
+                    _impexGroups[i] = new GroupViewModel(groups[i]);
+
+                OnPropertyChanged(nameof(ImpexGroups));
+            }
+
+            ChangeExportLinksBottomBarVisibilityCommand?.Execute(null);
+        }
 
         public ICommand RestoreRecycleBinItemCommand { get; }
         public bool CanRestoreRecycleBinItemCommandExecute(object parameter)
@@ -170,9 +415,7 @@ namespace Links.ViewModels
 
             if (!RecycleBin.Remove(SelectedDeletedLink))
             {
-                _ = MessageBox.Show(MainWindowVM.CurrentLocale.LocaleMessages.RestoreLinkError, MainWindowVM.CurrentLocale.Error,
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-
+                new FastMessage(CurrLocale.LocaleMessages.RestoreLinkError, CurrLocale).ShowError();
                 return;
             }
 
@@ -222,11 +465,18 @@ namespace Links.ViewModels
                 ? new ObservableCollection<LinkInfo>(recBinItems)
                 : new ObservableCollection<LinkInfo>();
 
+            ImportLinksCommand = new RelayCommand(OnImportLinksCommandExecuted, t => true);
+            ExportLinksCommand = new RelayCommand(OnExportLinksCommandExecuted, t => true);
+            CheckAllLinksCommand = new RelayCommand(OnCheckAllLinksCommandExecuted, t => true);
+
             ChangeGroupsSortingCommand = new RelayCommand(delegate { }, t => true);
 
+            ChangeImportLinksBottomBarVisibilityCommand = new RelayCommand(OnChangeImportLinksBottomBarVisibilityCommandExecuted, t => true);
+            ChangeExportLinksBottomBarVisibilityCommand = new RelayCommand(OnChangeExportLinksBottomBarVisibilityCommandExecuted, t => true);
+
             CloseSettingsPageCommand = new RelayCommand(OnCloseSettingsPageCommandExecuted, t => true);
-            ImportLinksCommand = new RelayCommand(delegate { }, t => true);
-            ExportLinksCommand = new RelayCommand(delegate { }, t => true);
+            ShowImportMenuCommand = new RelayCommand(OnShowImportMenuCommandExecuted, t => true);
+            ShowExportMenuCommand = new RelayCommand(OnShowExportMenuCommandExecuted, t => true);
 
             RestoreRecycleBinItemCommand = new RelayCommand(OnRestoreRecycleBinItemCommandExecuted, CanRestoreRecycleBinItemCommandExecute);
             RemoveRecycleBinItemCommand = new RelayCommand(OnRemoveRecycleBinItemCommandExecuted, CanRemoveRecycleBinItemCommandExecute);

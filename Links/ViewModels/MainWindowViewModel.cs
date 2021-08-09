@@ -115,10 +115,10 @@ namespace Links.ViewModels
         public ICommand SetLinkCreatorImageCommand { get; }
         public void OnSetLinkCreatorImageCommandExecuted(object parameter)
         {
-            string path = DialogProvider.GetFilePath();
+            _ = DialogProvider.GetFilePath(out string path);
 
-            int width = SettingsVM.MaxLinkPresenterGridWidth - 3 - 2 * 2;
-            int height = SettingsVM.MaxLinkPresenterGridHeight - 3 - 20 - 22 - 2 * 2;
+            int width = (int)SettingsVM.MaxLinkPresenterGridWidth - 3 - 2 * 2;
+            int height = (int)SettingsVM.MaxLinkPresenterGridHeight - 3 - 20 - 22 - 2 * 2;
             var size = new System.Drawing.Size(width, height);
 
             if (ImageTransformer.TryGetBitmapImage(path, size, out System.Windows.Media.Imaging.BitmapImage newImage))

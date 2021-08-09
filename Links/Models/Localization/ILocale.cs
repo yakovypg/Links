@@ -46,6 +46,7 @@
 
         string Add { get; set; }
         string Find { get; set; }
+        string CheckAll { get; set; }
 
         string Ascending { get; set; }
         string Descending { get; set; }
@@ -53,6 +54,7 @@
         string Error { get; set; }
         string Warning { get; set; }
         string Question { get; set; }
+        string Information { get; set; }
         string Comment { get; set; }
 
         LocaleMessages LocaleMessages { get; set; }

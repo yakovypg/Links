@@ -3,6 +3,8 @@ using Links.Infrastructure.Commands;
 using Links.Infrastructure.Converters;
 using Links.Infrastructure.Extensions;
 using Links.Models.Collections;
+using Links.Models.Localization;
+using Links.Models.Messages;
 using Links.ViewModels.Base;
 using System;
 using System.Collections.Generic;
@@ -17,6 +19,8 @@ namespace Links.ViewModels
 {
     internal class LinkCollectionViewModel : ViewModel
     {
+        private ILocale CurrLocale => MainWindowVM.CurrentLocale;
+
         public MainWindowViewModel MainWindowVM { get; }
         public ObservableCollection<Group> GroupCollection { get; private set; }
 
@@ -101,8 +105,7 @@ namespace Links.ViewModels
         }
         public void OnDeleteGroupCommandExecuted(object parameter)
         {
-            MessageBoxResult msgResult = MessageBox.Show(MainWindowVM.CurrentLocale.LocaleMessages.DeleteGroupQuestion,
-                MainWindowVM.CurrentLocale.Question, MessageBoxButton.YesNo, MessageBoxImage.Question);
+            MessageBoxResult msgResult = new FastMessage(CurrLocale.LocaleMessages.DeleteGroupQuestion, CurrLocale).GetQuestionResult();
 
             var paramTuple = parameter as Tuple<object, object>;
 
@@ -129,12 +132,9 @@ namespace Links.ViewModels
 
                 unsortedLinksGroup.RedefineLinks(deletedGroup.Links.ToArray());
             }
-            
+
             if (!isGroupRemoved)
-            {
-                _ = MessageBox.Show(MainWindowVM.CurrentLocale.LocaleMessages.DeleteGroupError,
-                        MainWindowVM.CurrentLocale.Error, MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+                new FastMessage(CurrLocale.LocaleMessages.DeleteGroupError, CurrLocale).ShowError();
         }
 
         public ICommand ChangeGroupEditorVisibilityCommand { get; }
@@ -159,18 +159,15 @@ namespace Links.ViewModels
 
             if (MainWindowVM.SettingsVM.IsWarningsEnable)
             {
-                MessageBoxResult msgResult = MessageBox.Show(MainWindowVM.CurrentLocale.LocaleMessages.DeleteLinkWarning,
-                    MainWindowVM.CurrentLocale.Warning, MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                MessageBoxResult msgResult = new FastMessage(CurrLocale.LocaleMessages.DeleteLinkQuestion, CurrLocale)
+                    .GetWarningResult(MessageBoxButton.YesNo);
 
                 if (msgResult == MessageBoxResult.No)
                     return;
             }
 
             if (!linkInfo.ParentGroup.Links.Remove(linkInfo))
-            {
-                _ = MessageBox.Show(MainWindowVM.CurrentLocale.LocaleMessages.DeleteLinkError,
-                        MainWindowVM.CurrentLocale.Error, MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+                new FastMessage(CurrLocale.LocaleMessages.DeleteLinkError, CurrLocale).ShowError();
         }
 
         public ICommand SetLinkImageCommand { get; }
@@ -179,10 +176,10 @@ namespace Links.ViewModels
             if (!(parameter is LinkInfo linkInfo))
                 return;
 
-            string path = DialogProvider.GetFilePath();
+            _ = DialogProvider.GetFilePath(out string path);
 
-            int width = MainWindowVM.SettingsVM.MaxLinkPresenterGridWidth - 3 - 2 * 2;
-            int height = MainWindowVM.SettingsVM.MaxLinkPresenterGridHeight - 3 - 20 - 22 - 2 * 2;
+            int width = (int)MainWindowVM.SettingsVM.MaxLinkPresenterGridWidth - 3 - 2 * 2;
+            int height = (int)MainWindowVM.SettingsVM.MaxLinkPresenterGridHeight - 3 - 20 - 22 - 2 * 2;
             var size = new System.Drawing.Size(width, height);
 
             if (ImageTransformer.TryGetBitmapImage(path, size, out System.Windows.Media.Imaging.BitmapImage newImage))
@@ -201,7 +198,7 @@ namespace Links.ViewModels
                 string message = $"{MainWindowVM.CurrentLocale.Error}: {MainWindowVM.CurrentLocale.LocaleMessages.FollowLinkError}\n\n" +
                                  $"{MainWindowVM.CurrentLocale.Comment}: {ex.Message}";
 
-                _ = MessageBox.Show(message, MainWindowVM.CurrentLocale.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+                new FastMessage(message, CurrLocale).ShowError();
             }
         }
 
@@ -285,6 +282,13 @@ namespace Links.ViewModels
 
             ChangeLinkEditorVisibilityCommand = new RelayCommand(OnChangeLinkEditorVisibilityCommandExecuted, t => true);
             HideLinkEditorCommand = new RelayCommand(OnHideLinkEditorCommandExecuted, t => true);
+        }
+
+        public void UpdateSelectedGroup()
+        {
+            Group tmp = SelectedGroup;
+            SelectedGroup = null;
+            SelectedGroup = tmp;
         }
 
         private void OnGroupFiltered(object sender, FilterEventArgs e)

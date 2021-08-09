@@ -8,6 +8,9 @@ namespace Links.Models.Collections
         GroupIcon Icon { get; set; }
         ObservableCollection<LinkInfo> Links { get; }
 
+        bool EqualTo(Group other);
+        void MergeWith(Group other);
+
         void AddLinks(params LinkInfo[] links);
         void RedefineLinks(params LinkInfo[] newLinks);
     }

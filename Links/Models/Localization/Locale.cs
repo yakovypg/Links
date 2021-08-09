@@ -50,6 +50,7 @@ namespace Links.Models.Localization
 
         public string Add { get; set; }
         public string Find { get; set; }
+        public string CheckAll { get; set; }
 
         public string Ascending { get; set; }
         public string Descending { get; set; }
@@ -57,6 +58,7 @@ namespace Links.Models.Localization
         public string Error { get; set; }
         public string Warning { get; set; }
         public string Question { get; set; }
+        public string Information { get; set; }
         public string Comment { get; set; }
 
         public LocaleMessages LocaleMessages { get; set; }

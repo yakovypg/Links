@@ -5,8 +5,11 @@ using System.Linq;
 
 namespace Links.Models.Collections
 {
-    internal class Group : IGroup, IEnumerable<LinkInfo>
+    internal class Group : IGroup, ICollection<LinkInfo>
     {
+        public int Count => Links?.Count ?? 0;
+        public bool IsReadOnly => false;
+
         public string Name { get; set; }
         public GroupIcon Icon { get; set; }
         public ObservableCollection<LinkInfo> Links { get; private set; }
@@ -30,6 +33,36 @@ namespace Links.Models.Collections
         {
             get => Links[index];
             set => Links[index] = value;
+        }
+
+        public bool EqualTo(Group other)
+        {
+            if (other == null ||
+                Count != other.Count ||
+                Name != other.Name ||
+                !Icon.Equals(other.Icon))
+            {
+                return false;
+            }
+
+            if (Count == 0)
+                return true;
+
+            foreach (LinkInfo link in Links)
+            {
+                if (!other.Links.Contains(link))
+                    return false;
+            }
+
+            return true;
+        }
+
+        public void MergeWith(Group other)
+        {
+            if (other == null || other.Links?.Count == 0)
+                return;
+
+            RedefineLinks(other.Links.ToArray());
         }
 
         public void AddLinks(params LinkInfo[] links)
@@ -65,6 +98,31 @@ namespace Links.Models.Collections
         public override string ToString()
         {
             return Name;
+        }
+
+        public void Add(LinkInfo item)
+        {
+            Links.Add(item);
+        }
+
+        public void Clear()
+        {
+            Links.Clear();
+        }
+
+        public bool Contains(LinkInfo item)
+        {
+            return Links.Contains(item);
+        }
+
+        public void CopyTo(LinkInfo[] array, int arrayIndex)
+        {
+            Links.CopyTo(array, arrayIndex);
+        }
+
+        public bool Remove(LinkInfo item)
+        {
+            return Links.Remove(item);
         }
     }
 }

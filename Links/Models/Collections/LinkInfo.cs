@@ -82,7 +82,11 @@ namespace Links.Models.Collections
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
-        public LinkInfo(string link = null, string title = null, Group parentGroup = null, ImageSource backgroundImage = null)
+        public LinkInfo() : this(null, null, null, null)
+        {
+        }
+
+        public LinkInfo(string link, string title, Group parentGroup = null, ImageSource backgroundImage = null)
         {
             DateCreation = DateTime.Now;
 
