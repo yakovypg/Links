@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Windows.Media.Imaging;
 
-namespace Links.Models.Collections.Serialization
+namespace Links.Infrastructure.Serialization
 {
     internal class BitmapImageSerializer : IBitmapImageSerializer
     {

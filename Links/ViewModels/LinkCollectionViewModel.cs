@@ -291,34 +291,6 @@ namespace Links.ViewModels
             SelectedGroup = tmp;
         }
 
-        public bool ContainsLink(LinkInfo link)
-        {
-            if (link == null || GroupCollection == null)
-                return false;
-
-            foreach (Group group in GroupCollection)
-            {
-                if (group.Contains(link))
-                    return true;
-            }
-
-            return false;
-        }
-
-        public bool ContainsLink(LinkInfo link, IEqualityComparer<LinkInfo> comparer)
-        {
-            if (link == null || GroupCollection == null)
-                return false;
-
-            foreach (Group group in GroupCollection)
-            {
-                if (group.Contains(link, comparer))
-                    return true;
-            }
-
-            return false;
-        }
-
         private void OnGroupFiltered(object sender, FilterEventArgs e)
         {
             if (!(e.Item is Group group))

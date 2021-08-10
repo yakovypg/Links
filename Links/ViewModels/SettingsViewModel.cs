@@ -224,7 +224,8 @@ namespace Links.ViewModels
                 return;
             }
 
-            nonemptyImpexGroups = RemoveExistingLinks(nonemptyImpexGroups, true);
+            var groupAnalyser = new GroupAnalyzer();
+            nonemptyImpexGroups = groupAnalyser.RemoveExistingLinks(nonemptyImpexGroups, MainWindowVM.LinkCollectionVM.GroupCollection, true);
 
             if (nonemptyImpexGroups == null || nonemptyImpexGroups.Count() == 0)
             {
@@ -253,7 +254,7 @@ namespace Links.ViewModels
             else
             {
                 var nonIconComparer = new GroupNonIconEqualityComparer();
-                var links = new ObservableCollection<LinkInfo>(GetAllLinks(nonemptyImpexGroups));
+                var links = new ObservableCollection<LinkInfo>(groupAnalyser.GetAllLinks(nonemptyImpexGroups));
                 var groupUnsorted = new Group(MainWindowVM.CurrentLocale.Unsorted, links);
 
                 Group availableGroup = groups.FirstOrDefault(t => nonIconComparer.Equals(t, groupUnsorted));
@@ -490,48 +491,6 @@ namespace Links.ViewModels
 
             SetSettingsItems();
             RestoreSettings();
-        }
-
-        private IEnumerable<Group> RemoveExistingLinks(IEnumerable<Group> groups, bool removeEmptyGroups = true)
-        {
-            if (groups == null || groups.Count() == 0)
-                return groups;
-
-            foreach (Group group in groups)
-            {
-                if (group.Links == null)
-                    continue;
-
-                var linksToRemove = new List<LinkInfo>();
-
-                foreach (LinkInfo link in group.Links)
-                {
-                    if (MainWindowVM.LinkCollectionVM.ContainsLink(link))
-                        linksToRemove.Add(link);
-                }
-
-                _ = group.RemoveRange(linksToRemove);
-            }
-
-            return removeEmptyGroups
-                ? groups.Where(t => t.Count > 0)
-                : groups;
-        }
-
-        private IEnumerable<LinkInfo> GetAllLinks(IEnumerable<Group> groups)
-        {
-            var links = new List<LinkInfo>();
-
-            if (groups == null)
-                return links;
-
-            foreach (Group group in groups)
-            {
-                if (group.Count > 0)
-                    links.AddRange(group.Links);
-            }
-
-            return links;
         }
 
         private void RestoreSettings()

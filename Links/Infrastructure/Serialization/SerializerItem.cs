@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 
-namespace Links.Models.Collections.Serialization
+namespace Links.Infrastructure.Serialization
 {
     internal class SerializerItem
     {

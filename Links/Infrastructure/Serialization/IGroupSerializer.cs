@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Links.Models.Collections;
+using System.Collections.Generic;
 
-namespace Links.Models.Collections.Serialization
+namespace Links.Infrastructure.Serialization
 {
     internal interface IGroupSerializer
     {

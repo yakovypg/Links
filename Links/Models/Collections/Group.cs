@@ -88,6 +88,12 @@ namespace Links.Models.Collections
             Links = new ObservableCollection<LinkInfo>(Links.Concat(newLinks));
         }
 
+        public Group CopyDesign()
+        {
+            var icon = Icon.Clone() as GroupIcon;
+            return new Group(Name, icon, null);
+        }
+
         public IEnumerator<LinkInfo> GetEnumerator()
         {
             return Links.GetEnumerator();

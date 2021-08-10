@@ -13,5 +13,7 @@ namespace Links.Models.Collections
 
         void AddLinks(params LinkInfo[] links);
         void RedefineLinks(params LinkInfo[] newLinks);
+
+        Group CopyDesign();
     }
 }
