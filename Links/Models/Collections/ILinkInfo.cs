@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Links.Models.Collections
 {
@@ -9,6 +9,6 @@ namespace Links.Models.Collections
 
         string Title { get; set; }
         Group ParentGroup { get; set; }
-        ImageSource BackgroundImage { get; set; }
+        BitmapImage BackgroundImage { get; set; }
     }
 }

@@ -51,6 +51,21 @@ namespace Links.Data
             return bmpImage;
         }
 
+        public static BitmapImage ToBitmapImage(byte[] bytes)
+        {
+            var memoryStream = new MemoryStream(bytes)
+            {
+                Position = 0
+            };
+
+            var image = new BitmapImage();
+            image.BeginInit();
+            image.StreamSource = memoryStream;
+            image.EndInit();
+
+            return image;
+        }
+
         public static BitmapImage GetBitmapImage(string path, Size size)
         {
             BitmapImage output = null;
@@ -106,6 +121,23 @@ namespace Links.Data
                 image = null;
                 return false;
             }
+        }
+
+        public static byte[] GetBytes(BitmapImage image)
+        {
+            byte[] buffer = null;
+
+            using (var memoryStream = new MemoryStream())
+            {
+                var encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(image));
+                encoder.Save(memoryStream);
+
+                _ = memoryStream.Seek(0, SeekOrigin.Begin);
+                buffer = memoryStream.ToArray();
+            }
+
+            return buffer;
         }
     }
 }

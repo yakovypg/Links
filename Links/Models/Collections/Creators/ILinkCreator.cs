@@ -1,4 +1,4 @@
-﻿using System.Windows.Media;
+﻿using System.Windows.Media.Imaging;
 
 namespace Links.Models.Collections.Creators
 {
@@ -8,7 +8,7 @@ namespace Links.Models.Collections.Creators
 
         string Link { get; set; }
         string Title { get; set; }
-        ImageSource BackgroundImage { get; set; }
+        BitmapImage BackgroundImage { get; set; }
 
         LinkInfo CreateLink();
     }

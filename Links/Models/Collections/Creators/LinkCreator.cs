@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Links.Models.Collections.Creators
 {
@@ -30,8 +30,8 @@ namespace Links.Models.Collections.Creators
             }
         }
 
-        private ImageSource _backgroundImage = null;
-        public ImageSource BackgroundImage
+        private BitmapImage _backgroundImage = null;
+        public BitmapImage BackgroundImage
         {
             get => _backgroundImage;
             set
@@ -56,7 +56,7 @@ namespace Links.Models.Collections.Creators
         {
             string link = Link;
             string title = Title;
-            ImageSource backgroundImage = BackgroundImage;
+            BitmapImage backgroundImage = BackgroundImage;
 
             Link = string.Empty;
             Title = string.Empty;

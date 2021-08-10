@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Links.Models.Collections
 {
@@ -54,8 +54,8 @@ namespace Links.Models.Collections
             }
         }
 
-        private ImageSource _backgroundImage;
-        public ImageSource BackgroundImage
+        private BitmapImage _backgroundImage;
+        public BitmapImage BackgroundImage
         {
             get => _backgroundImage;
             set
@@ -86,7 +86,7 @@ namespace Links.Models.Collections
         {
         }
 
-        public LinkInfo(string link, string title, Group parentGroup = null, ImageSource backgroundImage = null)
+        public LinkInfo(string link, string title, Group parentGroup = null, BitmapImage backgroundImage = null)
         {
             DateCreation = DateTime.Now;
 

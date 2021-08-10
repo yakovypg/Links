@@ -1,9 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace Links.Models.Collections.Serialization
@@ -24,15 +22,15 @@ namespace Links.Models.Collections.Serialization
             string link = item.GetValue("Link");
             string title = item.GetValue("Title");
 
-            string imageJson = item.GetValue("BackgroundImage");
-            ImageSource backgroundImage = null;
+            string imageBytes = item.GetValue("BackgroundImage");
+            BitmapImage backgroundImage = null;
 
             try
             {
-                backgroundImage = JsonConvert.DeserializeObject<BitmapImage>(imageJson);
+                var serializer = new BitmapImageSerializer();
+                backgroundImage = serializer.Deserialize(imageBytes);
             }
-            catch (Exception ex)
-            { }
+            catch { }
 
             return new LinkInfo(link, title, null, backgroundImage);
         }
@@ -61,18 +59,19 @@ namespace Links.Models.Collections.Serialization
             if (link == null)
                 return null;
 
-            string imageJson;
+            string imageBytes;
 
             try
             {
-                imageJson = JsonConvert.SerializeObject(link.BackgroundImage);
+                var serializer = new BitmapImageSerializer();
+                imageBytes = serializer.Serialize(link.BackgroundImage);
             }
             catch
             {
-                imageJson = "null";
+                imageBytes = "null";
             }
 
-            return $"Link={link.Link} Title={link.Title} BackgroundImage={imageJson}";
+            return $"Link={link.Link} Title={link.Title} BackgroundImage={imageBytes}";
         }
 
         public string SerializeMany(IEnumerable<LinkInfo> links)
