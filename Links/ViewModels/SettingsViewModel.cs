@@ -218,9 +218,17 @@ namespace Links.ViewModels
         {
             (IEnumerable<Group> nonemptyImpexGroups, IEnumerable<LinkInfo> selectedImpexGroupsLinks) = ImpexLinksTreeData;
 
-            if (selectedImpexGroupsLinks?.Count() == 0)
+            if (selectedImpexGroupsLinks == null || selectedImpexGroupsLinks.Count() == 0)
             {
                 new FastMessage(CurrLocale.LocaleMessages.NoSelectedLinksInfo, CurrLocale).ShowInformation();
+                return;
+            }
+
+            nonemptyImpexGroups = RemoveExistingLinks(nonemptyImpexGroups, true);
+
+            if (nonemptyImpexGroups == null || nonemptyImpexGroups.Count() == 0)
+            {
+                new FastMessage(CurrLocale.LocaleMessages.SuccessfulLinksImportingInfo, CurrLocale).ShowInformation();
                 return;
             }
 
@@ -245,7 +253,7 @@ namespace Links.ViewModels
             else
             {
                 var nonIconComparer = new GroupNonIconEqualityComparer();
-                var links = new ObservableCollection<LinkInfo>(selectedImpexGroupsLinks);
+                var links = new ObservableCollection<LinkInfo>(GetAllLinks(nonemptyImpexGroups));
                 var groupUnsorted = new Group(MainWindowVM.CurrentLocale.Unsorted, links);
 
                 Group availableGroup = groups.FirstOrDefault(t => nonIconComparer.Equals(t, groupUnsorted));
@@ -343,43 +351,41 @@ namespace Links.ViewModels
         public ICommand ShowImportMenuCommand { get; }
         public void OnShowImportMenuCommandExecuted(object parameter)
         {
-            bool isImported = false;
+            if (ImpexMenuVisibility == Visibility.Visible)
+                return;
 
-            if (ImpexMenuVisibility == Visibility.Hidden)
-            {
-                isImported = DataParser.TryImportGroups(out IEnumerable<Group> groups, out System.Windows.Forms.DialogResult dialogResult);
-
-                if (isImported)
-                {
-                    int groupsCount = groups.Count();
-
-                    if (groups == null || groupsCount == 0)
-                        ImpexGroups = null;
-
-                    _impexGroups = new GroupViewModel[groupsCount];
-
-                    int index = 0;
-
-                    foreach (Group group in groups)
-                    {
-                        _impexGroups[index++] = new GroupViewModel(group);
-                    }
-
-                    OnPropertyChanged(nameof(ImpexGroups));
-                }
-                else if (dialogResult == System.Windows.Forms.DialogResult.OK)
-                {
-                    new FastMessage(CurrLocale.LocaleMessages.LinksImportingError, CurrLocale).ShowError();
-                }
-                else
-                {
-                    return;
-                }
-            }
+            bool isImported = DataParser.TryImportGroups(out IEnumerable<Group> groups, out System.Windows.Forms.DialogResult dialogResult);
 
             if (isImported)
             {
+                int groupsCount = groups?.Count() ?? 0;
+
+                if (groupsCount == 0)
+                {
+                    ImpexGroups = null;
+                    ChangeImportLinksBottomBarVisibilityCommand?.Execute(null);
+                    return;
+                }
+
+                _impexGroups = new GroupViewModel[groupsCount];
+
+                int index = 0;
+
+                foreach (Group group in groups)
+                {
+                    _impexGroups[index++] = new GroupViewModel(group);
+                }
+
+                OnPropertyChanged(nameof(ImpexGroups));
                 ChangeImportLinksBottomBarVisibilityCommand?.Execute(null);
+            }
+            else if (dialogResult == System.Windows.Forms.DialogResult.OK)
+            {
+                new FastMessage(CurrLocale.LocaleMessages.LinksImportingError, CurrLocale).ShowError();
+            }
+            else
+            {
+                return;
             }
         }
 
@@ -484,6 +490,48 @@ namespace Links.ViewModels
 
             SetSettingsItems();
             RestoreSettings();
+        }
+
+        private IEnumerable<Group> RemoveExistingLinks(IEnumerable<Group> groups, bool removeEmptyGroups = true)
+        {
+            if (groups == null || groups.Count() == 0)
+                return groups;
+
+            foreach (Group group in groups)
+            {
+                if (group.Links == null)
+                    continue;
+
+                var linksToRemove = new List<LinkInfo>();
+
+                foreach (LinkInfo link in group.Links)
+                {
+                    if (MainWindowVM.LinkCollectionVM.ContainsLink(link))
+                        linksToRemove.Add(link);
+                }
+
+                _ = group.RemoveRange(linksToRemove);
+            }
+
+            return removeEmptyGroups
+                ? groups.Where(t => t.Count > 0)
+                : groups;
+        }
+
+        private IEnumerable<LinkInfo> GetAllLinks(IEnumerable<Group> groups)
+        {
+            var links = new List<LinkInfo>();
+
+            if (groups == null)
+                return links;
+
+            foreach (Group group in groups)
+            {
+                if (group.Count > 0)
+                    links.AddRange(group.Links);
+            }
+
+            return links;
         }
 
         private void RestoreSettings()

@@ -31,7 +31,8 @@ namespace Links.Models.Collections.Serialization
             {
                 backgroundImage = JsonConvert.DeserializeObject<BitmapImage>(imageJson);
             }
-            catch { }
+            catch (Exception ex)
+            { }
 
             return new LinkInfo(link, title, null, backgroundImage);
         }

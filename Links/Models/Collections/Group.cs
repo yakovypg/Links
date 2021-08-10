@@ -82,6 +82,9 @@ namespace Links.Models.Collections
                 return;
             }
 
+            foreach (LinkInfo link in newLinks)
+                link.ParentGroup = this;
+
             Links = new ObservableCollection<LinkInfo>(Links.Concat(newLinks));
         }
 
@@ -123,6 +126,22 @@ namespace Links.Models.Collections
         public bool Remove(LinkInfo item)
         {
             return Links.Remove(item);
+        }
+
+        public bool RemoveRange(IEnumerable<LinkInfo> items)
+        {
+            if (items == null)
+                return true;
+
+            bool result = true;
+
+            foreach (LinkInfo link in items)
+            {
+                if (!Remove(link))
+                    result = false;
+            }
+
+            return result;
         }
     }
 }
