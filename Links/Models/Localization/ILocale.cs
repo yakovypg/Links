@@ -32,7 +32,7 @@
         string Empty { get; set; }
 
         string Name { get; set; }
-        string Colour { get; set; }
+        string Color { get; set; }
 
         string Date { get; set; }
         string Title { get; set; }

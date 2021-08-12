@@ -1,6 +1,6 @@
 ﻿using System.Windows.Media;
 
-namespace Links.Data
+namespace Links.Data.Imaging
 {
     internal static class BrushTransformer
     {

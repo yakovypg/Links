@@ -8,7 +8,7 @@ namespace Links.ViewModels
         private readonly Group _group;
 
         public string Name => _group.Name;
-        public GroupIcon Icon => _group.Icon;
+        public IGroupIcon Icon => _group.Icon;
 
         public LinkViewModel[] Links { get; }
 

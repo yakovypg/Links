@@ -5,10 +5,11 @@ namespace Links.Models.Collections
 {
     internal interface ILinkInfo : ILink
     {
-        DateTime DateCreation { get; }
-
         string Title { get; set; }
-        Group ParentGroup { get; set; }
+        DateTime DateCreation { get; }
         BitmapImage BackgroundImage { get; set; }
+
+        Group PrimaryGroup { get; }
+        Group ParentGroup { get; set; }
     }
 }

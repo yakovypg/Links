@@ -75,7 +75,7 @@ namespace Links.ViewModels
                     if (links == null || links.Count() == 0)
                         continue;
 
-                    var icon = group.Icon.Clone() as GroupIcon;
+                    var icon = new GroupIcon(group.Icon.ForegroundColor);
                     var items = new ObservableCollection<LinkInfo>(links);
                     var newGroup = new Group(group.Name, icon, items);
 
@@ -271,7 +271,7 @@ namespace Links.ViewModels
 
             if (selectedImpexGroupsLinks == null || selectedImpexGroupsLinks.Count() == 0)
             {
-                new FastMessage(CurrLocale.LocaleMessages.NoSelectedLinksInfo, CurrLocale).ShowInformation();
+                new QuickMessage(CurrLocale.LocaleMessages.NoSelectedLinksInfo, CurrLocale).ShowInformation();
                 return;
             }
 
@@ -280,11 +280,11 @@ namespace Links.ViewModels
 
             if (nonemptyImpexGroups == null || nonemptyImpexGroups.Count() == 0)
             {
-                new FastMessage(CurrLocale.LocaleMessages.SuccessfulLinksImportingInfo, CurrLocale).ShowInformation();
+                new QuickMessage(CurrLocale.LocaleMessages.SuccessfulLinksImportingInfo, CurrLocale).ShowInformation();
                 return;
             }
 
-            MessageBoxResult msgResult = new FastMessage(CurrLocale.LocaleMessages.AutoLinksDistributionQuestion, CurrLocale).GetQuestionResult();
+            MessageBoxResult msgResult = new QuickMessage(CurrLocale.LocaleMessages.AutoLinksDistributionQuestion, CurrLocale).GetQuestionResult();
 
             ObservableCollection<Group> groups = MainWindowVM.LinkCollectionVM.GroupCollection;
 
@@ -318,7 +318,7 @@ namespace Links.ViewModels
 
             MainWindowVM.LinkCollectionVM.UpdateSelectedGroup();
 
-            new FastMessage(CurrLocale.LocaleMessages.SuccessfulLinksImportingInfo, CurrLocale).ShowInformation();
+            new QuickMessage(CurrLocale.LocaleMessages.SuccessfulLinksImportingInfo, CurrLocale).ShowInformation();
         }
 
         public ICommand ExportLinksCommand { get; }
@@ -328,7 +328,7 @@ namespace Links.ViewModels
 
             if (selectedImpexGroupsLinks == null || selectedImpexGroupsLinks.Count() == 0)
             {
-                new FastMessage(CurrLocale.LocaleMessages.NoSelectedLinksInfo, CurrLocale).ShowInformation();
+                new QuickMessage(CurrLocale.LocaleMessages.NoSelectedLinksInfo, CurrLocale).ShowInformation();
                 return;
             }
 
@@ -336,11 +336,11 @@ namespace Links.ViewModels
 
             if (res)
             {
-                new FastMessage(CurrLocale.LocaleMessages.SuccessfulLinksExportingInfo, CurrLocale).ShowInformation();
+                new QuickMessage(CurrLocale.LocaleMessages.SuccessfulLinksExportingInfo, CurrLocale).ShowInformation();
             }
             else if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
-                new FastMessage(CurrLocale.LocaleMessages.LinksExportingError, CurrLocale).ShowError();
+                new QuickMessage(CurrLocale.LocaleMessages.LinksExportingError, CurrLocale).ShowError();
             }
         }
 
@@ -433,7 +433,7 @@ namespace Links.ViewModels
             }
             else if (dialogResult == System.Windows.Forms.DialogResult.OK)
             {
-                new FastMessage(CurrLocale.LocaleMessages.LinksImportingError, CurrLocale).ShowError();
+                new QuickMessage(CurrLocale.LocaleMessages.LinksImportingError, CurrLocale).ShowError();
             }
             else
             {
@@ -473,7 +473,7 @@ namespace Links.ViewModels
 
             if (!RecycleBin.Remove(SelectedDeletedLink))
             {
-                new FastMessage(CurrLocale.LocaleMessages.RestoreLinkError, CurrLocale).ShowError();
+                new QuickMessage(CurrLocale.LocaleMessages.RestoreLinkError, CurrLocale).ShowError();
                 return;
             }
 

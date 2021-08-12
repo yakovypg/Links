@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 namespace Links.Models.Localization
 {
@@ -36,7 +37,7 @@ namespace Links.Models.Localization
         public string Empty { get; set; }
 
         public string Name { get; set; }
-        public string Colour { get; set; }
+        public string Color { get; set; }
 
         public string Date { get; set; }
         public string Title { get; set; }
@@ -95,6 +96,57 @@ namespace Links.Models.Localization
             }
 
             return true;
+        }
+
+        public override int GetHashCode()
+        {
+            var hash = new HashCode();
+
+            hash.Add(DisplayName);
+            hash.Add(CultureName);
+            hash.Add(GroupsSorting);
+            hash.Add(LinksSorting);
+            hash.Add(SortingMode);
+            hash.Add(Warnings);
+            hash.Add(PresenterSize);
+            hash.Add(Theme);
+            hash.Add(Language);
+            hash.Add(RecycleBin);
+            hash.Add(EmptyRecycleBin);
+            hash.Add(Days);
+            hash.Add(Every);
+            hash.Add(Never);
+            hash.Add(Unsorted);
+            hash.Add(Close);
+            hash.Add(Reset);
+            hash.Add(Import);
+            hash.Add(Export);
+            hash.Add(Restore);
+            hash.Add(Remove);
+            hash.Add(Empty);
+            hash.Add(Name);
+            hash.Add(Color);
+            hash.Add(Date);
+            hash.Add(Title);
+            hash.Add(Link);
+            hash.Add(Group);
+            hash.Add(Image);
+            hash.Add(Ok);
+            hash.Add(On);
+            hash.Add(Off);
+            hash.Add(Add);
+            hash.Add(Find);
+            hash.Add(CheckAll);
+            hash.Add(Ascending);
+            hash.Add(Descending);
+            hash.Add(Error);
+            hash.Add(Warning);
+            hash.Add(Question);
+            hash.Add(Information);
+            hash.Add(Comment);
+            hash.Add(LocaleMessages);
+
+            return hash.ToHashCode();
         }
     }
 }

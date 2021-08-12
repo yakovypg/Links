@@ -1,18 +1,20 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Links.Models.Collections
 {
-    internal interface IGroup
+    internal interface IGroup : ICollection<LinkInfo>
     {
         string Name { get; set; }
-        GroupIcon Icon { get; set; }
+        IGroupIcon Icon { get; set; }
+        GroupIcon.Colors Color { get; set; }
         ObservableCollection<LinkInfo> Links { get; }
 
-        bool EqualTo(Group other);
-        void MergeWith(Group other);
+        bool EqualTo(IGroup other);
 
-        void AddLinks(params LinkInfo[] links);
-        void RedefineLinks(params LinkInfo[] newLinks);
+        void MergeWith(IGroup other);
+        void AddMany(params LinkInfo[] newLinks);
+        bool RemoveRange(IEnumerable<LinkInfo> items);
 
         Group CopyDesign();
     }

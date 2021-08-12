@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Links.Data.Imaging;
+using Newtonsoft.Json;
 using System.Windows.Media.Imaging;
 
 namespace Links.Infrastructure.Serialization
@@ -8,12 +9,12 @@ namespace Links.Infrastructure.Serialization
         public BitmapImage Deserialize(string data)
         {
             byte[] bytes = JsonConvert.DeserializeObject<byte[]>(data);
-            return Data.ImageTransformer.ToBitmapImage(bytes);
+            return ImageTransformer.ToBitmapImage(bytes);
         }
 
         public string Serialize(BitmapImage image)
         {
-            byte[] bytes = Data.ImageTransformer.GetBytes(image);
+            byte[] bytes = ImageTransformer.GetBytes(image);
             return JsonConvert.SerializeObject(bytes);
         }
     }

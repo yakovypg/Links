@@ -31,7 +31,7 @@
             Empty = "Empty";
 
             Name = "Name";
-            Colour = "Colour";
+            Color = "Color";
 
             Date = "Date";
             Title = "Title";

@@ -1,4 +1,5 @@
 ﻿using Links.Data;
+using Links.Data.Imaging;
 using Links.Infrastructure.Commands;
 using Links.Infrastructure.Converters;
 using Links.Infrastructure.Extensions;
@@ -128,7 +129,7 @@ namespace Links.ViewModels
         }
         public void OnDeleteGroupCommandExecuted(object parameter)
         {
-            MessageBoxResult msgResult = new FastMessage(CurrLocale.LocaleMessages.DeleteGroupQuestion, CurrLocale).GetQuestionResult();
+            MessageBoxResult msgResult = new QuickMessage(CurrLocale.LocaleMessages.DeleteGroupQuestion, CurrLocale).GetQuestionResult();
 
             var paramTuple = parameter as Tuple<object, object>;
 
@@ -153,11 +154,11 @@ namespace Links.ViewModels
                     GroupCollection.Add(unsortedLinksGroup);
                 }
 
-                unsortedLinksGroup.RedefineLinks(deletedGroup.Links.ToArray());
+                unsortedLinksGroup.AddMany(deletedGroup.Links.ToArray());
             }
 
             if (!isGroupRemoved)
-                new FastMessage(CurrLocale.LocaleMessages.DeleteGroupError, CurrLocale).ShowError();
+                new QuickMessage(CurrLocale.LocaleMessages.DeleteGroupError, CurrLocale).ShowError();
         }
 
         public ICommand ChangeGroupEditorVisibilityCommand { get; }
@@ -182,7 +183,7 @@ namespace Links.ViewModels
 
             if (MainWindowVM.SettingsVM.IsWarningsEnable)
             {
-                MessageBoxResult msgResult = new FastMessage(CurrLocale.LocaleMessages.DeleteLinkQuestion, CurrLocale)
+                MessageBoxResult msgResult = new QuickMessage(CurrLocale.LocaleMessages.DeleteLinkQuestion, CurrLocale)
                     .GetWarningResult(MessageBoxButton.YesNo);
 
                 if (msgResult == MessageBoxResult.No)
@@ -190,7 +191,7 @@ namespace Links.ViewModels
             }
 
             if (!linkInfo.ParentGroup.Links.Remove(linkInfo))
-                new FastMessage(CurrLocale.LocaleMessages.DeleteLinkError, CurrLocale).ShowError();
+                new QuickMessage(CurrLocale.LocaleMessages.DeleteLinkError, CurrLocale).ShowError();
         }
 
         public ICommand SetLinkImageCommand { get; }
@@ -221,7 +222,7 @@ namespace Links.ViewModels
                 string message = $"{MainWindowVM.CurrentLocale.Error}: {MainWindowVM.CurrentLocale.LocaleMessages.FollowLinkError}\n\n" +
                                  $"{MainWindowVM.CurrentLocale.Comment}: {ex.Message}";
 
-                new FastMessage(message, CurrLocale).ShowError();
+                new QuickMessage(message, CurrLocale).ShowError();
             }
         }
 
@@ -262,10 +263,10 @@ namespace Links.ViewModels
 
         public LinkCollectionViewModel(MainWindowViewModel mainWindowVM)
         {
-            var group1 = new Group("Math");
-            var group2 = new Group("Programming");
-            var group3 = new Group("Chemistry");
-            var group4 = new Group("Empty");
+            var group1 = new Group("Math", new GroupIcon(GroupIcon.Colors.Red), null);
+            var group2 = new Group("Programming", new GroupIcon(GroupIcon.Colors.Gray), null);
+            var group3 = new Group("Chemistry", new GroupIcon(GroupIcon.Colors.Black), null);
+            var group4 = new Group("Empty", new GroupIcon(GroupIcon.Colors.Gray), null);
 
             group1.Links.Add(new LinkInfo("https://www.wolframalpha.com/", "Wolfram", group1));
             group1.Links.Add(new LinkInfo("https://allcalc.ru/", "Allcalc", group1));

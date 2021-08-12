@@ -5,7 +5,7 @@ using System.Windows.Media;
 
 namespace Links.Models.Collections
 {
-    internal class GroupIcon : IGroupIcon, INotifyPropertyChanged, ICloneable
+    internal class GroupIcon : IGroupIcon, INotifyPropertyChanged, ICloneable, IComparable, IComparable<GroupIcon>
     {
         public enum Colors
         {
@@ -30,7 +30,8 @@ namespace Links.Models.Collections
             Purple
         }
 
-        public string DisplayName => ((Colors)ColorIndex).ToString();
+        public string DisplayName => ColorName;
+        public string ColorName => ForegroundColor.ToString();
 
         private Brush _foreground;
         public Brush Foreground
@@ -43,6 +44,18 @@ namespace Links.Models.Collections
             }
         }
 
+        private Colors _foregroundColor;
+        public Colors ForegroundColor
+        {
+            get => _foregroundColor;
+            set
+            {
+                _foregroundColor = value;
+                _colorIndex = (int)value;
+                Foreground = GetBrushFromIndex((int)value);
+            }
+        }
+
         private int _colorIndex;
         public int ColorIndex
         {
@@ -50,6 +63,7 @@ namespace Links.Models.Collections
             set
             {
                 _colorIndex = value;
+                _foregroundColor = (Colors)value;
                 Foreground = GetBrushFromIndex(value);
             }
         }
@@ -60,13 +74,13 @@ namespace Links.Models.Collections
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
-        public GroupIcon() : this(8)
+        public GroupIcon() : this(Colors.Gold)
         {
         }
 
-        public GroupIcon(int colorIndex)
+        public GroupIcon(Colors color)
         {
-            ColorIndex = colorIndex;
+            ForegroundColor = color;
         }
 
         public Brush GetBrushFromIndex(int index)
@@ -97,9 +111,21 @@ namespace Links.Models.Collections
             }
         }
 
+        public int CompareTo(GroupIcon other)
+        {
+            return ColorName.CompareTo(other.ColorName);
+        }
+
+        public int CompareTo(object other)
+        {
+            return other is GroupIcon icon
+                ? CompareTo(icon)
+                : 1;
+        }
+
         public object Clone()
         {
-            return new GroupIcon(_colorIndex);
+            return new GroupIcon(ForegroundColor);
         }
 
         public override string ToString()
@@ -114,7 +140,7 @@ namespace Links.Models.Collections
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(DisplayName, _foreground, Foreground, _colorIndex, ColorIndex);
+            return HashCode.Combine(DisplayName, ColorName, _foreground, Foreground, _foregroundColor, ForegroundColor, _colorIndex, ColorIndex);
         }
     }
 }

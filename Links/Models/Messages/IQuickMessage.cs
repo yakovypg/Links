@@ -3,7 +3,7 @@ using System.Windows;
 
 namespace Links.Models.Messages
 {
-    internal interface IFastMessage
+    internal interface IQuickMessage
     {
         public ILocale MessageLocale { get; }
         public string Message { get; set; }

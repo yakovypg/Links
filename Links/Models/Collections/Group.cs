@@ -5,14 +5,22 @@ using System.Linq;
 
 namespace Links.Models.Collections
 {
-    internal class Group : IGroup, ICollection<LinkInfo>
+    //Do not override Equals and GetHashCode
+
+    internal class Group : IGroup
     {
-        public int Count => Links?.Count ?? 0;
+        public int Count => Links.Count;
         public bool IsReadOnly => false;
 
         public string Name { get; set; }
-        public GroupIcon Icon { get; set; }
+        public IGroupIcon Icon { get; set; }
         public ObservableCollection<LinkInfo> Links { get; private set; }
+
+        public GroupIcon.Colors Color
+        {
+            get => Icon.ForegroundColor;
+            set => Icon.ForegroundColor = value;
+        }
 
         public Group() : this(string.Empty)
         {
@@ -35,7 +43,7 @@ namespace Links.Models.Collections
             set => Links[index] = value;
         }
 
-        public bool EqualTo(Group other)
+        public bool EqualTo(IGroup other)
         {
             if (other == null ||
                 Count != other.Count ||
@@ -48,7 +56,7 @@ namespace Links.Models.Collections
             if (Count == 0)
                 return true;
 
-            foreach (LinkInfo link in Links)
+            foreach (var link in Links)
             {
                 if (!other.Links.Contains(link))
                     return false;
@@ -57,40 +65,44 @@ namespace Links.Models.Collections
             return true;
         }
 
-        public void MergeWith(Group other)
+        public void MergeWith(IGroup other)
         {
             if (other == null || other.Links?.Count == 0)
                 return;
 
-            RedefineLinks(other.Links.ToArray());
+            AddMany(other.Links.ToArray());
         }
 
-        public void AddLinks(params LinkInfo[] links)
+        public void AddMany(params LinkInfo[] items)
         {
-            if (links == null)
+            if (items == null || items.Length == 0)
                 return;
 
-            foreach (LinkInfo link in links)
-                Links.Add(link);
-        }
-
-        public void RedefineLinks(params LinkInfo[] newLinks)
-        {
-            if (newLinks == null || newLinks.Length == 0)
-            {
-                Links = new ObservableCollection<LinkInfo>(Links);
-                return;
-            }
-
-            foreach (LinkInfo link in newLinks)
+            foreach (var link in items)
                 link.ParentGroup = this;
 
-            Links = new ObservableCollection<LinkInfo>(Links.Concat(newLinks));
+            Links = new ObservableCollection<LinkInfo>(Links.Concat(items));
+        }
+
+        public bool RemoveRange(IEnumerable<LinkInfo> items)
+        {
+            if (items == null)
+                return true;
+
+            bool result = true;
+
+            foreach (var link in items)
+            {
+                if (!Remove(link))
+                    result = false;
+            }
+
+            return result;
         }
 
         public Group CopyDesign()
         {
-            var icon = Icon.Clone() as GroupIcon;
+            var icon = new GroupIcon(Icon.ForegroundColor);
             return new Group(Name, icon, null);
         }
 
@@ -132,22 +144,6 @@ namespace Links.Models.Collections
         public bool Remove(LinkInfo item)
         {
             return Links.Remove(item);
-        }
-
-        public bool RemoveRange(IEnumerable<LinkInfo> items)
-        {
-            if (items == null)
-                return true;
-
-            bool result = true;
-
-            foreach (LinkInfo link in items)
-            {
-                if (!Remove(link))
-                    result = false;
-            }
-
-            return result;
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Links.Infrastructure.Serialization
             string name = item.GetValue("Name");
 
             int colorIndex = int.Parse(item.GetValue("Icon"));
-            var icon = new GroupIcon(colorIndex);
+            var icon = new GroupIcon((GroupIcon.Colors)colorIndex);
 
             string linksData = item.GetValue("Links");
             IEnumerable<LinkInfo> linksList = new LinkSerializer().DeserializeMany(linksData);

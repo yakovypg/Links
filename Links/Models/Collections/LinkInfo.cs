@@ -6,14 +6,15 @@ using System.Windows.Media.Imaging;
 
 namespace Links.Models.Collections
 {
-    internal class LinkInfo : ILink, ILinkInfo, ILinkPresenter, INotifyPropertyChanged
+    //Do not override GetHashCode
+
+    internal class LinkInfo : ILinkInfo, ILinkPresenter, INotifyPropertyChanged
     {
         public LinkInfo Self => this;
 
+        public DateTime DateCreation { get; }
         public bool IsLinkMoved { get; private set; }
         public Group PrimaryGroup { get; private set; }
-
-        public DateTime DateCreation { get; }
 
         private string _link = string.Empty;
         public string Link
@@ -120,11 +121,6 @@ namespace Links.Models.Collections
                    Link == other.Link &&
                    Title == other.Title &&
                    (BackgroundImage?.Equals(other.BackgroundImage) ?? true);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(DateCreation, Link, Title, ParentGroup, _backgroundImage, BackgroundImage);
         }
     }
 }

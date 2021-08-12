@@ -38,7 +38,7 @@ namespace Links.Data.App
             return new ObservableCollection<string>(new string[]
             {
                 CurrentLocale.Name,
-                CurrentLocale.Colour
+                CurrentLocale.Color
             });
         }
 
