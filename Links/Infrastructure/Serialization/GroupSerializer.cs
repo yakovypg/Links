@@ -75,10 +75,10 @@ namespace Links.Infrastructure.Serialization
                 currPos++;
                 string data = Serialize(group);
 
-                _ = dataBuilder.Append(data);
+                dataBuilder.Append(data);
 
                 if (currPos < groupsCount)
-                    _ = dataBuilder.Append(",");
+                    dataBuilder.Append(",");
             }
 
             return dataBuilder.Append("]").ToString();

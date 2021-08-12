@@ -14,7 +14,7 @@ namespace Links.Models.Messages
             set => _message = value ?? string.Empty;
         }
 
-        public FastMessage(string message, ILocale locale = null)
+        public FastMessage(string message = null, ILocale locale = null)
         {
             Message = message;
             MessageLocale = locale ?? Locale.English;
@@ -52,27 +52,27 @@ namespace Links.Models.Messages
 
         public void ShowEmpty()
         {
-            _ = GetEmptyResult();
+            GetEmptyResult();
         }
 
         public void ShowError()
         {
-            _ = GetErrorResult();
+            GetErrorResult();
         }
 
         public void ShowWarning()
         {
-            _ = GetWarningResult();
+            GetWarningResult();
         }
 
         public void ShowQuestion()
         {
-            _ = GetQuestionResult();
+            GetQuestionResult();
         }
 
         public void ShowInformation()
         {
-            _ = GetInformationResult();
+            GetInformationResult();
         }
     }
 }

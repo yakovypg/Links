@@ -115,7 +115,7 @@ namespace Links.ViewModels
         public ICommand SetLinkCreatorImageCommand { get; }
         public void OnSetLinkCreatorImageCommandExecuted(object parameter)
         {
-            _ = DialogProvider.GetFilePath(out string path);
+            DialogProvider.GetFilePath(out string path);
 
             int width = (int)SettingsVM.MaxLinkPresenterGridWidth - 3 - 2 * 2;
             int height = (int)SettingsVM.MaxLinkPresenterGridHeight - 3 - 20 - 22 - 2 * 2;
@@ -179,8 +179,8 @@ namespace Links.ViewModels
 
         public MainWindowViewModel()
         {
-            SettingsVM = new SettingsViewModel(this);
             LinkCollectionVM = new LinkCollectionViewModel(this);
+            SettingsVM = new SettingsViewModel(this);
 
             MinimizeWindowCommand = new MinimizeWindowCommand();
             MaximizeWindowCommand = new MaximizeWindowCommand();

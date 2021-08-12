@@ -1,0 +1,11 @@
+﻿[*.cs]
+
+# IDE0056: Use index operator
+csharp_style_prefer_index_operator = false
+csharp_style_prefer_range_operator=false:suggestion
+
+# IDE0058: Expression value is never used
+dotnet_diagnostic.IDE0058.severity = none
+
+# IDE0039: Use local function
+dotnet_diagnostic.IDE0039.severity = none

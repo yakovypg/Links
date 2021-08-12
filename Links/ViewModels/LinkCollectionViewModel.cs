@@ -27,10 +27,33 @@ namespace Links.ViewModels
         public DeleteGroupParamMultiConverter DeleteGroupParamMultiConverter { get; } = new DeleteGroupParamMultiConverter();
         public IEnumerable<string> GroupIconColors => Enum.GetValues(typeof(GroupIcon.Colors)).Cast<GroupIcon.Colors>().ToStringEnumerable();
 
-        public double LinkPresenterGridWidth => MainWindowVM.SettingsVM.LinkPresenterGridWidth;
-        public double LinkPresenterGridHeight => MainWindowVM.SettingsVM.LinkPresenterGridHeight;
-        public double LinksFieldWrapPanelItemWidth => MainWindowVM.SettingsVM.LinkPresenterGridWidth + 5;
-        public double LinksFieldWrapPanelItemHeight => MainWindowVM.SettingsVM.LinkPresenterGridHeight + 5;
+        private double _linkPresenterGridWidth;
+        public double LinkPresenterGridWidth
+        {
+            get => _linkPresenterGridWidth;
+            set => SetValue(ref _linkPresenterGridWidth, value);
+        }
+
+        private double _linkPresenterGridHeight;
+        public double LinkPresenterGridHeight
+        {
+            get => _linkPresenterGridHeight;
+            set => SetValue(ref _linkPresenterGridHeight, value);
+        }
+
+        private double _linksFieldWrapPanelItemWidth;
+        public double LinksFieldWrapPanelItemWidth
+        {
+            get => _linksFieldWrapPanelItemWidth;
+            set => SetValue(ref _linksFieldWrapPanelItemWidth, value);
+        }
+
+        private double _linksFieldWrapPanelItemHeight;
+        public double LinksFieldWrapPanelItemHeight
+        {
+            get => _linksFieldWrapPanelItemHeight;
+            set => SetValue(ref _linksFieldWrapPanelItemHeight, value);
+        }
 
         private int _groupEditorHeight = 0;
         public int GroupEditorHeight
@@ -39,7 +62,7 @@ namespace Links.ViewModels
             private set
             {
                 int height = value <= 0 ? 0 : 70;
-                _ = SetValue(ref _groupEditorHeight, height);
+                SetValue(ref _groupEditorHeight, height);
             }
         }
 
@@ -176,7 +199,7 @@ namespace Links.ViewModels
             if (!(parameter is LinkInfo linkInfo))
                 return;
 
-            _ = DialogProvider.GetFilePath(out string path);
+            DialogProvider.GetFilePath(out string path);
 
             int width = (int)MainWindowVM.SettingsVM.MaxLinkPresenterGridWidth - 3 - 2 * 2;
             int height = (int)MainWindowVM.SettingsVM.MaxLinkPresenterGridHeight - 3 - 20 - 22 - 2 * 2;
@@ -191,7 +214,7 @@ namespace Links.ViewModels
         {
             try
             {
-                _ = System.Diagnostics.Process.Start(parameter as string);
+                System.Diagnostics.Process.Start(parameter as string);
             }
             catch (Exception ex)
             {
@@ -289,6 +312,18 @@ namespace Links.ViewModels
             Group tmp = SelectedGroup;
             SelectedGroup = null;
             SelectedGroup = tmp;
+        }
+
+        public void SetGroupsSortDescriptions(SortDescription sortDescription)
+        {
+            _groups.SortDescriptions.Clear();
+            _groups.SortDescriptions.Add(sortDescription);
+        }
+
+        public void SetLinksSortDescriptions(SortDescription sortDescription)
+        {
+            _selectedGroupLinks.SortDescriptions.Clear();
+            _selectedGroupLinks.SortDescriptions.Add(sortDescription);
         }
 
         private void OnGroupFiltered(object sender, FilterEventArgs e)

@@ -90,10 +90,10 @@ namespace Links.Infrastructure.Serialization
                 currPos++;
                 string data = Serialize(link);
 
-                _ = dataBuilder.Append(data);
+                dataBuilder.Append(data);
 
                 if (currPos < linksCount)
-                    _ = dataBuilder.Append(",");
+                    dataBuilder.Append(",");
             }
 
             return dataBuilder.Append("]").ToString();

@@ -133,7 +133,7 @@ namespace Links.Data
                 encoder.Frames.Add(BitmapFrame.Create(image));
                 encoder.Save(memoryStream);
 
-                _ = memoryStream.Seek(0, SeekOrigin.Begin);
+                memoryStream.Seek(0, SeekOrigin.Begin);
                 buffer = memoryStream.ToArray();
             }
 

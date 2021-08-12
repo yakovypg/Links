@@ -114,15 +114,6 @@ namespace Links.ViewModels
 
         #region SettingFieldsGetters
 
-        public double MaxLinkPresenterGridWidth => PresenterSizes[PresenterSizes.Count - 1].Width;
-        public double MaxLinkPresenterGridHeight => PresenterSizes[PresenterSizes.Count - 1].Height;
-
-        public double LinkPresenterGridWidth => PresenterSize.Width;
-        public double LinkPresenterGridHeight => PresenterSize.Height;
-
-        public bool IsWarningsEnable => _warningsParam == MainWindowVM.CurrentLocale.On;
-        public bool IsRecycleBinEnable => _recycleBinParam == MainWindowVM.CurrentLocale.On;
-
         public SortDescription GroupSortDescription => new SortDescription(GroupSortPropertyName, GroupListSortDescription);
         public SortDescription LinkSortDescription => new SortDescription(LinkSortPropertyName, LinkListSortDescription);
 
@@ -131,6 +122,12 @@ namespace Links.ViewModels
 
         public ListSortDirection LinkListSortDescription => _groupListSortDescriptionParam == MainWindowVM.CurrentLocale.Ascending
             ? ListSortDirection.Ascending : ListSortDirection.Descending;
+
+        public bool IsWarningsEnable => _warningsParam == MainWindowVM.CurrentLocale.On;
+        public bool IsRecycleBinEnable => _recycleBinParam == MainWindowVM.CurrentLocale.On;
+
+        public double MaxLinkPresenterGridWidth => PresenterSizes[PresenterSizes.Count - 1].Width;
+        public double MaxLinkPresenterGridHeight => PresenterSizes[PresenterSizes.Count - 1].Height;
 
         public double EmptyRecycleBinDifference
         {
@@ -149,6 +146,32 @@ namespace Links.ViewModels
             }
         }
 
+        private double _linkPresenterGridWidth;
+        public double LinkPresenterGridWidth
+        {
+            get => _linkPresenterGridWidth;
+            set
+            {
+                MainWindowVM.LinkCollectionVM.LinkPresenterGridWidth = value;
+                MainWindowVM.LinkCollectionVM.LinksFieldWrapPanelItemWidth = value + 5;
+
+                SetValue(ref _linkPresenterGridWidth, value);
+            }
+        }
+
+        private double _linkPresenterGridHeight;
+        public double LinkPresenterGridHeight
+        {
+            get => _linkPresenterGridHeight;
+            set
+            {
+                MainWindowVM.LinkCollectionVM.LinkPresenterGridHeight = value;
+                MainWindowVM.LinkCollectionVM.LinksFieldWrapPanelItemHeight = value + 5;
+
+                SetValue(ref _linkPresenterGridHeight, value);
+            }
+        }
+
         #endregion
 
         #region SettingFields
@@ -157,28 +180,50 @@ namespace Links.ViewModels
         public string GroupSortPropertyName
         {
             get => _groupSortPropertyName;
-            set => SetValue(ref _groupSortPropertyName, value);
+            set
+            {
+                if (value == null)
+                    return;
+
+                SetValue(ref _groupSortPropertyName, value);
+                MainWindowVM.LinkCollectionVM.SetGroupsSortDescriptions(GroupSortDescription);
+            }
         }
 
         private string _groupListSortDescriptionParam;
         public string GroupListSortDescriptionParam
         {
             get => _groupListSortDescriptionParam;
-            set => SetValue(ref _groupListSortDescriptionParam, value);
+            set
+            {
+                if (value == null)
+                    return;
+
+                SetValue(ref _groupListSortDescriptionParam, value);
+                MainWindowVM.LinkCollectionVM.SetGroupsSortDescriptions(GroupSortDescription);
+            }
         }
 
         private string _linkSortPropertyName;
         public string LinkSortPropertyName
         {
             get => _linkSortPropertyName;
-            set => SetValue(ref _linkSortPropertyName, value);
+            set
+            {
+                MainWindowVM.LinkCollectionVM.SetLinksSortDescriptions(LinkSortDescription);
+                SetValue(ref _linkSortPropertyName, value);
+            }
         }
 
         private string _linkListSortDescriptionParam;
         public string LinkListSortDescriptionParam
         {
             get => _linkListSortDescriptionParam;
-            set => SetValue(ref _linkListSortDescriptionParam, value);
+            set
+            {
+                MainWindowVM.LinkCollectionVM.SetLinksSortDescriptions(LinkSortDescription);
+                SetValue(ref _linkListSortDescriptionParam, value);
+            }
         }
 
         private string _warningsParam;
@@ -192,7 +237,13 @@ namespace Links.ViewModels
         public Size PresenterSize
         {
             get => _presenterSize;
-            set => SetValue(ref _presenterSize, value);
+            set
+            {
+                LinkPresenterGridWidth = value.Width;
+                LinkPresenterGridHeight = value.Height;
+
+                SetValue(ref _presenterSize, value);
+            }
         }
 
         private string _recycleBinParam;
@@ -447,7 +498,7 @@ namespace Links.ViewModels
         }
         public void OnRemoveRecycleBinItemCommandExecuted(object parameter)
         {
-            _ = RecycleBin.Remove(SelectedDeletedLink);
+            RecycleBin.Remove(SelectedDeletedLink);
         }
 
         public ICommand EmptyRecycleBinCommand { get; }

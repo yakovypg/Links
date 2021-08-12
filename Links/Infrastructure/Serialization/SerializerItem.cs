@@ -33,16 +33,16 @@ namespace Links.Infrastructure.Serialization
                 if (smb == separator && !isBracketOpen)
                 {
                     splittedData.Add(itemBuilder.ToString());
-                    _ = itemBuilder.Clear();
+                    itemBuilder.Clear();
                 }
                 else if (smbIndex == data.Length - 1)
                 {
                     splittedData.Add(itemBuilder.Append(smb).ToString());
-                    _ = itemBuilder.Clear();
+                    itemBuilder.Clear();
                 }
 
                 if (smb != separator || isBracketOpen)
-                    _ = itemBuilder.Append(smb);
+                    itemBuilder.Append(smb);
 
                 smbIndex++;
             }

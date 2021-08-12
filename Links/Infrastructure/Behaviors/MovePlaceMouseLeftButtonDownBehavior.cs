@@ -47,7 +47,7 @@ namespace Links.Infrastructure.Behaviors
                 var firstCursorPos = System.Windows.Forms.Cursor.Position;
                 var mouse = Mouse.PrimaryDevice;
 
-                _ = Task.Run(delegate
+                Task.Run(delegate
                 {
                     while (mouse.LeftButton == MouseButtonState.Pressed)
                     {
@@ -64,7 +64,7 @@ namespace Links.Infrastructure.Behaviors
                                 System.Windows.Forms.Cursor.Position = new System.Drawing.Point(y, 16);
                                 window.WindowState = WindowState.Normal;
 
-                                _ = Task.Run(() => window.Dispatcher.Invoke(() => window.DragMove()));
+                                Task.Run(() => window.Dispatcher.Invoke(() => window.DragMove()));
                             });
 
                             break;

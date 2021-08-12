@@ -81,7 +81,7 @@ namespace Links.Models.Collections
                         linksToRemove.Add(link);
                 }
 
-                _ = group.RemoveRange(linksToRemove);
+                group.RemoveRange(linksToRemove);
             }
 
             return removeEmptyGroups

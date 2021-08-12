@@ -31,7 +31,7 @@ namespace Links.Data.App
         public static void ShowInfo()
         {
             string caption = $"About {Name}";
-            _ = MessageBox.Show(GenerateString(), caption, MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(GenerateString(), caption, MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }
