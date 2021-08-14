@@ -7,7 +7,7 @@ using System.Windows.Media.Imaging;
 
 namespace Links.Infrastructure.Serialization
 {
-    internal class LinkSerializer : ILinkSerializer
+    internal class LinkSerializer : IMultiSerializer<LinkInfo>
     {
         public LinkSerializer()
         {

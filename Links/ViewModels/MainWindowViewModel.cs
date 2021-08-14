@@ -5,10 +5,15 @@ using Links.Infrastructure.Commands;
 using Links.Models;
 using Links.Models.Collections;
 using Links.Models.Collections.Creators;
+using Links.Models.Configuration;
 using Links.Models.Localization;
+using Links.Models.Messages;
 using Links.Models.Themes;
 using Links.ViewModels.Base;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 
@@ -16,10 +21,12 @@ namespace Links.ViewModels
 {
     internal class MainWindowViewModel : ViewModel
     {
+        private bool _closeProgramWithoutSaving = false;
+
         public static StringSaver StringSaver { get; } = new StringSaver();
 
-        public SettingsViewModel SettingsVM { get; }
-        public LinkCollectionViewModel LinkCollectionVM { get; }
+        public SettingsViewModel SettingsVM { get; private set; }
+        public LinkCollectionViewModel LinkCollectionVM { get; private set; }
 
         public GroupCreator GroupCreator { get; } = new GroupCreator();
         public LinkCreator LinkCreator { get; } = new LinkCreator();
@@ -170,6 +177,101 @@ namespace Links.ViewModels
 
         #endregion
 
+        #region ProgramStateCommands
+
+        public ICommand LoadProgramStateCommand { get; }
+        public void OnLoadProgramStateCommandExecuted(object parameter)
+        {
+            bool isSettingsLoaded = false;
+            bool isGroupsLoaded = false;
+            bool isRecycleBinLoaded = false;
+
+            bool isStateLoaded = false;
+            bool closeProgram = false;
+
+            Settings settings = null;
+            IEnumerable<Group> loadedGroups = null;
+            IEnumerable<LinkInfo> loadedRecycleBin = null;
+
+            while (!isStateLoaded && !closeProgram)
+            {
+                if (!isSettingsLoaded)
+                    isSettingsLoaded = DataParser.TryGetSettings(out settings);
+
+                if (!isGroupsLoaded)
+                    isGroupsLoaded = DataParser.TryGetGroups(out loadedGroups, out Exception ex) || ex is System.IO.FileNotFoundException;
+
+                if (!isRecycleBinLoaded)
+                    isRecycleBinLoaded = DataParser.TryGetRecycleBin(out loadedRecycleBin);
+
+                isStateLoaded = isSettingsLoaded && isGroupsLoaded && isRecycleBinLoaded;
+
+                if (!isStateLoaded)
+                {
+                    var res = new QuickMessage(CurrentLocale.LocaleMessages.LoadProgramStateQuestion, CurrentLocale).GetErrorResult(MessageBoxButton.YesNo);
+                    closeProgram = res == MessageBoxResult.No;
+                }
+            }
+
+            if (closeProgram)
+            {
+                _closeProgramWithoutSaving = true;
+                Application.Current.Shutdown();
+            }
+
+            string currYear = DateTime.Now.Year.ToString();
+
+            var groups = loadedGroups != null && loadedGroups.Count() > 0
+                ? new ObservableCollection<Group>(loadedGroups)
+                : new ObservableCollection<Group>(new Group[] { new Group(currYear) });
+
+            var recycleBin = loadedRecycleBin != null && loadedRecycleBin.Count() > 0
+                ? new ObservableCollection<LinkInfo>(loadedRecycleBin)
+                : new ObservableCollection<LinkInfo>();
+
+            LinkCollectionVM = new LinkCollectionViewModel(groups, this);
+            SettingsVM = new SettingsViewModel(settings, recycleBin, this);
+
+            OnPropertyChanged("LinkCollectionVM");
+            OnPropertyChanged("SettingsVM");
+        }
+
+        public ICommand SaveProgramStateCommand { get; }
+        public void OnSaveProgramStateCommandExecuted(object parameter)
+        {
+            if (_closeProgramWithoutSaving)
+                return;
+
+            bool isSettingsSaved = false;
+            bool isGroupsSaved = false;
+            bool isRecycleBinSaved = false;
+
+            bool isStateSaved = false;
+            bool exitWithoutSaving = false;
+
+            while (!isStateSaved && !exitWithoutSaving)
+            {
+                if (!isSettingsSaved)
+                    isSettingsSaved = DataParser.TrySaveSettings(SettingsVM.CurrentSettings);
+
+                if (!isGroupsSaved)
+                    isGroupsSaved = DataParser.TrySaveGroups(LinkCollectionVM.GroupCollection);
+
+                if (!isRecycleBinSaved)
+                    isRecycleBinSaved = DataParser.TrySaveRecycleBin(SettingsVM.RecycleBin);
+
+                isStateSaved = isSettingsSaved && isGroupsSaved && isRecycleBinSaved;
+
+                if (!isStateSaved)
+                {
+                    var res = new QuickMessage(CurrentLocale.LocaleMessages.SaveProgramStateQuestion, CurrentLocale).GetErrorResult(MessageBoxButton.YesNo);
+                    exitWithoutSaving = res == MessageBoxResult.No;
+                }
+            }
+        }
+
+        #endregion
+
         #region SystemCommands
 
         public ICommand MinimizeWindowCommand { get; }
@@ -180,12 +282,12 @@ namespace Links.ViewModels
 
         public MainWindowViewModel()
         {
-            LinkCollectionVM = new LinkCollectionViewModel(this);
-            SettingsVM = new SettingsViewModel(this);
-
             MinimizeWindowCommand = new MinimizeWindowCommand();
             MaximizeWindowCommand = new MaximizeWindowCommand();
             CloseWindowCommand = new CloseWindowCommand();
+
+            LoadProgramStateCommand = new RelayCommand(OnLoadProgramStateCommandExecuted, t => true);
+            SaveProgramStateCommand = new RelayCommand(OnSaveProgramStateCommandExecuted, t => true);
 
             SetLinkCreatorImageCommand = new RelayCommand(OnSetLinkCreatorImageCommandExecuted, t => true);
             AddGroupCommand = new RelayCommand(OnAddGroupCommandExecuted, t => true);

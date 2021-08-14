@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Links.Infrastructure.Extensions
@@ -16,6 +17,24 @@ namespace Links.Infrastructure.Extensions
             }
 
             return output;
+        }
+
+        public static IEnumerable<Attribute> ToAttributeEnumerable(this IEnumerable<object> enumerable)
+        {
+            int index = 0;
+            var output = new Attribute[enumerable.Count()];
+
+            foreach (var item in enumerable)
+            {
+                output[index++] = item as Attribute;
+            }
+
+            return output;
+        }
+
+        public static bool IsNullOrEmpty<T>(this IEnumerable<T> enumerable)
+        {
+            return enumerable is null || enumerable.Count() == 0;
         }
     }
 }

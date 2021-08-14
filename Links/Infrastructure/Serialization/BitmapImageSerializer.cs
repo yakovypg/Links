@@ -4,7 +4,7 @@ using System.Windows.Media.Imaging;
 
 namespace Links.Infrastructure.Serialization
 {
-    internal class BitmapImageSerializer : IBitmapImageSerializer
+    internal class BitmapImageSerializer : ISerializer<BitmapImage>
     {
         public BitmapImage Deserialize(string data)
         {

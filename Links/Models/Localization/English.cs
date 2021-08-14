@@ -62,8 +62,10 @@
                 SuccessfulLinksExportingInfo = "The links were successfully exported.",
                 NoSelectedLinksInfo = "You have not selected any links.",
 
-                AutoLinksDistributionQuestion = "Apply automatic link allocation? Click 'No' if you want to put all the links in one folder.",
-                DeleteGroupQuestion = "Delete all links from the group?",
+                LoadProgramStateQuestion = "Failed to load program state. Try again?",
+                SaveProgramStateQuestion = "Failed to save program state. Try again? Some data may be lost if you click 'No'.",
+                AutoLinksDistributionQuestion = "Apply automatic link allocation? Click 'No' to put all the links in one folder.",
+                DeleteGroupQuestion = "Are you sure you want to delete the group?",
                 DeleteLinkQuestion = "Are you sure you want to delete the link?",
 
                 DeleteGroupError = "Failed to delete the group.",

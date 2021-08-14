@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Links.Infrastructure.Serialization.Attributes;
+using System;
 using System.Reflection;
 
 namespace Links.Models.Localization
 {
     internal class Locale : ILocale
     {
+        [SerializerIgnore]
         public static Locale English => new English();
 
         public string DisplayName { get; }
@@ -62,7 +64,8 @@ namespace Links.Models.Localization
         public string Information { get; set; }
         public string Comment { get; set; }
 
-        public LocaleMessages LocaleMessages { get; set; }
+        [SerializerComplexType]
+        public ILocaleMessages LocaleMessages { get; set; }
 
         public Locale(string displayName, string cultureName)
         {

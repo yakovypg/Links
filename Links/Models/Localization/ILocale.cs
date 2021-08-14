@@ -57,6 +57,6 @@
         string Information { get; set; }
         string Comment { get; set; }
 
-        LocaleMessages LocaleMessages { get; set; }
+        ILocaleMessages LocaleMessages { get; set; }
     }
 }

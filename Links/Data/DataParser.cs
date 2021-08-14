@@ -15,15 +15,15 @@ namespace Links.Data
 {
     internal static class DataParser
     {
-        public static bool SaveSettings(Settings settings)
+        public static bool TrySaveSettings(Settings settings)
         {
             if (settings == null)
                 return false;
 
             try
             {
-                string json = JsonConvert.SerializeObject(settings);
-                File.WriteAllText(AppInfo.FilePaths.Settings, json);
+                string data = new SettingsSerializer().Serialize(settings);
+                File.WriteAllText(AppInfo.FilePaths.Settings, data);
                 return true;
             }
             catch
@@ -32,16 +32,23 @@ namespace Links.Data
             }
         }
 
-        public static ISettings GetSettings()
+        public static bool TryGetSettings(out Settings settings)
         {
             try
             {
-                string json = File.ReadAllText(AppInfo.FilePaths.Settings);
-                return JsonConvert.DeserializeObject<Settings>(json);
+                string data = File.ReadAllText(AppInfo.FilePaths.Settings);
+                settings = new SettingsSerializer().Deserialize(data);
+                return true;
+            }
+            catch (FileNotFoundException)
+            {
+                settings = new SettingsControlsItems().GetDefaultSettings();
+                return true;
             }
             catch
             {
-                return new SettingsItems().GetDefaultSettings();
+                settings = new SettingsControlsItems().GetDefaultSettings();
+                return false;
             }
         }
 
@@ -51,7 +58,7 @@ namespace Links.Data
             {
                 try
                 {
-                    File.WriteAllText(AppInfo.FilePaths.RecycleBin, "");
+                    File.WriteAllText(AppInfo.FilePaths.RecycleBin, "[]");
                     return true;
                 }
                 catch { return false; }
@@ -63,26 +70,31 @@ namespace Links.Data
             return TrySaveGroups(AppInfo.FilePaths.RecycleBin, groups);
         }
 
-        public static IEnumerable<LinkInfo> GetRecycleBin()
+        public static bool TryGetRecycleBin(out IEnumerable<LinkInfo> recycleBin)
         {
-            if (!TryGetGroups(AppInfo.FilePaths.RecycleBin, out IEnumerable<Group> groups))
-                return null;
+            if (!TryGetGroups(AppInfo.FilePaths.RecycleBin, out IEnumerable<Group> groups, out Exception exception))
+            {
+                recycleBin = null;
+                return exception is FileNotFoundException;
+            }
 
             var groupAnalyzer = new GroupAnalyzer();
-            return groupAnalyzer.GetAllLinks(groups);
+            recycleBin = groupAnalyzer.GetAllLinks(groups);
+
+            return true;
         }
 
-        public static IEnumerable<ILocale> GetLocales()
+        public static bool TryGetLocales(out IEnumerable<Locale> locales)
         {
-            return GetItems<Locale>(AppInfo.Directories.Locales);
+            return TryGetItems(AppInfo.Directories.Locales, out locales);
         }
 
-        public static IEnumerable<IWindowTheme> GetWindowThemes()
+        public static bool TryGetWindowThemes(out IEnumerable<WindowTheme> themes)
         {
-            return GetItems<WindowTheme>(AppInfo.Directories.Themes);
+            return TryGetItems(AppInfo.Directories.Themes, out themes);
         }
 
-        public static bool SaveItems<T>(string directory, IEnumerable<T> items, IEnumerable<string> names)
+        public static bool TrySaveItems<T>(string directory, IEnumerable<T> items, IEnumerable<string> names)
         {
             if (items == null || names == null)
                 return false;
@@ -112,9 +124,9 @@ namespace Links.Data
             return result;
         }
 
-        public static IEnumerable<T> GetItems<T>(string directory)
+        public static bool TryGetItems<T>(string directory, out IEnumerable<T> items)
         {
-            var items = new List<T>();
+            var itemsList = new List<T>();
 
             try
             {
@@ -122,7 +134,10 @@ namespace Links.Data
                 FileInfo[] files = dirInfo.GetFiles();
 
                 if (files == null || files.Length == 0)
-                    return null;
+                {
+                    items = itemsList;
+                    return false;
+                }
 
                 foreach (FileInfo file in files)
                 {
@@ -132,14 +147,15 @@ namespace Links.Data
                         T item = JsonConvert.DeserializeObject<T>(json);
 
                         if (item != null)
-                            items.Add(item);
+                            itemsList.Add(item);
                     }
                     catch { }
                 }
             }
             catch { }
 
-            return items.Count > 0 ? items : null;
+            items = itemsList.Count > 0 ? itemsList : null;
+            return true;
         }
 
         public static bool TryImportGroups(out IEnumerable<Group> groups, out DialogResult dialogResult)
@@ -188,6 +204,26 @@ namespace Links.Data
             return !string.IsNullOrEmpty(path) && TrySaveGroups(path, groups);
         }
 
+        public static bool TrySaveGroups(IEnumerable<Group> groups)
+        {
+            return TrySaveGroups(AppInfo.FilePaths.LinkCollection, groups);
+        }
+
+        public static bool TryGetGroups(out IEnumerable<Group> groups)
+        {
+            return TryGetGroups(AppInfo.FilePaths.LinkCollection, out groups);
+        }
+
+        public static bool TryGetGroups(out IEnumerable<Group> groups, out Exception exception)
+        {
+            return TryGetGroups(AppInfo.FilePaths.LinkCollection, out groups, out exception);
+        }
+
+        private static bool TryGetGroups(string path, out IEnumerable<Group> groups)
+        {
+            return TryGetGroups(path, out groups, out Exception _);
+        }
+
         private static bool TrySaveGroups(string path, IEnumerable<Group> groups)
         {
             try
@@ -202,17 +238,22 @@ namespace Links.Data
             }
         }
 
-        private static bool TryGetGroups(string path, out IEnumerable<Group> groups)
+        private static bool TryGetGroups(string path, out IEnumerable<Group> groups, out Exception exception)
         {
             try
             {
                 string data = File.ReadAllText(path);
                 groups = new GroupSerializer().DeserializeMany(data);
+                exception = null;
+
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                var t = ex.GetType();
                 groups = null;
+                exception = ex;
+
                 return false;
             }
         }

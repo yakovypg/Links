@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Links.Infrastructure.Serialization.Attributes;
+using System;
 using System.Reflection;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
@@ -9,15 +10,19 @@ namespace Links.Models.Themes
     {
         public string DisplayName { get; }
 
+        [SerializerIgnore]
         public static WindowTheme Dark => new WindowDarkTheme();
+        [SerializerIgnore]
         public static WindowTheme Blue => new WindowBlueTheme();
+        [SerializerIgnore]
         public static WindowTheme Light => new WindowLightTheme();
 
         public Brush WindowBackground { get; set; }
         public Brush WindowSystemTopBarBackground { get; set; }
         public Brush WindowGridSplitterBackground { get; set; }
 
-        public Effect TitleEffect { get; set; }
+        [SerializerCustomConvert]
+        public DropShadowEffect TitleEffect { get; set; }
         public Brush TitleForeground { get; set; }
         public Brush TitleForegroundMouseOver { get; set; }
 

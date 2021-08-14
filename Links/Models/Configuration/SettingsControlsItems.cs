@@ -1,22 +1,22 @@
-﻿using Links.Models.Configuration;
+﻿using Links.Data;
 using Links.Models.Localization;
 using Links.Models.Themes;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 
-namespace Links.Data.App
+namespace Links.Models.Configuration
 {
-    internal class SettingsItems
+    internal class SettingsControlsItems
     {
         public ILocale CurrentLocale { get; set; }
 
-        public SettingsItems(ILocale locale = null)
+        public SettingsControlsItems(ILocale locale = null)
         {
             CurrentLocale = locale ?? Locale.English;
         }
 
-        public ISettings GetDefaultSettings()
+        public Settings GetDefaultSettings()
         {
             return new Settings()
             {
@@ -77,7 +77,7 @@ namespace Links.Data.App
 
         public ObservableCollection<IWindowTheme> GetThemes()
         {
-            IEnumerable<IWindowTheme> themes = DataParser.GetWindowThemes();
+            DataParser.TryGetWindowThemes(out IEnumerable<WindowTheme> themes);
 
             var defaultThemes = new ObservableCollection<IWindowTheme>(new IWindowTheme[]
             {
@@ -93,7 +93,7 @@ namespace Links.Data.App
 
         public ObservableCollection<ILocale> GetLocales()
         {
-            IEnumerable<ILocale> locales = DataParser.GetLocales();
+            DataParser.TryGetLocales(out IEnumerable<Locale> locales);
 
             var defaultLocales = new ObservableCollection<ILocale>(new ILocale[]
             {

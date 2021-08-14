@@ -1,4 +1,5 @@
-﻿using Links.Models.Collections;
+﻿using Links.Infrastructure.Extensions;
+using Links.Models.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Text;
 
 namespace Links.Infrastructure.Serialization
 {
-    internal class GroupSerializer : IGroupSerializer
+    internal class GroupSerializer : IMultiSerializer<Group>
     {
         public GroupSerializer()
         {
@@ -26,7 +27,10 @@ namespace Links.Infrastructure.Serialization
 
             string linksData = item.GetValue("Links");
             IEnumerable<LinkInfo> linksList = new LinkSerializer().DeserializeMany(linksData);
-            var links = new ObservableCollection<LinkInfo>(linksList);
+
+            var links = !linksList.IsNullOrEmpty()
+                ? new ObservableCollection<LinkInfo>(linksList)
+                : new ObservableCollection<LinkInfo>();
 
             return new Group(name, icon, links);
         }

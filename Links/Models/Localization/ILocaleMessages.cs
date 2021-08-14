@@ -6,6 +6,8 @@
         string SuccessfulLinksExportingInfo { get; set; }
         string NoSelectedLinksInfo { get; set; }
 
+        string LoadProgramStateQuestion { get; set; }
+        string SaveProgramStateQuestion { get; set; }
         string AutoLinksDistributionQuestion { get; set; }
         string DeleteGroupQuestion { get; set; }
         string DeleteLinkQuestion { get; set; }

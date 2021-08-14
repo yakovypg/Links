@@ -22,8 +22,11 @@
     </Window.DataContext>
 
     <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadProgramStateCommand}"/>
+        </i:EventTrigger>
         <i:EventTrigger EventName="Closing">
-            <i:InvokeCommandAction Command="{Binding CloseWindowCommand}"/>
+            <i:InvokeCommandAction Command="{Binding SaveProgramStateCommand}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
@@ -859,53 +862,14 @@
                             </StackPanel>
 
                             <StackPanel Grid.Column="1">
-                                <ComboBox ItemsSource="{Binding GroupSortings}" SelectedItem="{Binding GroupSortPropertyName}">
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="PropertyChanged">
-                                            <i:InvokeCommandAction Command="{Binding ChangeGroupsSortingCommand}"/>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-                                </ComboBox>
-
-                                <ComboBox ItemsSource="{Binding SortingMods}" SelectedItem="{Binding GroupListSortDescriptionParam}">
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="PropertyChanged">
-                                            <i:InvokeCommandAction Command="{Binding ChangeGroupsSortingCommand}"/>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-                                </ComboBox>
-
-                                <ComboBox ItemsSource="{Binding LinkSortings}" SelectedItem="{Binding LinkSortPropertyName}">
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="PropertyChanged">
-                                            <i:InvokeCommandAction Command="{Binding ChangeGroupsSortingCommand}"/>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-                                </ComboBox>
-
-                                <ComboBox ItemsSource="{Binding SortingMods}" SelectedItem="{Binding LinkListSortDescriptionParam}">
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="PropertyChanged">
-                                            <i:InvokeCommandAction Command="{Binding ChangeGroupsSortingCommand}"/>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-                                </ComboBox>
-
-                                <ComboBox ItemsSource="{Binding OnOffParams}" SelectedItem="{Binding WarningsParam}">
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="PropertyChanged">
-                                            <i:InvokeCommandAction Command="{Binding ChangeGroupsSortingCommand}"/>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-                                </ComboBox>
+                                
+                                <ComboBox ItemsSource="{Binding GroupSortings}" SelectedItem="{Binding GroupSortPropertyName}"/>
+                                <ComboBox ItemsSource="{Binding SortingMods}" SelectedItem="{Binding GroupListSortDescriptionParam}"/>
+                                <ComboBox ItemsSource="{Binding LinkSortings}" SelectedItem="{Binding LinkSortPropertyName}"/>
+                                <ComboBox ItemsSource="{Binding SortingMods}" SelectedItem="{Binding LinkListSortDescriptionParam}"/>
+                                <ComboBox ItemsSource="{Binding OnOffParams}" SelectedItem="{Binding WarningsParam}"/>
 
                                 <ComboBox ItemsSource="{Binding PresenterSizes}" SelectedItem="{Binding PresenterSize}">
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="PropertyChanged">
-                                            <i:InvokeCommandAction Command="{Binding ChangeGroupsSortingCommand}"/>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate DataType="{x:Type Size}">
                                             <TextBlock>
@@ -918,12 +882,6 @@
                                 </ComboBox>
 
                                 <ComboBox ItemsSource="{Binding Themes}" SelectedItem="{Binding MainWindowVM.Theme}">
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="PropertyChanged">
-                                            <i:InvokeCommandAction Command="{Binding ChangeGroupsSortingCommand}"/>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate DataType="{x:Type themes:WindowTheme}">
                                             <TextBlock Text="{Binding DisplayName}"/>
@@ -932,12 +890,6 @@
                                 </ComboBox>
 
                                 <ComboBox ItemsSource="{Binding Locales}" SelectedItem="{Binding MainWindowVM.CurrentLocale}">
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="PropertyChanged">
-                                            <i:InvokeCommandAction Command="{Binding ChangeGroupsSortingCommand}"/>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate DataType="{x:Type locales:Locale}">
                                             <TextBlock Text="{Binding DisplayName}"/>
@@ -945,21 +897,8 @@
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
 
-                                <ComboBox ItemsSource="{Binding OnOffParams}" SelectedItem="{Binding RecycleBinParam}">
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="PropertyChanged">
-                                            <i:InvokeCommandAction Command="{Binding ChangeGroupsSortingCommand}"/>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-                                </ComboBox>
-
-                                <ComboBox ItemsSource="{Binding EmptyRecycleBinParams}" SelectedItem="{Binding EmptyRecycleBinParam}">
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="PropertyChanged">
-                                            <i:InvokeCommandAction Command="{Binding ChangeGroupsSortingCommand}"/>
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-                                </ComboBox>
+                                <ComboBox ItemsSource="{Binding OnOffParams}" SelectedItem="{Binding RecycleBinParam}"/>
+                                <ComboBox ItemsSource="{Binding EmptyRecycleBinParams}" SelectedItem="{Binding EmptyRecycleBinParam}"/>
 
                             </StackPanel>
                         </Grid>

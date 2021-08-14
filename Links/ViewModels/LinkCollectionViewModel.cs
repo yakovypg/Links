@@ -23,7 +23,7 @@ namespace Links.ViewModels
         private ILocale CurrLocale => MainWindowVM.CurrentLocale;
 
         public MainWindowViewModel MainWindowVM { get; }
-        public ObservableCollection<Group> GroupCollection { get; private set; }
+        public ObservableCollection<Group> GroupCollection { get; set; }
 
         public DeleteGroupParamMultiConverter DeleteGroupParamMultiConverter { get; } = new DeleteGroupParamMultiConverter();
         public IEnumerable<string> GroupIconColors => Enum.GetValues(typeof(GroupIcon.Colors)).Cast<GroupIcon.Colors>().ToStringEnumerable();
@@ -129,33 +129,24 @@ namespace Links.ViewModels
         }
         public void OnDeleteGroupCommandExecuted(object parameter)
         {
-            MessageBoxResult msgResult = new QuickMessage(CurrLocale.LocaleMessages.DeleteGroupQuestion, CurrLocale).GetQuestionResult();
+            if (MainWindowVM.SettingsVM.IsWarningsEnable)
+            {
+                MessageBoxResult msgResult = new QuickMessage(CurrLocale.LocaleMessages.DeleteGroupQuestion, CurrLocale)
+                    .GetWarningResult(MessageBoxButton.YesNo);
+
+                if (msgResult == MessageBoxResult.No)
+                    return;
+            }
 
             var paramTuple = parameter as Tuple<object, object>;
-
             var linkCreatorGroup = paramTuple?.Item1 as Group;
-            ICommand resetLinkCreatorGroupIndexCommand = (paramTuple?.Item2 as MainWindowViewModel)?.ResetLinkCreatorGroupIndexCommand;
-
-            Group deletedGroup = SelectedGroup;
+            var resetLinkCreatorGroupIndexCommand = (paramTuple?.Item2 as MainWindowViewModel)?.ResetLinkCreatorGroupIndexCommand;
 
             bool isGroupsEqual = linkCreatorGroup == SelectedGroup;
             bool isGroupRemoved = GroupCollection.Remove(SelectedGroup);
 
             if (isGroupRemoved && isGroupsEqual)
                 resetLinkCreatorGroupIndexCommand?.Execute(null);
-
-            if (isGroupRemoved && msgResult == MessageBoxResult.No)
-            {
-                Group unsortedLinksGroup = GroupCollection.FirstOrDefault(t => t.Name == MainWindowVM.CurrentLocale.Unsorted);
-
-                if (unsortedLinksGroup == null)
-                {
-                    unsortedLinksGroup = new Group(MainWindowVM.CurrentLocale.Unsorted);
-                    GroupCollection.Add(unsortedLinksGroup);
-                }
-
-                unsortedLinksGroup.AddMany(deletedGroup.Links.ToArray());
-            }
 
             if (!isGroupRemoved)
                 new QuickMessage(CurrLocale.LocaleMessages.DeleteGroupError, CurrLocale).ShowError();
@@ -190,7 +181,12 @@ namespace Links.ViewModels
                     return;
             }
 
-            if (!linkInfo.ParentGroup.Links.Remove(linkInfo))
+            bool isLinkRemoved = linkInfo.ParentGroup.Links.Remove(linkInfo);
+
+            if (isLinkRemoved && MainWindowVM.SettingsVM.IsRecycleBinEnable)
+                MainWindowVM.SettingsVM.RecycleBin.Add(linkInfo);
+
+            if (!isLinkRemoved)
                 new QuickMessage(CurrLocale.LocaleMessages.DeleteLinkError, CurrLocale).ShowError();
         }
 
@@ -261,24 +257,10 @@ namespace Links.ViewModels
 
         #endregion
 
-        public LinkCollectionViewModel(MainWindowViewModel mainWindowVM)
+        public LinkCollectionViewModel(ObservableCollection<Group> groups, MainWindowViewModel mainWindowVM)
         {
-            var group1 = new Group("Math", new GroupIcon(GroupIcon.Colors.Red), null);
-            var group2 = new Group("Programming", new GroupIcon(GroupIcon.Colors.Gray), null);
-            var group3 = new Group("Chemistry", new GroupIcon(GroupIcon.Colors.Black), null);
-            var group4 = new Group("Empty", new GroupIcon(GroupIcon.Colors.Gray), null);
-
-            group1.Links.Add(new LinkInfo("https://www.wolframalpha.com/", "Wolfram", group1));
-            group1.Links.Add(new LinkInfo("https://allcalc.ru/", "Allcalc", group1));
-            group1.Links.Add(new LinkInfo("https://www.geogebra.org/3d", "GeoGebra", group1));
-
-            group2.Links.Add(new LinkInfo("https://google.com", "Google", group2));
-            group2.Links.Add(new LinkInfo("https://yandex.ru", "Yandex", group2));
-
-            group3.Links.Add(new LinkInfo("https://chemiday.com/", "ChemiDay", group3));
-
-            MainWindowVM = mainWindowVM ?? throw new ArgumentNullException();
-            GroupCollection = new ObservableCollection<Group>() { group1, group2, group3, group4 };
+            MainWindowVM = mainWindowVM ?? throw new ArgumentNullException(nameof(mainWindowVM));
+            GroupCollection = groups ?? new ObservableCollection<Group>();
 
             _groups = new CollectionViewSource()
             {

@@ -1,5 +1,4 @@
 ﻿using Links.Data;
-using Links.Data.App;
 using Links.Infrastructure.Commands;
 using Links.Models.Collections;
 using Links.Models.Collections.Comparers;
@@ -54,6 +53,20 @@ namespace Links.ViewModels
             get => _impexGroups;
             private set => SetValue(ref _impexGroups, value);
         }
+
+        public Settings CurrentSettings => new Settings()
+        {
+            GroupSortPropertyName = GroupSortPropertyName,
+            GroupListSortDescriptionParam = GroupListSortDescriptionParam,
+            LinkSortPropertyName = LinkSortPropertyName,
+            LinkListSortDescriptionParam = LinkListSortDescriptionParam,
+            WarningsParam = WarningsParam,
+            PresenterSize = PresenterSize,
+            Theme = MainWindowVM.Theme,
+            CurrentLocale = MainWindowVM.CurrentLocale,
+            RecycleBinParam = RecycleBinParam,
+            EmptyRecycleBinParam = EmptyRecycleBinParam
+        };
 
         public (IEnumerable<Group> NonemptyImpexGroups, IEnumerable<LinkInfo> SelectedImpexGroupsLinks) ImpexLinksTreeData
         {
@@ -364,8 +377,6 @@ namespace Links.ViewModels
             OnPropertyChanged(nameof(ImpexGroups));
         }
 
-        public ICommand ChangeGroupsSortingCommand { get; }
-
         #endregion
 
         #region VisibilityCommands
@@ -513,21 +524,14 @@ namespace Links.ViewModels
 
         #endregion
 
-        public SettingsViewModel(MainWindowViewModel mainWindowVM)
+        public SettingsViewModel(ISettings settings, ObservableCollection<LinkInfo> recycleBin, MainWindowViewModel mainWindowVM)
         {
             MainWindowVM = mainWindowVM ?? throw new ArgumentNullException();
-
-            IEnumerable<LinkInfo> recBinItems = DataParser.GetRecycleBin();
-
-            RecycleBin = recBinItems != null
-                ? new ObservableCollection<LinkInfo>(recBinItems)
-                : new ObservableCollection<LinkInfo>();
+            RecycleBin = recycleBin ?? new ObservableCollection<LinkInfo>();
 
             ImportLinksCommand = new RelayCommand(OnImportLinksCommandExecuted, t => true);
             ExportLinksCommand = new RelayCommand(OnExportLinksCommandExecuted, t => true);
             CheckAllLinksCommand = new RelayCommand(OnCheckAllLinksCommandExecuted, t => true);
-
-            ChangeGroupsSortingCommand = new RelayCommand(delegate { }, t => true);
 
             ChangeImportLinksBottomBarVisibilityCommand = new RelayCommand(OnChangeImportLinksBottomBarVisibilityCommandExecuted, t => true);
             ChangeExportLinksBottomBarVisibilityCommand = new RelayCommand(OnChangeExportLinksBottomBarVisibilityCommandExecuted, t => true);
@@ -540,13 +544,14 @@ namespace Links.ViewModels
             RemoveRecycleBinItemCommand = new RelayCommand(OnRemoveRecycleBinItemCommandExecuted, CanRemoveRecycleBinItemCommandExecute);
             EmptyRecycleBinCommand = new RelayCommand(OnEmptyRecycleBinCommandExecuted, CanEmptyRecycleBinCommandExecute);
 
-            SetSettingsItems();
-            RestoreSettings();
+            SetSettingsControlsItems();
+            RestoreSettings(settings);
         }
 
-        private void RestoreSettings()
+        private void RestoreSettings(ISettings settings)
         {
-            ISettings settings = DataParser.GetSettings();
+            if (settings == null)
+                return;
 
             GroupSortPropertyName = settings.GroupSortPropertyName;
             GroupListSortDescriptionParam = settings.GroupListSortDescriptionParam;
@@ -560,7 +565,7 @@ namespace Links.ViewModels
             EmptyRecycleBinParam = settings.EmptyRecycleBinParam;
         }
 
-        private void SetSettingsItems()
+        private void SetSettingsControlsItems()
         {
             string groupSortPropertyName = GroupSortPropertyName;
             string groupListSortDescriptionParam = GroupListSortDescriptionParam;
@@ -573,7 +578,7 @@ namespace Links.ViewModels
             string recycleBinParam = RecycleBinParam;
             string emptyRecycleBinParam = EmptyRecycleBinParam;
 
-            var settingsItems = new SettingsItems(MainWindowVM.CurrentLocale);
+            var settingsItems = new SettingsControlsItems(MainWindowVM.CurrentLocale);
 
             GroupSortings = settingsItems.GetGroupSortings();
             LinkSortings = settingsItems.GetLinkSortings();

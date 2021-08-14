@@ -11,7 +11,7 @@ namespace Links.Models.Themes
         Brush WindowSystemTopBarBackground { get; set; }
         Brush WindowGridSplitterBackground { get; set; }
 
-        Effect TitleEffect { get; set; }
+        DropShadowEffect TitleEffect { get; set; }
         Brush TitleForeground { get; set; }
         Brush TitleForegroundMouseOver { get; set; }
 

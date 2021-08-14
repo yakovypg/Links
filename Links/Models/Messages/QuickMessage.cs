@@ -20,34 +20,29 @@ namespace Links.Models.Messages
             MessageLocale = locale ?? Locale.English;
         }
 
-        public MessageBoxResult GetEmptyResult()
+        public MessageBoxResult GetEmptyResult(MessageBoxButton msgButton = MessageBoxButton.OK)
         {
-            return MessageBox.Show(Message, string.Empty, MessageBoxButton.OK, MessageBoxImage.None);
+            return MessageBox.Show(Message, string.Empty, msgButton, MessageBoxImage.None);
         }
 
-        public MessageBoxResult GetErrorResult()
+        public MessageBoxResult GetErrorResult(MessageBoxButton msgButton = MessageBoxButton.OK)
         {
-            return MessageBox.Show(Message, MessageLocale.Error, MessageBoxButton.OK, MessageBoxImage.Error);
+            return MessageBox.Show(Message, MessageLocale.Error, msgButton, MessageBoxImage.Error);
         }
 
-        public MessageBoxResult GetWarningResult()
-        {
-            return MessageBox.Show(Message, MessageLocale.Warning, MessageBoxButton.OK, MessageBoxImage.Warning);
-        }
-
-        public MessageBoxResult GetWarningResult(MessageBoxButton msgButton)
+        public MessageBoxResult GetWarningResult(MessageBoxButton msgButton = MessageBoxButton.OK)
         {
             return MessageBox.Show(Message, MessageLocale.Warning, msgButton, MessageBoxImage.Warning);
         }
 
-        public MessageBoxResult GetQuestionResult()
+        public MessageBoxResult GetQuestionResult(MessageBoxButton msgButton = MessageBoxButton.YesNo)
         {
-            return MessageBox.Show(Message, MessageLocale.Question, MessageBoxButton.YesNo, MessageBoxImage.Question);
+            return MessageBox.Show(Message, MessageLocale.Question, msgButton, MessageBoxImage.Question);
         }
 
-        public MessageBoxResult GetInformationResult()
+        public MessageBoxResult GetInformationResult(MessageBoxButton msgButton = MessageBoxButton.OK)
         {
-            return MessageBox.Show(Message, MessageLocale.Information, MessageBoxButton.OK, MessageBoxImage.Information);
+            return MessageBox.Show(Message, MessageLocale.Information, msgButton, MessageBoxImage.Information);
         }
 
         public void ShowEmpty()

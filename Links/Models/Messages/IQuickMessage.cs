@@ -14,11 +14,10 @@ namespace Links.Models.Messages
         public void ShowQuestion();
         public void ShowInformation();
 
-        public MessageBoxResult GetEmptyResult();
-        public MessageBoxResult GetErrorResult();
-        public MessageBoxResult GetWarningResult();
-        public MessageBoxResult GetWarningResult(MessageBoxButton msgButton);
-        public MessageBoxResult GetQuestionResult();
-        public MessageBoxResult GetInformationResult();
+        public MessageBoxResult GetEmptyResult(MessageBoxButton msgButton = MessageBoxButton.OK);
+        public MessageBoxResult GetErrorResult(MessageBoxButton msgButton = MessageBoxButton.OK);
+        public MessageBoxResult GetWarningResult(MessageBoxButton msgButton = MessageBoxButton.OK);
+        public MessageBoxResult GetQuestionResult(MessageBoxButton msgButton = MessageBoxButton.OK);
+        public MessageBoxResult GetInformationResult(MessageBoxButton msgButton = MessageBoxButton.OK);
     }
 }
