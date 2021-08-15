@@ -1,24 +1,74 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Links.Models.Collections
 {
     //Do not override Equals and GetHashCode
-    internal class Group : IGroup
+    internal class Group : IGroup, IList<LinkInfo>, INotifyPropertyChanged
     {
         public int Count => Links.Count;
         public bool IsReadOnly => false;
 
-        public string Name { get; set; }
-        public IGroupIcon Icon { get; set; }
         public ObservableCollection<LinkInfo> Links { get; private set; }
+
+        private string _name;
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                _name = value;
+                OnPropertyChanged(nameof(Name));
+
+                MainWindow.InvokeMethod("GroupsListBox_ScrollToSelectedGroup", null, 100);
+            }
+        }
+
+        private IGroupIcon _icon;
+        public IGroupIcon Icon
+        {
+            get => _icon;
+            set
+            {
+                _icon = value;
+                OnPropertyChanged(nameof(Icon));
+            }
+        }
+
+        public int ColorIndex
+        {
+            get => Icon.ColorIndex;
+            set
+            {
+                Icon.ColorIndex = value;
+                OnPropertyChanged(nameof(Color));
+                OnPropertyChanged(nameof(ColorIndex));
+
+                MainWindow.InvokeMethod("GroupsListBox_ScrollToSelectedGroup", null, 100);
+            }
+        }
 
         public GroupIcon.Colors Color
         {
             get => Icon.ForegroundColor;
-            set => Icon.ForegroundColor = value;
+            set
+            {
+                Icon.ForegroundColor = value;
+                OnPropertyChanged(nameof(Color));
+                OnPropertyChanged(nameof(ColorIndex));
+
+                MainWindow.InvokeMethod("GroupsListBox_ScrollToSelectedGroup", null, 100);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string property = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
         public Group() : this(string.Empty)
@@ -140,9 +190,24 @@ namespace Links.Models.Collections
             Links.CopyTo(array, arrayIndex);
         }
 
+        public void Insert(int index, LinkInfo item)
+        {
+            Links.Insert(index, item);
+        }
+
+        public int IndexOf(LinkInfo item)
+        {
+            return Links.IndexOf(item);
+        }
+
         public bool Remove(LinkInfo item)
         {
             return Links.Remove(item);
+        }
+
+        public void RemoveAt(int index)
+        {
+            Links.RemoveAt(index);
         }
     }
 }

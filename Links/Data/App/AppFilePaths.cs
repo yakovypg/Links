@@ -8,6 +8,7 @@ namespace Links.Data.App
         public string Settings { get; }
         public string LinkCollection { get; }
         public string RecycleBin { get; }
+        public string LastRecycleBinCleaning { get; }
 
         public AppFilePaths(AppDirectories directories)
         {
@@ -17,6 +18,7 @@ namespace Links.Data.App
             Settings = Path.Combine(directories.Data, "settings.ser");
             LinkCollection = Path.Combine(directories.Links, "links.groups");
             RecycleBin = Path.Combine(directories.Links, "recyclebin.groups");
+            LastRecycleBinCleaning = Path.Combine(directories.Data, "lastRecycleBinCleaning.txt");
         }
     }
 }

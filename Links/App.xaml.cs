@@ -4,7 +4,7 @@ namespace Links
 {
     public partial class App : Application
     {
-        //private readonly MainWindowViewModel mainVM = new MainWindowViewModel();
+        //internal readonly MainWindowViewModel mainVM = new MainWindowViewModel();
 
         protected override void OnStartup(StartupEventArgs e)
         {

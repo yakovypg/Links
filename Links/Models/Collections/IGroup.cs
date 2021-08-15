@@ -7,8 +7,10 @@ namespace Links.Models.Collections
     {
         string Name { get; set; }
         IGroupIcon Icon { get; set; }
-        GroupIcon.Colors Color { get; set; }
         ObservableCollection<LinkInfo> Links { get; }
+
+        int ColorIndex { get; set; }
+        GroupIcon.Colors Color { get; set; }
 
         bool EqualTo(IGroup other);
 

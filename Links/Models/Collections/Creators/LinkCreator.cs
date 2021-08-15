@@ -62,6 +62,9 @@ namespace Links.Models.Collections.Creators
             Title = string.Empty;
             BackgroundImage = null;
 
+            if (ParentGroup == null)
+                ParentGroup = new Group();
+
             return new LinkInfo(link, title, ParentGroup, backgroundImage);
         }
     }

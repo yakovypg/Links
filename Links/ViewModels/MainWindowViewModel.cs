@@ -2,7 +2,6 @@
 using Links.Data.App;
 using Links.Data.Imaging;
 using Links.Infrastructure.Commands;
-using Links.Infrastructure.Extensions;
 using Links.Models;
 using Links.Models.Collections;
 using Links.Models.Collections.Creators;
@@ -236,6 +235,8 @@ namespace Links.ViewModels
             LinkCollectionVM = new LinkCollectionViewModel(groups, this);
             SettingsVM = new SettingsViewModel(settings, recycleBin, this);
 
+            SettingsVM.CheckLastRecycleBinCleaning(true);
+
             OnPropertyChanged("LinkCollectionVM");
             OnPropertyChanged("SettingsVM");
         }
@@ -249,6 +250,7 @@ namespace Links.ViewModels
             bool isSettingsSaved = false;
             bool isGroupsSaved = false;
             bool isRecycleBinSaved = false;
+            bool isLastRecycleBinCleaningDateSaved = false;
 
             bool isStateSaved = false;
             bool exitWithoutSaving = false;
@@ -264,7 +266,10 @@ namespace Links.ViewModels
                 if (!isRecycleBinSaved)
                     isRecycleBinSaved = DataOrganizer.TrySaveRecycleBin(SettingsVM.RecycleBin);
 
-                isStateSaved = isSettingsSaved && isGroupsSaved && isRecycleBinSaved;
+                if (!isLastRecycleBinCleaningDateSaved)
+                    isLastRecycleBinCleaningDateSaved = DataOrganizer.TrySaveLastRecycleBinCleaningDate(SettingsVM.LastRecycleBinCleaningDate);
+
+                isStateSaved = isSettingsSaved && isGroupsSaved && isRecycleBinSaved && isLastRecycleBinCleaningDateSaved;
 
                 if (!isStateSaved)
                 {

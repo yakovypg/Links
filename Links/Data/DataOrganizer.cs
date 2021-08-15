@@ -52,6 +52,44 @@ namespace Links.Data
             }
         }
 
+        public static bool TrySaveLastRecycleBinCleaningDate(DateTime date)
+        {
+            try
+            {
+                string data = date.ToShortDateString();
+                File.WriteAllText(AppInfo.FilePaths.LastRecycleBinCleaning, data);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static bool TryGetLastRecycleBinCleaningDate(out DateTime date)
+        {
+            try
+            {
+                string data = File.ReadAllText(AppInfo.FilePaths.LastRecycleBinCleaning);
+                date = DateTime.Parse(data);
+
+                return true;
+            }
+            catch (FileNotFoundException)
+            {
+                date = DateTime.Now;
+                TrySaveLastRecycleBinCleaningDate(date);
+
+                return true;
+            }
+            catch
+            {
+                date = new DateTime();
+                return false;
+            }
+        }
+
         public static bool TrySaveRecycleBin(IEnumerable<LinkInfo> deletedLinks)
         {
             if (deletedLinks == null || deletedLinks.Count() == 0)

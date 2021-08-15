@@ -12,12 +12,12 @@ namespace Links.Models.Collections
             if (groups.IsNullOrEmpty())
                 return;
             
-            foreach (Group group in groups)
+            foreach (var group in groups)
             {
                 if (group.Links.IsNullOrEmpty())
                     continue;
 
-                foreach (LinkInfo link in group.Links)
+                foreach (var link in group.Links)
                 {
                     link.ParentGroup = group;
                     link.ResetPrimaryGroup();
@@ -33,17 +33,18 @@ namespace Links.Models.Collections
             if (links.IsNullOrEmpty())
                 return groups;
 
-            foreach (LinkInfo link in links)
+            foreach (var link in links)
             {
                 Group group = groups.FirstOrDefault(t => comparer.Equals(t, link.ParentGroup));
 
                 if (group == null)
+                {
                     group = link.ParentGroup.CopyDesign();
+                    groups.Add(group);
+                }
 
                 link.ParentGroup = group;
                 group.Add(link);
-
-                groups.Add(group);
             }
 
             return groups;
@@ -62,7 +63,7 @@ namespace Links.Models.Collections
             if (source.IsNullOrEmpty())
                 return source;
 
-            foreach (Group group in source)
+            foreach (var group in source)
             {
                 if (group.Links == null)
                     continue;
@@ -70,7 +71,7 @@ namespace Links.Models.Collections
                 var linksToRemove = new List<LinkInfo>();
                 var groupAnalyzer = new GroupAnalyzer();
 
-                foreach (LinkInfo link in group.Links)
+                foreach (var link in group.Links)
                 {
                     if (groupAnalyzer.ContainsLink(destination, link))
                         linksToRemove.Add(link);

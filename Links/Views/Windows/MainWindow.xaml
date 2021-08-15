@@ -321,7 +321,7 @@
 
                                         <ComboBox
                                             ItemsSource="{Binding GroupIconColors}"
-                                            SelectedIndex="{Binding SelectedGroup.Icon.ColorIndex, UpdateSourceTrigger=PropertyChanged}">
+                                            SelectedIndex="{Binding SelectedGroup.ColorIndex, UpdateSourceTrigger=PropertyChanged}">
                                         </ComboBox>
                                     </StackPanel>
                                 </Grid>
@@ -390,9 +390,13 @@
                                 </TextBlock>
                             </Grid>
 
-                            <ListBox BorderThickness="0"
+                            <ListBox Name="GroupsListBox"
+                                     BorderThickness="0"
                                      Background="Transparent"
                                      ItemsSource="{Binding Groups}"
+                                     VirtualizingPanel.IsVirtualizing="True"
+                                     VirtualizingPanel.VirtualizationMode="Recycling"
+                                     VirtualizingPanel.IsContainerVirtualizable="True"
                                      SelectedItem="{Binding SelectedGroup, UpdateSourceTrigger=PropertyChanged}"
                                      SelectedIndex="{Binding SelectedGroupIndex, UpdateSourceTrigger=PropertyChanged}">
 
@@ -406,6 +410,12 @@
                                     <KeyBinding Key="Delete" Command="{Binding DeleteGroupCommand}"/>
                                     <KeyBinding Key="Tab" Command="{Binding ChangeGroupEditorVisibilityCommand}"/>
                                 </ListBox.InputBindings>
+
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel/>
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
 
                                 <ListBox.ItemTemplate>
                                     <DataTemplate DataType="{x:Type cols:Group}">
@@ -456,6 +466,7 @@
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
 
+
                     <ItemsControl.Template>
                         <ControlTemplate>
                             <ScrollViewer VerticalScrollBarVisibility="auto">
@@ -463,6 +474,7 @@
                             </ScrollViewer>
                         </ControlTemplate>
                     </ItemsControl.Template>
+
 
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="{x:Type cols:LinkInfo}">
@@ -477,8 +489,12 @@
                                         <RowDefinition Height="*"/>
                                         <RowDefinition Height="22"/>
                                     </Grid.RowDefinitions>
-                                    
+
                                     <StackPanel Grid.Row="0">
+
+                                        <!-- element for reset the focus of LinkTitleTextBox -->
+                                        <TextBox Name="FocusResetterTextBox" Height="0" Width="0"/>
+
                                         <TextBlock
                                             Style="{StaticResource LinkPresenterTextBlock}"
                                             Text="{Binding DataContext.MainWindowVM.CurrentLocale.Title, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
@@ -486,7 +502,7 @@
                                         
                                         <TextBox
                                             Name="LinkTitleTextBox"
-                                            Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"
+                                            Text="{Binding Title, UpdateSourceTrigger=LostFocus}"
                                             Style="{StaticResource LinkPresenterTextBox}">
                                         </TextBox>
 
@@ -494,9 +510,9 @@
                                             Style="{StaticResource LinkPresenterTextBlock}"
                                             Text="{Binding DataContext.MainWindowVM.CurrentLocale.Link, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                         </TextBlock>
-                                        
+
                                         <TextBox
-                                            Text="{Binding Link, UpdateSourceTrigger=PropertyChanged}"
+                                            Text="{Binding Link, UpdateSourceTrigger=LostFocus}"
                                             Style="{StaticResource LinkPresenterTextBox}">
                                         </TextBox>
 
@@ -527,6 +543,7 @@
                                                     Command="{Binding DataContext.SetLinkImageCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                                 </MouseBinding>
                                             </TextBlock.InputBindings>
+
                                         </TextBlock>
                                     </StackPanel>
 
@@ -536,11 +553,10 @@
                                     <Grid Grid.Row="2"
                                           Background="{Binding DataContext.MainWindowVM.Theme.LinkPresenterBottomBarBackground, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                         
-                                        <TextBlock
-                                            Width="20"
-                                            Height="20"
-                                            Style="{StaticResource BoldPressingTextBlock}"
-                                            Text="{Binding DataContext.MainWindowVM.CurrentLocale.Ok, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                        <TextBlock Width="20"
+                                                   Height="20"
+                                                   Style="{StaticResource BoldPressingTextBlock}"
+                                                   Text="{Binding DataContext.MainWindowVM.CurrentLocale.Ok, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                             
                                             <TextBlock.InputBindings>
                                                 <MouseBinding
@@ -549,6 +565,16 @@
                                                     Command="{Binding DataContext.HideLinkEditorCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                                 </MouseBinding>
                                             </TextBlock.InputBindings>
+                                            
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                                    <i:InvokeCommandAction
+                                                        CommandParameter="{Binding ElementName=FocusResetterTextBox}"
+                                                        Command="{Binding DataContext.SetFocusCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                                    </i:InvokeCommandAction>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+                                            
                                         </TextBlock>
                                     </Grid>
                                 </Grid>
@@ -740,7 +766,8 @@
                                 </TextBlock>
 
                                 <!-- do not change the order of the properties -->
-                                <ComboBox SelectedIndex="{Binding LinkCreatorGroupIndex, UpdateSourceTrigger=PropertyChanged}"
+                                <ComboBox Name="LinkCreatorGroupComboBox"
+                                          SelectedIndex="{Binding LinkCreatorGroupIndex, UpdateSourceTrigger=PropertyChanged}"
                                           ItemsSource="{Binding LinkCollectionVM.GroupCollection}"
                                           SelectedItem="{Binding LinkCreator.ParentGroup, UpdateSourceTrigger=PropertyChanged}">
 

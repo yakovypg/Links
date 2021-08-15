@@ -69,7 +69,7 @@ namespace Links.Infrastructure.Serialization
                 {"Theme", themeData.Surround(START_COMPLEX_TYPE, END_COMPLEX_TYPE) },
                 {"CurrentLocale", localeData.Surround(START_COMPLEX_TYPE, END_COMPLEX_TYPE) },
                 {"RecycleBinParam", settings.RecycleBinParam },
-                {"EmptyRecycleBinParam", settings.EmptyRecycleBinParam }
+                {"EmptyRecycleBinParam", settings.EmptyRecycleBinParam.Surround(START_IGNORE_SPACE, END_IGNORE_SPACE) }
             };
 
             string data = ConvertToDataString(dict);

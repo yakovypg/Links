@@ -1,5 +1,6 @@
 ﻿using Links.Data;
 using Links.Infrastructure.Commands;
+using Links.Infrastructure.Extensions;
 using Links.Models.Collections;
 using Links.Models.Collections.Comparers;
 using Links.Models.Configuration;
@@ -22,7 +23,9 @@ namespace Links.ViewModels
         private ILocale CurrLocale => MainWindowVM.CurrentLocale;
 
         public MainWindowViewModel MainWindowVM { get; }
-        public ObservableCollection<LinkInfo> RecycleBin { get; }
+        public ObservableCollection<LinkInfo> RecycleBin { get; private set; }
+
+        public DateTime LastRecycleBinCleaningDate { get; private set; }
 
         public ObservableCollection<string> GroupSortings { get; private set; }
         public ObservableCollection<string> LinkSortings { get; private set; }
@@ -85,7 +88,7 @@ namespace Links.ViewModels
 
                     IEnumerable<LinkInfo> links = group.Links.Where(t => t.IsChecked).Select(t => t.Source);
 
-                    if (links == null || links.Count() == 0)
+                    if (links.IsNullOrEmpty())
                         continue;
 
                     var icon = new GroupIcon(group.Icon.ForegroundColor);
@@ -133,7 +136,7 @@ namespace Links.ViewModels
         public ListSortDirection GroupListSortDescription => _groupListSortDescriptionParam == MainWindowVM.CurrentLocale.Ascending
             ? ListSortDirection.Ascending : ListSortDirection.Descending;
 
-        public ListSortDirection LinkListSortDescription => _groupListSortDescriptionParam == MainWindowVM.CurrentLocale.Ascending
+        public ListSortDirection LinkListSortDescription => _linkListSortDescriptionParam == MainWindowVM.CurrentLocale.Ascending
             ? ListSortDirection.Ascending : ListSortDirection.Descending;
 
         public bool IsWarningsEnable => _warningsParam == MainWindowVM.CurrentLocale.On;
@@ -146,14 +149,9 @@ namespace Links.ViewModels
         {
             get
             {
-                int index = _emptyRecycleBinParam?.LastIndexOf(" ") ?? -1;
+                string[] items = _emptyRecycleBinParam?.Split(' ');
 
-                if (index < 0 || index >= _emptyRecycleBinParam.Length - 1)
-                    return double.PositiveInfinity;
-
-                string numStr = _emptyRecycleBinParam.Substring(index + 1);
-
-                return !double.TryParse(numStr, out double diff)
+                return items == null || items.Length < 2 || !double.TryParse(items[1], out double diff)
                     ? double.PositiveInfinity
                     : diff;
             }
@@ -223,8 +221,8 @@ namespace Links.ViewModels
             get => _linkSortPropertyName;
             set
             {
-                MainWindowVM.LinkCollectionVM.SetLinksSortDescriptions(LinkSortDescription);
                 SetValue(ref _linkSortPropertyName, value);
+                MainWindowVM.LinkCollectionVM.SetLinksSortDescriptions(LinkSortDescription);
             }
         }
 
@@ -234,8 +232,8 @@ namespace Links.ViewModels
             get => _linkListSortDescriptionParam;
             set
             {
-                MainWindowVM.LinkCollectionVM.SetLinksSortDescriptions(LinkSortDescription);
                 SetValue(ref _linkListSortDescriptionParam, value);
+                MainWindowVM.LinkCollectionVM.SetLinksSortDescriptions(LinkSortDescription);
             }
         }
 
@@ -270,7 +268,13 @@ namespace Links.ViewModels
         public string EmptyRecycleBinParam
         {
             get => _emptyRecycleBinParam;
-            set => SetValue(ref _emptyRecycleBinParam, value);
+            set
+            {
+                if (_emptyRecycleBinParam == CurrLocale.Never && _emptyRecycleBinParam != value)
+                    LastRecycleBinCleaningDate = DateTime.Now;
+
+                SetValue(ref _emptyRecycleBinParam, value);
+            }
         }
 
         #endregion
@@ -282,7 +286,7 @@ namespace Links.ViewModels
         {
             (IEnumerable<Group> nonemptyImpexGroups, IEnumerable<LinkInfo> selectedImpexGroupsLinks) = ImpexLinksTreeData;
 
-            if (selectedImpexGroupsLinks == null || selectedImpexGroupsLinks.Count() == 0)
+            if (selectedImpexGroupsLinks.IsNullOrEmpty())
             {
                 new QuickMessage(CurrLocale.LocaleMessages.NoSelectedLinksInfo, CurrLocale).ShowInformation();
                 return;
@@ -291,7 +295,7 @@ namespace Links.ViewModels
             var groupOrganizer = new GroupOrganizer();
             nonemptyImpexGroups = groupOrganizer.RemoveExistingLinks(nonemptyImpexGroups, MainWindowVM.LinkCollectionVM.GroupCollection, true);
 
-            if (nonemptyImpexGroups == null || nonemptyImpexGroups.Count() == 0)
+            if (nonemptyImpexGroups.IsNullOrEmpty())
             {
                 new QuickMessage(CurrLocale.LocaleMessages.SuccessfulLinksImportingInfo, CurrLocale).ShowInformation();
                 return;
@@ -305,7 +309,7 @@ namespace Links.ViewModels
             {
                 var designComparer = new GroupDesignEqualityComparer();
 
-                foreach (Group group in nonemptyImpexGroups)
+                foreach (var group in nonemptyImpexGroups)
                 {
                     Group availableGroup = groups.FirstOrDefault(t => designComparer.Equals(t, group));
 
@@ -341,7 +345,7 @@ namespace Links.ViewModels
         {
             (IEnumerable<Group> nonemptyImpexGroups, IEnumerable<LinkInfo> selectedImpexGroupsLinks) = ImpexLinksTreeData;
 
-            if (selectedImpexGroupsLinks == null || selectedImpexGroupsLinks.Count() == 0)
+            if (selectedImpexGroupsLinks.IsNullOrEmpty())
             {
                 new QuickMessage(CurrLocale.LocaleMessages.NoSelectedLinksInfo, CurrLocale).ShowInformation();
                 return;
@@ -436,7 +440,7 @@ namespace Links.ViewModels
 
                 int index = 0;
 
-                foreach (Group group in groups)
+                foreach (var group in groups)
                 {
                     _impexGroups[index++] = new GroupViewModel(group);
                 }
@@ -483,6 +487,7 @@ namespace Links.ViewModels
         public void OnRestoreRecycleBinItemCommandExecuted(object parameter)
         {
             LinkInfo selectedLink = SelectedDeletedLink;
+            int selectedDeletedLinkIndex = SelectedDeletedLinkIndex;
 
             if (!RecycleBin.Remove(SelectedDeletedLink))
             {
@@ -506,6 +511,10 @@ namespace Links.ViewModels
                 selectedLink.ParentGroup.Links.Add(selectedLink);
                 groupCollection.Add(selectedLink.ParentGroup);
             }
+
+            SelectedDeletedLinkIndex = selectedDeletedLinkIndex >= RecycleBin.Count
+                ? selectedDeletedLinkIndex - 1
+                : selectedDeletedLinkIndex;
         }
 
         public ICommand RemoveRecycleBinItemCommand { get; }
@@ -515,7 +524,13 @@ namespace Links.ViewModels
         }
         public void OnRemoveRecycleBinItemCommandExecuted(object parameter)
         {
+            int selectedDeletedLinkIndex = SelectedDeletedLinkIndex;
+
             RecycleBin.Remove(SelectedDeletedLink);
+
+            SelectedDeletedLinkIndex = selectedDeletedLinkIndex >= RecycleBin.Count
+                ? selectedDeletedLinkIndex - 1
+                : selectedDeletedLinkIndex;
         }
 
         public ICommand EmptyRecycleBinCommand { get; }
@@ -526,6 +541,7 @@ namespace Links.ViewModels
         public void OnEmptyRecycleBinCommandExecuted(object parameter)
         {
             RecycleBin.Clear();
+            LastRecycleBinCleaningDate = DateTime.Now;
         }
 
         #endregion
@@ -552,6 +568,31 @@ namespace Links.ViewModels
 
             SetSettingsControlsItems();
             RestoreSettings(settings);
+        }
+
+        public void AddLinksToRecycleBin(IEnumerable<LinkInfo> links)
+        {
+            if (links.IsNullOrEmpty())
+                return;
+
+            RecycleBin = new ObservableCollection<LinkInfo>(RecycleBin.Concat(links));
+            OnPropertyChanged(nameof(RecycleBin));
+        }
+
+        public void CheckLastRecycleBinCleaning(bool redefineDateProperty)
+        {
+            bool res = DataOrganizer.TryGetLastRecycleBinCleaningDate(out DateTime lastCleaningDate);
+
+            if (!res)
+                return;
+
+            double currDifference = DateTime.Now.Subtract(lastCleaningDate).TotalDays;
+
+            if (currDifference >= EmptyRecycleBinDifference)
+                EmptyRecycleBinCommand?.Execute(null);
+
+            else if (redefineDateProperty)
+                LastRecycleBinCleaningDate = lastCleaningDate;
         }
 
         private void RestoreSettings(ISettings settings)

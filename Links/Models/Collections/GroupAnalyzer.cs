@@ -11,7 +11,7 @@ namespace Links.Models.Collections
             if (link == null || groups == null)
                 return false;
 
-            foreach (Group group in groups)
+            foreach (var group in groups)
             {
                 if (group.Contains(link))
                     return true;
@@ -25,7 +25,7 @@ namespace Links.Models.Collections
             if (link == null || groups == null)
                 return false;
 
-            foreach (Group group in groups)
+            foreach (var group in groups)
             {
                 if (group.Contains(link, comparer))
                     return true;
@@ -41,7 +41,7 @@ namespace Links.Models.Collections
             if (groups == null)
                 return links;
 
-            foreach (Group group in groups)
+            foreach (var group in groups)
             {
                 if (group.Count > 0)
                     links.AddRange(group.Links);

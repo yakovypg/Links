@@ -17,7 +17,7 @@ namespace Links.Models.Messages
         public MessageBoxResult GetEmptyResult(MessageBoxButton msgButton = MessageBoxButton.OK);
         public MessageBoxResult GetErrorResult(MessageBoxButton msgButton = MessageBoxButton.OK);
         public MessageBoxResult GetWarningResult(MessageBoxButton msgButton = MessageBoxButton.OK);
-        public MessageBoxResult GetQuestionResult(MessageBoxButton msgButton = MessageBoxButton.OK);
+        public MessageBoxResult GetQuestionResult(MessageBoxButton msgButton = MessageBoxButton.YesNo);
         public MessageBoxResult GetInformationResult(MessageBoxButton msgButton = MessageBoxButton.OK);
     }
 }

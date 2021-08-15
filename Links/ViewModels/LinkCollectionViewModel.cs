@@ -28,6 +28,8 @@ namespace Links.ViewModels
         public DeleteGroupParamMultiConverter DeleteGroupParamMultiConverter { get; } = new DeleteGroupParamMultiConverter();
         public IEnumerable<string> GroupIconColors => Enum.GetValues(typeof(GroupIcon.Colors)).Cast<GroupIcon.Colors>().ToStringEnumerable();
 
+        #region SizeParameters
+
         private double _linkPresenterGridWidth;
         public double LinkPresenterGridWidth
         {
@@ -66,6 +68,8 @@ namespace Links.ViewModels
                 SetValue(ref _groupEditorHeight, height);
             }
         }
+
+        #endregion
 
         #region Groups&LinksFiltering
 
@@ -142,8 +146,13 @@ namespace Links.ViewModels
             var linkCreatorGroup = paramTuple?.Item1 as Group;
             var resetLinkCreatorGroupIndexCommand = (paramTuple?.Item2 as MainWindowViewModel)?.ResetLinkCreatorGroupIndexCommand;
 
-            bool isGroupsEqual = linkCreatorGroup == SelectedGroup;
+            Group deletedGroup = SelectedGroup;
+
+            bool isGroupsEqual = linkCreatorGroup?.Equals(SelectedGroup) ?? false;
             bool isGroupRemoved = GroupCollection.Remove(SelectedGroup);
+
+            if (isGroupRemoved && MainWindowVM.SettingsVM.IsRecycleBinEnable)
+                MainWindowVM.SettingsVM.AddLinksToRecycleBin(deletedGroup.Links);
 
             if (isGroupRemoved && isGroupsEqual)
                 resetLinkCreatorGroupIndexCommand?.Execute(null);
@@ -185,6 +194,9 @@ namespace Links.ViewModels
 
             if (isLinkRemoved && MainWindowVM.SettingsVM.IsRecycleBinEnable)
                 MainWindowVM.SettingsVM.RecycleBin.Add(linkInfo);
+
+            if (isLinkRemoved && (SelectedGroup?.Contains(linkInfo) ?? false))
+                SelectedGroup.Remove(linkInfo);
 
             if (!isLinkRemoved)
                 new QuickMessage(CurrLocale.LocaleMessages.DeleteLinkError, CurrLocale).ShowError();
@@ -257,6 +269,19 @@ namespace Links.ViewModels
 
         #endregion
 
+        #region Commands
+
+        public ICommand SetFocusCommand { get; }
+        public void OnSetFocusCommandExecuted(object parameter)
+        {
+            if (!(parameter is UIElement element))
+                return;
+
+            element.Focus();
+        }
+
+        #endregion
+
         public LinkCollectionViewModel(ObservableCollection<Group> groups, MainWindowViewModel mainWindowVM)
         {
             MainWindowVM = mainWindowVM ?? throw new ArgumentNullException(nameof(mainWindowVM));
@@ -288,6 +313,8 @@ namespace Links.ViewModels
 
             ChangeLinkEditorVisibilityCommand = new RelayCommand(OnChangeLinkEditorVisibilityCommandExecuted, t => true);
             HideLinkEditorCommand = new RelayCommand(OnHideLinkEditorCommandExecuted, t => true);
+
+            SetFocusCommand = new RelayCommand(OnSetFocusCommandExecuted, t => true);
         }
 
         public void UpdateSelectedGroup()
