@@ -6,7 +6,6 @@ using System.Linq;
 namespace Links.Models.Collections
 {
     //Do not override Equals and GetHashCode
-
     internal class Group : IGroup
     {
         public int Count => Links.Count;

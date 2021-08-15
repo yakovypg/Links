@@ -1,10 +1,10 @@
 ﻿using Links.Data.App;
 using Links.Infrastructure.Serialization;
+using Links.Infrastructure.Serialization.Base;
 using Links.Models.Collections;
 using Links.Models.Configuration;
 using Links.Models.Localization;
 using Links.Models.Themes;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,7 +13,7 @@ using System.Windows.Forms;
 
 namespace Links.Data
 {
-    internal static class DataParser
+    internal static class DataOrganizer
     {
         public static bool TrySaveSettings(Settings settings)
         {
@@ -56,16 +56,11 @@ namespace Links.Data
         {
             if (deletedLinks == null || deletedLinks.Count() == 0)
             {
-                try
-                {
-                    File.WriteAllText(AppInfo.FilePaths.RecycleBin, "[]");
-                    return true;
-                }
-                catch { return false; }
+                return TrySaveGroups(AppInfo.FilePaths.RecycleBin, null);
             }
 
-            var groupAnalyzer = new GroupAnalyzer();
-            IEnumerable<Group> groups = groupAnalyzer.DistributeLinks(deletedLinks);
+            var groupOrganiser = new GroupOrganizer();
+            IEnumerable<Group> groups = groupOrganiser.DistributeLinks(deletedLinks);
 
             return TrySaveGroups(AppInfo.FilePaths.RecycleBin, groups);
         }
@@ -78,6 +73,9 @@ namespace Links.Data
                 return exception is FileNotFoundException;
             }
 
+            var groupOrganizer = new GroupOrganizer();
+            groupOrganizer.RedefineParentsForLinks(groups);
+
             var groupAnalyzer = new GroupAnalyzer();
             recycleBin = groupAnalyzer.GetAllLinks(groups);
 
@@ -86,15 +84,17 @@ namespace Links.Data
 
         public static bool TryGetLocales(out IEnumerable<Locale> locales)
         {
-            return TryGetItems(AppInfo.Directories.Locales, out locales);
+            var serializer = new LocaleSerializer();
+            return TryGetItems(AppInfo.Directories.Locales, serializer, out locales);
         }
 
         public static bool TryGetWindowThemes(out IEnumerable<WindowTheme> themes)
         {
-            return TryGetItems(AppInfo.Directories.Themes, out themes);
+            var serializer = new WindowThemeSerializer();
+            return TryGetItems(AppInfo.Directories.Themes, serializer, out themes);
         }
 
-        public static bool TrySaveItems<T>(string directory, IEnumerable<T> items, IEnumerable<string> names)
+        public static bool TrySaveItems<T>(string directory, IEnumerable<T> items, IEnumerable<string> names, ISerializer<T> serializer)
         {
             if (items == null || names == null)
                 return false;
@@ -110,10 +110,10 @@ namespace Links.Data
             {
                 try
                 {
-                    string path = Path.Combine(directory, namesArr[index++] + ".json");
-                    string json = JsonConvert.SerializeObject(item);
+                    string path = Path.Combine(directory, namesArr[index++] + ".ser");
+                    string data = serializer.Serialize(item);
 
-                    File.WriteAllText(path, json);
+                    File.WriteAllText(path, data);
                 }
                 catch
                 {
@@ -124,7 +124,7 @@ namespace Links.Data
             return result;
         }
 
-        public static bool TryGetItems<T>(string directory, out IEnumerable<T> items)
+        public static bool TryGetItems<T>(string directory, ISerializer<T> serializer, out IEnumerable<T> items)
         {
             var itemsList = new List<T>();
 
@@ -143,8 +143,8 @@ namespace Links.Data
                 {
                     try
                     {
-                        string json = File.ReadAllText(file.FullName);
-                        T item = JsonConvert.DeserializeObject<T>(json);
+                        string data = File.ReadAllText(file.FullName);
+                        T item = serializer.Deserialize(data);
 
                         if (item != null)
                             itemsList.Add(item);
@@ -171,17 +171,8 @@ namespace Links.Data
                 if (!TryGetGroups(path, out groups))
                     return false;
 
-                if (groups == null)
-                    return true;
-
-                foreach (Group group in groups)
-                {
-                    if (group.Links == null)
-                        continue;
-
-                    foreach (LinkInfo link in group.Links)
-                        link.ParentGroup = group;
-                }
+                var groupOrganizer = new GroupOrganizer();
+                groupOrganizer.RedefineParentsForLinks(groups);
 
                 return true;
             }
@@ -193,14 +184,7 @@ namespace Links.Data
 
         public static bool TryExportGroups(IEnumerable<Group> groups, out DialogResult dialogResult)
         {
-            if (groups == null)
-            {
-                dialogResult = DialogResult.Abort;
-                return false;
-            }
-
             dialogResult = DialogProvider.GetSavingFilePath(out string path);
-
             return !string.IsNullOrEmpty(path) && TrySaveGroups(path, groups);
         }
 
@@ -250,7 +234,6 @@ namespace Links.Data
             }
             catch (Exception ex)
             {
-                var t = ex.GetType();
                 groups = null;
                 exception = ex;
 

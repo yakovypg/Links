@@ -1,23 +1,25 @@
-﻿using System.Windows.Media.Effects;
+﻿using Links.Infrastructure.Extensions;
+using Links.Infrastructure.Serialization.Base;
+using System.Collections.Generic;
+using System.Windows.Media.Effects;
 
 namespace Links.Infrastructure.Serialization
 {
-    internal class DropShadowEffectSerializer : ISerializer<DropShadowEffect>
+    internal class DropShadowEffectSerializer : Serializer<DropShadowEffect>
     {
-        public DropShadowEffect Deserialize(string data)
+        public override DropShadowEffect Deserialize(string data)
         {
-            if (string.IsNullOrEmpty(data))
-                return null;
+            var item = new SerializeDataParser().ParseData(data).SerializationItem;
 
-            var item = new SerializerItem(data);
+            if (item == null)
+                return null;
 
             double blurRadius = double.Parse(item.GetValue("BlurRadius"));
             double direction = double.Parse(item.GetValue("Direction"));
             double opacity = double.Parse(item.GetValue("Opacity"));
             double shadowDepth = double.Parse(item.GetValue("ShadowDepth"));
 
-            string colorData = item.GetValue("Color").Substring(1);
-            colorData = colorData.Remove(colorData.Length - 1);
+            string colorData = item.GetValue("Color").Extract(1, 1);
             var color = new ColorSerializer().Deserialize(colorData);
 
             return new DropShadowEffect()
@@ -30,15 +32,24 @@ namespace Links.Infrastructure.Serialization
             };
         }
 
-        public string Serialize(DropShadowEffect item)
+        public override string Serialize(DropShadowEffect item)
         {
             if (item == null)
-                return null;
-            
+                return GenerateNullValueDataString();
+
             string colorData = new ColorSerializer().Serialize(item.Color);
 
-            return $"BlurRadius={item.BlurRadius} Direction={item.Direction} Opacity={item.Opacity} " +
-                   $"ShadowDepth={item.ShadowDepth} Color=[{colorData}]";
+            var dict = new Dictionary<string, object>()
+            {
+                { "BlurRadius", item.BlurRadius },
+                { "Direction", item.Direction },
+                { "Opacity", item.Opacity },
+                { "ShadowDepth", item.ShadowDepth },
+                { "Color", colorData.Surround(START_COMPLEX_TYPE, END_COMPLEX_TYPE) },
+            };
+
+            string data = ConvertToDataString(dict);
+            return GenerateFullDataString(data);
         }
     }
 }

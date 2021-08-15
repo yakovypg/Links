@@ -1,15 +1,18 @@
-﻿using Links.Models.Configuration;
+﻿using Links.Infrastructure.Extensions;
+using Links.Infrastructure.Serialization.Base;
+using Links.Models.Configuration;
+using System.Collections.Generic;
 
 namespace Links.Infrastructure.Serialization
 {
-    internal class SettingsSerializer : ISerializer<Settings>
+    internal class SettingsSerializer : Serializer<Settings>
     {
-        public Settings Deserialize(string data)
+        public override Settings Deserialize(string data)
         {
-            if (string.IsNullOrEmpty(data))
-                return null;
+            var item = new SerializeDataParser().ParseData(data).SerializationItem;
 
-            var item = new SerializerItem(data);
+            if (item == null)
+                return null;
 
             string groupSortPropertyName = item.GetValue("GroupSortPropertyName");
             string groupListSortDescriptionParam = item.GetValue("GroupListSortDescriptionParam");
@@ -25,12 +28,10 @@ namespace Links.Infrastructure.Serialization
             int height = int.Parse(presenterSizeData.Substring(sepIndex + 1));
             var presenterSize = new System.Windows.Size(width, height);
 
-            string themeData = item.GetValue("Theme").Substring(1);
-            themeData = themeData.Remove(themeData.Length - 1);
+            string themeData = item.GetValue("Theme").Extract(1, 1);
             var theme = new WindowThemeSerializer().Deserialize(themeData);
 
-            string localeData = item.GetValue("CurrentLocale").Substring(1);
-            localeData = localeData.Remove(localeData.Length - 1);
+            string localeData = item.GetValue("CurrentLocale").Extract(1, 1);
             var locale = new LocaleSerializer().Deserialize(localeData);
 
             return new Settings()
@@ -48,25 +49,31 @@ namespace Links.Infrastructure.Serialization
             };
         }
 
-        public string Serialize(Settings settings)
+        public override string Serialize(Settings settings)
         {
             if (settings == null)
-                return null;
+                return GenerateNullValueDataString();
 
             string presenterSizeData = $"{settings.PresenterSize.Width}x{settings.PresenterSize.Height}";
             string themeData = new WindowThemeSerializer().Serialize(settings.Theme as Models.Themes.WindowTheme);
             string localeData = new LocaleSerializer().Serialize(settings.CurrentLocale as Models.Localization.Locale);
 
-            return $"GroupSortPropertyName={settings.GroupSortPropertyName} " +
-                   $"GroupListSortDescriptionParam={settings.GroupListSortDescriptionParam} " +
-                   $"LinkSortPropertyName={settings.LinkSortPropertyName} " +
-                   $"LinkListSortDescriptionParam={settings.LinkListSortDescriptionParam} " +
-                   $"WarningsParam={settings.WarningsParam} " +
-                   $"PresenterSize={presenterSizeData} " +
-                   $"Theme=[{themeData}] " +
-                   $"CurrentLocale=[{localeData}] " +
-                   $"RecycleBinParam={settings.RecycleBinParam} " +
-                   $"EmptyRecycleBinParam={settings.EmptyRecycleBinParam}";
+            var dict = new Dictionary<string, object>()
+            {
+                {"GroupSortPropertyName", settings.GroupSortPropertyName },
+                {"GroupListSortDescriptionParam", settings.GroupListSortDescriptionParam },
+                {"LinkSortPropertyName", settings.LinkSortPropertyName },
+                {"LinkListSortDescriptionParam", settings.LinkListSortDescriptionParam },
+                {"WarningsParam", settings.WarningsParam },
+                {"PresenterSize", presenterSizeData },
+                {"Theme", themeData.Surround(START_COMPLEX_TYPE, END_COMPLEX_TYPE) },
+                {"CurrentLocale", localeData.Surround(START_COMPLEX_TYPE, END_COMPLEX_TYPE) },
+                {"RecycleBinParam", settings.RecycleBinParam },
+                {"EmptyRecycleBinParam", settings.EmptyRecycleBinParam }
+            };
+
+            string data = ConvertToDataString(dict);
+            return GenerateFullDataString(data);
         }
     }
 }

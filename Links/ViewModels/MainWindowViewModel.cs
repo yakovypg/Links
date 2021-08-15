@@ -2,6 +2,7 @@
 using Links.Data.App;
 using Links.Data.Imaging;
 using Links.Infrastructure.Commands;
+using Links.Infrastructure.Extensions;
 using Links.Models;
 using Links.Models.Collections;
 using Links.Models.Collections.Creators;
@@ -196,13 +197,13 @@ namespace Links.ViewModels
             while (!isStateLoaded && !closeProgram)
             {
                 if (!isSettingsLoaded)
-                    isSettingsLoaded = DataParser.TryGetSettings(out settings);
+                    isSettingsLoaded = DataOrganizer.TryGetSettings(out settings);
 
                 if (!isGroupsLoaded)
-                    isGroupsLoaded = DataParser.TryGetGroups(out loadedGroups, out Exception ex) || ex is System.IO.FileNotFoundException;
+                    isGroupsLoaded = DataOrganizer.TryGetGroups(out loadedGroups, out Exception ex) || ex is System.IO.FileNotFoundException;
 
                 if (!isRecycleBinLoaded)
-                    isRecycleBinLoaded = DataParser.TryGetRecycleBin(out loadedRecycleBin);
+                    isRecycleBinLoaded = DataOrganizer.TryGetRecycleBin(out loadedRecycleBin);
 
                 isStateLoaded = isSettingsLoaded && isGroupsLoaded && isRecycleBinLoaded;
 
@@ -218,6 +219,9 @@ namespace Links.ViewModels
                 _closeProgramWithoutSaving = true;
                 Application.Current.Shutdown();
             }
+
+            var groupOrganizer = new GroupOrganizer();
+            groupOrganizer.RedefineParentsForLinks(loadedGroups);
 
             string currYear = DateTime.Now.Year.ToString();
 
@@ -252,13 +256,13 @@ namespace Links.ViewModels
             while (!isStateSaved && !exitWithoutSaving)
             {
                 if (!isSettingsSaved)
-                    isSettingsSaved = DataParser.TrySaveSettings(SettingsVM.CurrentSettings);
+                    isSettingsSaved = DataOrganizer.TrySaveSettings(SettingsVM.CurrentSettings);
 
                 if (!isGroupsSaved)
-                    isGroupsSaved = DataParser.TrySaveGroups(LinkCollectionVM.GroupCollection);
+                    isGroupsSaved = DataOrganizer.TrySaveGroups(LinkCollectionVM.GroupCollection);
 
                 if (!isRecycleBinSaved)
-                    isRecycleBinSaved = DataParser.TrySaveRecycleBin(SettingsVM.RecycleBin);
+                    isRecycleBinSaved = DataOrganizer.TrySaveRecycleBin(SettingsVM.RecycleBin);
 
                 isStateSaved = isSettingsSaved && isGroupsSaved && isRecycleBinSaved;
 

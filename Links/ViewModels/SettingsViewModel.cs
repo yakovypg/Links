@@ -288,8 +288,8 @@ namespace Links.ViewModels
                 return;
             }
 
-            var groupAnalyser = new GroupAnalyzer();
-            nonemptyImpexGroups = groupAnalyser.RemoveExistingLinks(nonemptyImpexGroups, MainWindowVM.LinkCollectionVM.GroupCollection, true);
+            var groupOrganizer = new GroupOrganizer();
+            nonemptyImpexGroups = groupOrganizer.RemoveExistingLinks(nonemptyImpexGroups, MainWindowVM.LinkCollectionVM.GroupCollection, true);
 
             if (nonemptyImpexGroups == null || nonemptyImpexGroups.Count() == 0)
             {
@@ -317,8 +317,10 @@ namespace Links.ViewModels
             }
             else
             {
+                var groupAnalyzer = new GroupAnalyzer();
                 var nonIconComparer = new GroupNonIconEqualityComparer();
-                var links = new ObservableCollection<LinkInfo>(groupAnalyser.GetAllLinks(nonemptyImpexGroups));
+
+                var links = new ObservableCollection<LinkInfo>(groupAnalyzer.GetAllLinks(nonemptyImpexGroups));
                 var groupUnsorted = new Group(MainWindowVM.CurrentLocale.Unsorted, links);
 
                 Group availableGroup = groups.FirstOrDefault(t => nonIconComparer.Equals(t, groupUnsorted));
@@ -345,7 +347,7 @@ namespace Links.ViewModels
                 return;
             }
 
-            bool res = DataParser.TryExportGroups(nonemptyImpexGroups, out System.Windows.Forms.DialogResult dialogResult);
+            bool res = DataOrganizer.TryExportGroups(nonemptyImpexGroups, out System.Windows.Forms.DialogResult dialogResult);
 
             if (res)
             {
@@ -417,7 +419,7 @@ namespace Links.ViewModels
             if (ImpexMenuVisibility == Visibility.Visible)
                 return;
 
-            bool isImported = DataParser.TryImportGroups(out IEnumerable<Group> groups, out System.Windows.Forms.DialogResult dialogResult);
+            bool isImported = DataOrganizer.TryImportGroups(out IEnumerable<Group> groups, out System.Windows.Forms.DialogResult dialogResult);
 
             if (isImported)
             {
@@ -488,11 +490,15 @@ namespace Links.ViewModels
                 return;
             }
 
+            var comparer = new GroupDesignEqualityComparer();
             ObservableCollection<Group> groupCollection = MainWindowVM.LinkCollectionVM.GroupCollection;
 
-            if (groupCollection.Contains(selectedLink.ParentGroup))
+            Group group = groupCollection.FirstOrDefault(t => comparer.Equals(t, selectedLink.ParentGroup));
+
+            if (group != null)
             {
-                selectedLink.ParentGroup.Links.Add(selectedLink);
+                selectedLink.ParentGroup = group;
+                group.Links.Add(selectedLink);
             }
             else
             {

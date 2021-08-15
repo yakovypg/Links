@@ -1,4 +1,5 @@
 ﻿using Links.Infrastructure.Extensions;
+using Links.Infrastructure.Serialization.Base;
 using Links.Models.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,29 +8,22 @@ using System.Text;
 
 namespace Links.Infrastructure.Serialization
 {
-    internal class GroupSerializer : IMultiSerializer<Group>
+    internal class GroupSerializer : Serializer<Group>, IMultiSerializer<Group>
     {
-        public GroupSerializer()
+        public override Group Deserialize(string data)
         {
-        }
-
-        public Group Deserialize(string data)
-        {
-            if (string.IsNullOrEmpty(data))
-                return null;
-
-            var item = new SerializerItem(data);
+            var item = new SerializeDataParser().ParseData(data).SerializationItem;
 
             string name = item.GetValue("Name");
 
             int colorIndex = int.Parse(item.GetValue("Icon"));
             var icon = new GroupIcon((GroupIcon.Colors)colorIndex);
 
-            string linksData = item.GetValue("Links");
-            IEnumerable<LinkInfo> linksList = new LinkSerializer().DeserializeMany(linksData);
+            string linksData = item.GetValue("Links").Extract(1, 1);
+            var linksCollection = new LinkSerializer().DeserializeMany(linksData);
 
-            var links = !linksList.IsNullOrEmpty()
-                ? new ObservableCollection<LinkInfo>(linksList)
+            var links = !linksCollection.IsNullOrEmpty()
+                ? new ObservableCollection<LinkInfo>(linksCollection)
                 : new ObservableCollection<LinkInfo>();
 
             return new Group(name, icon, links);
@@ -37,55 +31,79 @@ namespace Links.Infrastructure.Serialization
 
         public IEnumerable<Group> DeserializeMany(string data)
         {
-            if (string.IsNullOrEmpty(data) || data.Length < 2)
+            var item = new SerializeDataParser().ParseData(data).SerializationItem;
+
+            if (item == null || item.Children.Count == 0)
                 return null;
 
-            data = data.Remove(data.Length - 1).Substring(1);
-            string[] items = SerializerItem.SplitData(data, ',').ToArray();
+            var groupsPresenters = item.Children[0]?.Children;
 
-            if (items == null || items.Length == 0)
+            if (groupsPresenters == null || groupsPresenters.Count == 0)
                 return null;
 
-            var groups = new Group[items.Length];
+            var groups = new List<Group>();
 
-            for (int i = 0; i < items.Length; ++i)
-                groups[i] = Deserialize(items[i]);
+            for (int i = 0; i < groupsPresenters.Count; ++i)
+            {
+                string groupData = groupsPresenters[i]?.GetValuesDataString();
+
+                if (!string.IsNullOrEmpty(groupData))
+                {
+                    var group = Deserialize(groupData);
+
+                    if (group != null)
+                        groups.Add(group);
+                }
+            }
 
             return groups;
         }
 
-        public string Serialize(Group group)
+        public override string Serialize(Group group)
+        {
+            return Serialize(group, true);
+        }
+
+        public string Serialize(Group group, bool addInfo)
         {
             if (group == null)
-                return null;
+                return GenerateNullValueDataString();
 
             string linksData = new LinkSerializer().SerializeMany(group.Links);
 
-            return $"Name={group.Name} Icon={group.Icon.ColorIndex} Links={linksData}";
+            var dict = new Dictionary<string, object>()
+            {
+                { "Name", group.Name },
+                { "Icon", group.Icon.ColorIndex },
+                { "Links", linksData.Surround(START_COMPLEX_TYPE, END_COMPLEX_TYPE) },
+            };
+
+            string data = ConvertToDataString(dict);
+            return GenerateFullDataString(data, addInfo);
         }
 
         public string SerializeMany(IEnumerable<Group> groups)
         {
-            int groupsCount = groups.Count();
-
-            if (groups == null || groupsCount == 0)
-                return null;
+            if (groups.IsNullOrEmpty())
+                return GenerateNullValueDataString();
 
             int currPos = 0;
-            var dataBuilder = new StringBuilder("[");
+            int groupsCount = groups.Count();
+            var dataBuilder = new StringBuilder(START_COMPLEX_TYPE + "");
 
             foreach (Group group in groups)
             {
                 currPos++;
-                string data = Serialize(group);
+                string currData = Serialize(group, false).Surround(START_COMPLEX_TYPE, END_COMPLEX_TYPE);
 
-                dataBuilder.Append(data);
+                dataBuilder.Append(currData);
 
                 if (currPos < groupsCount)
-                    dataBuilder.Append(",");
+                    dataBuilder.Append(DELIMITER);
             }
 
-            return dataBuilder.Append("]").ToString();
+            string data = dataBuilder.Append(END_COMPLEX_TYPE).ToString();
+            return GenerateFullDataString(data);
         }
     }
 }

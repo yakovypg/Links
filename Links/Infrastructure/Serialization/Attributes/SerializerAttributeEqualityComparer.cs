@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Links.Infrastructure.Serialization.Attributes
 {
-    class SerializerAttributeEqualityComparer : IEqualityComparer<Attribute>
+    internal class SerializerAttributeEqualityComparer : IEqualityComparer<Attribute>
     {
         public bool Equals(Attribute x, Attribute y)
         {

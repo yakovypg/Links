@@ -1,4 +1,4 @@
-﻿namespace Links.Infrastructure.Serialization
+﻿namespace Links.Infrastructure.Serialization.Base
 {
     internal interface ISerializer<T>
     {

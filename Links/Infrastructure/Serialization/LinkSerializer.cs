@@ -1,102 +1,109 @@
-﻿using Links.Models.Collections;
-using System;
+﻿using Links.Infrastructure.Extensions;
+using Links.Infrastructure.Serialization.Base;
+using Links.Models.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Media.Imaging;
 
 namespace Links.Infrastructure.Serialization
 {
-    internal class LinkSerializer : IMultiSerializer<LinkInfo>
+    internal class LinkSerializer : Serializer<LinkInfo>, IMultiSerializer<LinkInfo>
     {
         public LinkSerializer()
         {
         }
 
-        public LinkInfo Deserialize(string data)
+        public override LinkInfo Deserialize(string data)
         {
-            if (string.IsNullOrEmpty(data))
-                return null;
+            var item = new SerializeDataParser().ParseData(data).SerializationItem;
 
-            var item = new SerializerItem(data);
+            if (item == null)
+                return null;
 
             string link = item.GetValue("Link");
             string title = item.GetValue("Title");
 
-            string imageBytes = item.GetValue("BackgroundImage");
-            BitmapImage backgroundImage = null;
-
-            try
-            {
-                var serializer = new BitmapImageSerializer();
-                backgroundImage = serializer.Deserialize(imageBytes);
-            }
-            catch { }
+            string backgroundImageData = item.GetValue("BackgroundImage").Extract(1, 1);
+            var backgroundImage = new BitmapImageSerializer().Deserialize(backgroundImageData);
 
             return new LinkInfo(link, title, null, backgroundImage);
         }
 
         public IEnumerable<LinkInfo> DeserializeMany(string data)
         {
-            if (string.IsNullOrEmpty(data) || data.Length < 2)
+            var item = new SerializeDataParser().ParseData(data).SerializationItem;
+
+            if (item == null)
                 return null;
 
-            data = data.Remove(data.Length - 1).Substring(1);
-            string[] items = data.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+            var linksPresenters = item.Children[0]?.Children;
 
-            if (items == null || items.Length == 0)
+            if (linksPresenters == null || linksPresenters.Count == 0)
                 return null;
 
-            var links = new LinkInfo[items.Length];
+            var links = new List<LinkInfo>();
 
-            for (int i = 0; i < items.Length; ++i)
-                links[i] = Deserialize(items[i]);
+            for (int i = 0; i < linksPresenters.Count; ++i)
+            {
+                string linkData = linksPresenters[i]?.GetValuesDataString();
+
+                if (!string.IsNullOrEmpty(linkData))
+                {
+                    var link = Deserialize(linkData);
+
+                    if (link != null)
+                        links.Add(link);
+                }
+            }
 
             return links;
         }
 
-        public string Serialize(LinkInfo link)
+        public override string Serialize(LinkInfo link)
+        {
+            return Serialize(link, true);
+        }
+
+        public string Serialize(LinkInfo link, bool addInfo)
         {
             if (link == null)
-                return null;
+                return GenerateNullValueDataString();
 
-            string imageBytes;
+            string backgroundImageData = new BitmapImageSerializer().Serialize(link.BackgroundImage);
 
-            try
+            var dict = new Dictionary<string, object>()
             {
-                var serializer = new BitmapImageSerializer();
-                imageBytes = serializer.Serialize(link.BackgroundImage);
-            }
-            catch
-            {
-                imageBytes = "null";
-            }
+                { "Link", link.Link },
+                { "Title", link.Title },
+                { "BackgroundImage", backgroundImageData.Surround(START_COMPLEX_TYPE, END_COMPLEX_TYPE) },
+            };
 
-            return $"Link={link.Link} Title={link.Title} BackgroundImage={imageBytes}";
+            string data = ConvertToDataString(dict);
+            return GenerateFullDataString(data, addInfo);
         }
 
         public string SerializeMany(IEnumerable<LinkInfo> links)
         {
-            int linksCount = links.Count();
-
-            if (links == null || linksCount == 0)
-                return null;
+            if (links.IsNullOrEmpty())
+                return GenerateNullValueDataString();
 
             int currPos = 0;
-            var dataBuilder = new StringBuilder("[");
+            int linksCount = links.Count();
+            var dataBuilder = new StringBuilder(START_COMPLEX_TYPE + "");
 
             foreach (LinkInfo link in links)
             {
                 currPos++;
-                string data = Serialize(link);
+                string currData = Serialize(link, false).Surround(START_COMPLEX_TYPE, END_COMPLEX_TYPE);
 
-                dataBuilder.Append(data);
+                dataBuilder.Append(currData);
 
                 if (currPos < linksCount)
-                    dataBuilder.Append(",");
+                    dataBuilder.Append(DELIMITER);
             }
 
-            return dataBuilder.Append("]").ToString();
+            string data = dataBuilder.Append(END_COMPLEX_TYPE).ToString();
+            return GenerateFullDataString(data);
         }
     }
 }

@@ -1,12 +1,17 @@
-﻿using System.Windows.Media;
+﻿using Links.Infrastructure.Serialization.Base;
+using System.Collections.Generic;
+using System.Windows.Media;
 
 namespace Links.Infrastructure.Serialization
 {
-    internal class ColorSerializer : ISerializer<Color>
+    internal class ColorSerializer : Serializer<Color>
     {
-        public Color Deserialize(string data)
+        public override Color Deserialize(string data)
         {
-            var item = new SerializerItem(data);
+            var item = new SerializeDataParser().ParseData(data).SerializationItem;
+
+            if (item == null)
+                return new Color();
 
             byte a = byte.Parse(item.GetValue("A"));
             byte r = byte.Parse(item.GetValue("R"));
@@ -20,15 +25,33 @@ namespace Links.Infrastructure.Serialization
 
             return new Color()
             {
-                A = a, R = r, G = g, B = b,
-                ScA = scA, ScR = scR, ScG = scG, ScB = scB
+                A = a,
+                R = r,
+                G = g,
+                B = b,
+                ScA = scA,
+                ScR = scR,
+                ScG = scG,
+                ScB = scB
             };
         }
 
-        public string Serialize(Color color)
+        public override string Serialize(Color color)
         {
-            return $"A={color.A} R={color.R} G={color.G} B={color.B} " +
-                   $"ScA={color.ScA} ScR={color.ScR} ScG={color.ScG} ScB={color.ScB}";
+            var dict = new Dictionary<string, object>()
+            {
+                { "A", color.A },
+                { "R", color.R },
+                { "G", color.G },
+                { "B", color.B },
+                { "ScA", color.ScA },
+                { "ScR", color.ScR },
+                { "ScG", color.ScG },
+                { "ScB", color.B },
+            };
+
+            string data = ConvertToDataString(dict);
+            return GenerateFullDataString(data);
         }
     }
 }

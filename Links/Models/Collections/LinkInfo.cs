@@ -6,8 +6,6 @@ using System.Windows.Media.Imaging;
 
 namespace Links.Models.Collections
 {
-    //Do not override GetHashCode
-
     internal class LinkInfo : ILinkInfo, ILinkPresenter, INotifyPropertyChanged
     {
         public LinkInfo Self => this;
@@ -121,6 +119,12 @@ namespace Links.Models.Collections
                    Link == other.Link &&
                    Title == other.Title &&
                    (BackgroundImage?.Equals(other.BackgroundImage) ?? true);
+        }
+
+        public override int GetHashCode()
+        {
+            //Do not override the implementation
+            return base.GetHashCode();
         }
     }
 }

@@ -58,12 +58,13 @@ namespace Links.Data.Imaging
                 Position = 0
             };
 
-            var image = new BitmapImage();
-            image.BeginInit();
-            image.StreamSource = memoryStream;
-            image.EndInit();
+            var bmpImage = new BitmapImage();
 
-            return image;
+            bmpImage.BeginInit();
+            bmpImage.StreamSource = memoryStream;
+            bmpImage.EndInit();
+
+            return bmpImage;
         }
 
         public static BitmapImage GetBitmapImage(string path, Size size)
@@ -95,42 +96,42 @@ namespace Links.Data.Imaging
             return bmpImage;
         }
 
-        public static bool TryGetBitmapImage(string path, out BitmapImage image)
+        public static bool TryGetBitmapImage(string path, out BitmapImage bmpImage)
         {
             try
             {
-                image = GetBitmapImage(path);
+                bmpImage = GetBitmapImage(path);
                 return true;
             }
             catch
             {
-                image = null;
+                bmpImage = null;
                 return false;
             }
         }
 
-        public static bool TryGetBitmapImage(string path, Size size, out BitmapImage image)
+        public static bool TryGetBitmapImage(string path, Size size, out BitmapImage bmpImage)
         {
             try
             {
-                image = GetBitmapImage(path, size);
+                bmpImage = GetBitmapImage(path, size);
                 return true;
             }
             catch
             {
-                image = null;
+                bmpImage = null;
                 return false;
             }
         }
 
-        public static byte[] GetBytes(BitmapImage image)
+        public static byte[] GetBytes(BitmapImage bmpImage)
         {
             byte[] buffer = null;
 
             using (var memoryStream = new MemoryStream())
             {
                 var encoder = new PngBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(image));
+                encoder.Frames.Add(BitmapFrame.Create(bmpImage));
                 encoder.Save(memoryStream);
 
                 memoryStream.Seek(0, SeekOrigin.Begin);

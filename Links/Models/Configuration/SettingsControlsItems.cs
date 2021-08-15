@@ -77,7 +77,7 @@ namespace Links.Models.Configuration
 
         public ObservableCollection<IWindowTheme> GetThemes()
         {
-            DataParser.TryGetWindowThemes(out IEnumerable<WindowTheme> themes);
+            DataOrganizer.TryGetWindowThemes(out IEnumerable<WindowTheme> themes);
 
             var defaultThemes = new ObservableCollection<IWindowTheme>(new IWindowTheme[]
             {
@@ -93,7 +93,7 @@ namespace Links.Models.Configuration
 
         public ObservableCollection<ILocale> GetLocales()
         {
-            DataParser.TryGetLocales(out IEnumerable<Locale> locales);
+            DataOrganizer.TryGetLocales(out IEnumerable<Locale> locales);
 
             var defaultLocales = new ObservableCollection<ILocale>(new ILocale[]
             {

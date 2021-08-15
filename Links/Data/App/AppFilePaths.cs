@@ -14,7 +14,7 @@ namespace Links.Data.App
             if (directories == null)
                 throw new ArgumentNullException();
 
-            Settings = Path.Combine(directories.Data, "settings.settings");
+            Settings = Path.Combine(directories.Data, "settings.ser");
             LinkCollection = Path.Combine(directories.Links, "links.groups");
             RecycleBin = Path.Combine(directories.Links, "recyclebin.groups");
         }

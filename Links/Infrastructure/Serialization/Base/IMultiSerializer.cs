@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Links.Infrastructure.Serialization
+namespace Links.Infrastructure.Serialization.Base
 {
     internal interface IMultiSerializer<T> : ISerializer<T>
     {

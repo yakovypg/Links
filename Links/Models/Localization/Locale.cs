@@ -1,5 +1,6 @@
 ﻿using Links.Infrastructure.Serialization.Attributes;
 using System;
+using System.Linq;
 using System.Reflection;
 
 namespace Links.Models.Localization
@@ -86,15 +87,18 @@ namespace Links.Models.Localization
             if (DisplayName != other.DisplayName)
                 return false;
 
-            PropertyInfo[] currProps = GetType().GetProperties();
-            PropertyInfo[] otherProps = other.GetType().GetProperties();
+            PropertyInfo[] currProps = GetType().GetProperties().Where(t => t.CanWrite).ToArray();
+            PropertyInfo[] otherProps = other.GetType().GetProperties().Where(t => t.CanWrite).ToArray();
 
             if (currProps.Length != otherProps.Length)
                 return false;
 
             for (int i = 0; i < currProps.Length; ++i)
             {
-                if (!currProps[i].Equals(otherProps[i]))
+                object currPropValue = currProps[i].GetValue(this);
+                object otherPropValue = otherProps[i].GetValue(other);
+
+                if (!currPropValue.Equals(otherPropValue))
                     return false;
             }
 

@@ -1,23 +1,24 @@
-﻿using Links.Models.Localization;
+﻿using Links.Infrastructure.Extensions;
+using Links.Infrastructure.Serialization.Base;
+using Links.Models.Localization;
 using System.Linq;
 
 namespace Links.Infrastructure.Serialization
 {
-    internal class LocaleSerializer : ISerializer<Locale>
+    internal class LocaleSerializer : Serializer<Locale>
     {
-        public Locale Deserialize(string data)
+        public override Locale Deserialize(string data)
         {
-            var item = new SerializerItem(data);
+            var item = new SerializeDataParser().ParseData(data).SerializationItem;
 
-            string localeMessagesData = item.GetValue("LocaleMessages").Substring(1);
-            localeMessagesData = localeMessagesData.Remove(localeMessagesData.Length - 1);
+            string localeMessagesData = item.GetValue("LocaleMessages").Extract(1, 1);
+            var msgItem = new SerializeDataParser().ParseData(localeMessagesData).SerializationItem;
 
-            var localeMessagesItem = new SerializerItem(localeMessagesData);
             var localeMessages = new LocaleMessages();
 
             foreach (var prop in localeMessages.GetType().GetProperties())
             {
-                if (localeMessagesItem.TryGetValue(prop.Name, out string value))
+                if (msgItem.TryGetValue(prop.Name, out string value))
                     prop.SetValue(localeMessages, value);
             }
 
@@ -29,7 +30,11 @@ namespace Links.Infrastructure.Serialization
                 LocaleMessages = localeMessages
             };
 
-            foreach (var prop in locale.GetType().GetProperties().Where(t => t.Name != "DisplayName" && t.Name != "CultureName" && t.Name != "LocaleMessages"))
+            var localeType = locale.GetType();
+            var props = localeType.GetProperties();
+            var necessaryProps = props.Where(t => t.Name != "DisplayName" && t.Name != "CultureName" && t.Name != "LocaleMessages");
+
+            foreach (var prop in necessaryProps)
             {
                 if (item.TryGetValue(prop.Name, out string value))
                     prop.SetValue(locale, value);
@@ -38,9 +43,14 @@ namespace Links.Infrastructure.Serialization
             return locale;
         }
 
-        public string Serialize(Locale locale)
+        public override string Serialize(Locale locale)
         {
-            return new DefaultSerializer().Serialize(locale, true);
+            var serializer = new DefaultSerializer()
+            {
+                SerializerName = GetInfo().SerializerName
+            };
+
+            return serializer.Serialize(locale, true);
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using Links.Data.Imaging;
+using Links.Infrastructure.Extensions;
+using Links.Infrastructure.Serialization.Base;
 using Links.Models.Themes;
 using System;
 using System.Collections.Generic;
@@ -7,22 +9,30 @@ using System.Windows.Media.Effects;
 
 namespace Links.Infrastructure.Serialization
 {
-    internal class WindowThemeSerializer : ISerializer<WindowTheme>
+    internal class WindowThemeSerializer : Serializer<WindowTheme>
     {
-        public WindowTheme Deserialize(string data)
+        public override WindowTheme Deserialize(string data)
         {
-            var item = new SerializerItem(data);
+            var item = new SerializeDataParser().ParseData(data).SerializationItem;
+
+            if (item == null)
+                return null;
 
             string displayName = item.GetValue("DisplayName");
 
-            string titleEffectData = item.GetValue("TitleEffect").Substring(1);
-            titleEffectData = titleEffectData.Remove(titleEffectData.Length - 1);
+            string titleEffectData = item.GetValue("TitleEffect").Extract(1, 1);
             var titleEffect = new DropShadowEffectSerializer().Deserialize(titleEffectData);
 
-            var theme = new WindowTheme(displayName) { TitleEffect = titleEffect };
-            var themeType = theme.GetType();
+            var theme = new WindowTheme(displayName)
+            {
+                TitleEffect = titleEffect
+            };
 
-            foreach (var prop in themeType.GetProperties().Where(t => t.Name != "DisplayName" && t.Name != "TitleEffect"))
+            var themeType = theme.GetType();
+            var props = themeType.GetProperties();
+            var necessaryProps = props.Where(t => t.Name != "DisplayName" && t.Name != "TitleEffect");
+
+            foreach (var prop in necessaryProps)
             {
                 if (item.TryGetValue(prop.Name, out string value))
                 {
@@ -34,20 +44,25 @@ namespace Links.Infrastructure.Serialization
             return theme;
         }
 
-        public string Serialize(WindowTheme theme)
+        public override string Serialize(WindowTheme theme)
         {
             var converters = new Dictionary<Type, Func<object, string>>()
             {
                 { typeof(Effect), SerializeEffect }
             };
 
-            return new DefaultSerializer(converters).Serialize(theme);
+            var serializer = new DefaultSerializer(converters)
+            {
+                SerializerName = GetInfo().SerializerName
+            };
+
+            return serializer.Serialize(theme);
         }
 
         private string SerializeEffect(object effect)
         {
             string data = new DropShadowEffectSerializer().Serialize(effect as DropShadowEffect);
-            return $"[{data}]";
+            return data.Surround(START_COMPLEX_TYPE, END_COMPLEX_TYPE);
         }
     }
 }
