@@ -32,6 +32,7 @@
 
     <i:Interaction.Behaviors>
         <b:WindowStateChangedBehavior/>
+        <b:WindowKeyDownBehavior/>
         <b:WindowPreviewKeyDownBehavior/>
     </i:Interaction.Behaviors>
 
@@ -457,6 +458,14 @@
                 </Border>
 
                 <ItemsControl Grid.Column="2" Margin="3, 0, 0, 0" ItemsSource="{Binding SelectedGroupLinks}">
+
+                    <ItemsControl.InputBindings>
+                        <KeyBinding Key="LeftShift" Command="{Binding CheckAllLinksCommand}"/>
+                        <KeyBinding Key="RightShift" Command="{Binding UncheckAllLinksCommand}"/>
+                        <KeyBinding Key="Tab" Command="{Binding ChangeLinksMoveMenuVisibilityCommand}"/>
+                        <KeyBinding Key="Delete" Command="{Binding DeleteSelectedLinksCommand}"/>
+                    </ItemsControl.InputBindings>
+                    
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel
@@ -465,7 +474,6 @@
                             </WrapPanel>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
-
 
                     <ItemsControl.Template>
                         <ControlTemplate>
@@ -855,10 +863,67 @@
             </Grid>
 
             <Grid Grid.RowSpan="2"
+                  DataContext="{Binding LinkCollectionVM}"
+                  Background="{Binding MainWindowVM.Theme.WindowBackground}"
+                  Visibility="{Binding LinksMoveMenuVisibility}">
+
+                <Border Width="230" Height="95" BorderThickness="3" BorderBrush="{Binding MainWindowVM.Theme.CreatorMenuBorderBrush}">
+                    <Border BorderThickness="1" BorderBrush="{Binding MainWindowVM.Theme.CreatorMenuSubborderBrush}">
+                        <Grid Background="{Binding MainWindowVM.Theme.CreatorMenuBackground}">
+
+                            <StackPanel Margin="5">
+                                <TextBlock
+                                    FontSize="15"
+                                    FontWeight="Bold"
+                                    HorizontalAlignment="Center"
+                                    Text="{Binding MainWindowVM.CurrentLocale.SelectGroupToMove}">
+                                </TextBlock>
+                                
+                                <ComboBox
+                                    Margin="0, 7"
+                                    ItemsSource="{Binding ElementName=LinkCreatorGroupComboBox, Path=ItemsSource}"
+                                    SelectedItem="{Binding GroupToMoveLinks, UpdateSourceTrigger=PropertyChanged}">
+                                </ComboBox>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="10"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Column="0"
+                                               HorizontalAlignment="Center"
+                                               Text="{Binding MainWindowVM.CurrentLocale.Move}"
+                                               Style="{StaticResource BoldPressingTextBlock}">
+                                        
+                                        <TextBlock.InputBindings>
+                                            <MouseBinding MouseAction="LeftClick" Command="{Binding MoveSelectedLinksCommand}"/>
+                                        </TextBlock.InputBindings>
+                                    </TextBlock>
+
+                                    <TextBlock Grid.Column="2"
+                                               HorizontalAlignment="Center"
+                                               Text="{Binding MainWindowVM.CurrentLocale.Cancel}"
+                                               Style="{StaticResource BoldPressingTextBlock}">
+                                        
+                                        <TextBlock.InputBindings>
+                                            <MouseBinding MouseAction="LeftClick" Command="{Binding ChangeLinksMoveMenuVisibilityCommand}"/>
+                                        </TextBlock.InputBindings>
+                                    </TextBlock>
+                                </Grid>
+                                
+                            </StackPanel>
+                            
+                        </Grid>
+                    </Border>
+                </Border>
+            </Grid>
+
+            <Grid Grid.RowSpan="2"
                   DataContext="{Binding SettingsVM}"
                   Background="{Binding MainWindowVM.Theme.WindowBackground}"
-                  Visibility="{Binding DataContext.SettingsFieldVisibility,
-                               RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
+                  Visibility="{Binding MainWindowVM.SettingsFieldVisibility}">
                 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto" MaxWidth="400"/>

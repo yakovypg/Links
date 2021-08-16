@@ -49,12 +49,16 @@ namespace Links.Models.Localization
         public string Image { get; set; }
 
         public string Ok { get; set; }
+        public string Cancel { get; set; }
+
         public string On { get; set; }
         public string Off { get; set; }
 
         public string Add { get; set; }
         public string Find { get; set; }
+        public string Move { get; set; }
         public string CheckAll { get; set; }
+        public string UncheckAll { get; set; }
 
         public string Ascending { get; set; }
         public string Descending { get; set; }
@@ -64,6 +68,8 @@ namespace Links.Models.Localization
         public string Question { get; set; }
         public string Information { get; set; }
         public string Comment { get; set; }
+
+        public string SelectGroupToMove { get; set; }
 
         [SerializerComplexType]
         public ILocaleMessages LocaleMessages { get; set; }
@@ -90,6 +96,9 @@ namespace Links.Models.Localization
             PropertyInfo[] currProps = GetType().GetProperties().Where(t => t.CanWrite).ToArray();
             PropertyInfo[] otherProps = other.GetType().GetProperties().Where(t => t.CanWrite).ToArray();
 
+            if (currProps == null || otherProps == null)
+                return currProps == null && other == null;
+
             if (currProps.Length != otherProps.Length)
                 return false;
 
@@ -97,6 +106,9 @@ namespace Links.Models.Localization
             {
                 object currPropValue = currProps[i].GetValue(this);
                 object otherPropValue = otherProps[i].GetValue(other);
+
+                if (currPropValue == null)
+                    return otherPropValue == null;
 
                 if (!currPropValue.Equals(otherPropValue))
                     return false;

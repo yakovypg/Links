@@ -394,6 +394,26 @@ namespace Links.ViewModels
             OnPropertyChanged(nameof(ImpexGroups));
         }
 
+        public ICommand UncheckAllLinksCommand { get; }
+        public void OnUncheckAllLinksCommandExecuted(object parameter)
+        {
+            if (ImpexGroups == null)
+                return;
+
+            foreach (GroupViewModel group in ImpexGroups)
+            {
+                if (group.Links == null)
+                    continue;
+
+                foreach (LinkViewModel link in group.Links)
+                {
+                    link.IsChecked = false;
+                }
+            }
+
+            OnPropertyChanged(nameof(ImpexGroups));
+        }
+
         #endregion
 
         #region VisibilityCommands
@@ -565,6 +585,7 @@ namespace Links.ViewModels
             ImportLinksCommand = new RelayCommand(OnImportLinksCommandExecuted, t => true);
             ExportLinksCommand = new RelayCommand(OnExportLinksCommandExecuted, t => true);
             CheckAllLinksCommand = new RelayCommand(OnCheckAllLinksCommandExecuted, t => true);
+            UncheckAllLinksCommand = new RelayCommand(OnUncheckAllLinksCommandExecuted, t => true);
 
             ChangeImportLinksBottomBarVisibilityCommand = new RelayCommand(OnChangeImportLinksBottomBarVisibilityCommandExecuted, t => true);
             ChangeExportLinksBottomBarVisibilityCommand = new RelayCommand(OnChangeExportLinksBottomBarVisibilityCommandExecuted, t => true);

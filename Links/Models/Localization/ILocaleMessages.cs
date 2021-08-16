@@ -4,6 +4,7 @@
     {
         string SuccessfulLinksImportingInfo { get; set; }
         string SuccessfulLinksExportingInfo { get; set; }
+        string NoSelectedGroupToMoveInfo { get; set; }
         string NoSelectedLinksInfo { get; set; }
 
         string LoadProgramStateQuestion { get; set; }

@@ -41,12 +41,16 @@
         string Image { get; set; }
 
         string Ok { get; set; }
+        string Cancel { get; set; }
+
         string On { get; set; }
         string Off { get; set; }
 
         string Add { get; set; }
         string Find { get; set; }
+        string Move { get; set; }
         string CheckAll { get; set; }
+        string UncheckAll { get; set; }
 
         string Ascending { get; set; }
         string Descending { get; set; }
@@ -56,6 +60,8 @@
         string Question { get; set; }
         string Information { get; set; }
         string Comment { get; set; }
+
+        string SelectGroupToMove { get; set; }
 
         ILocaleMessages LocaleMessages { get; set; }
     }

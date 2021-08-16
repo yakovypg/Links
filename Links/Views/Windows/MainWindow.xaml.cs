@@ -32,18 +32,26 @@ namespace Links
             if (!(Application.Current.MainWindow is MainWindow mainWindow))
                 return;
 
-            mainWindow.GetType().GetMethod(name)?.Invoke(mainWindow, parameters);
+            try
+            {
+                mainWindow.GetType().GetMethod(name)?.Invoke(mainWindow, parameters);
+            }
+            catch { }
         }
 
         public static void InvokeMethod(string name, object[] parameters, int timespan)
         {
-            if (!(Application.Current.MainWindow is MainWindow mainWindow))
+            if (!(Application.Current?.MainWindow is MainWindow mainWindow))
                 return;
 
             System.Threading.Tasks.Task.Run(delegate
             {
-                System.Threading.Thread.Sleep(timespan);
-                mainWindow.Dispatcher.Invoke(() => InvokeMethod(name, parameters));
+                try
+                {
+                    System.Threading.Thread.Sleep(timespan);
+                    mainWindow.Dispatcher.Invoke(() => InvokeMethod(name, parameters));
+                }
+                catch { }
             });
         }
     }

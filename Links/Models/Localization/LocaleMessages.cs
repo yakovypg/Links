@@ -7,6 +7,7 @@ namespace Links.Models.Localization
     {
         public string SuccessfulLinksImportingInfo { get; set; }
         public string SuccessfulLinksExportingInfo { get; set; }
+        public string NoSelectedGroupToMoveInfo { get; set; }
         public string NoSelectedLinksInfo { get; set; }
 
         public string LoadProgramStateQuestion { get; set; }
@@ -30,6 +31,9 @@ namespace Links.Models.Localization
             PropertyInfo[] currProps = GetType().GetProperties();
             PropertyInfo[] otherProps = other.GetType().GetProperties();
 
+            if (currProps == null || otherProps == null)
+                return currProps == null && other == null;
+
             if (currProps.Length != otherProps.Length)
                 return false;
 
@@ -37,6 +41,9 @@ namespace Links.Models.Localization
             {
                 object currPropValue = currProps[i].GetValue(this);
                 object otherPropValue = otherProps[i].GetValue(other);
+
+                if (currPropValue == null)
+                    return otherPropValue == null;
 
                 if (!currPropValue.Equals(otherPropValue))
                     return false;

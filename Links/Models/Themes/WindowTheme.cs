@@ -94,6 +94,9 @@ namespace Links.Models.Themes
             PropertyInfo[] currProps = GetType().GetProperties().Where(t => t.CanWrite).ToArray();
             PropertyInfo[] otherProps = other.GetType().GetProperties().Where(t => t.CanWrite).ToArray();
 
+            if (currProps == null || otherProps == null)
+                return currProps == null && other == null;
+
             if (currProps.Length != otherProps.Length)
                 return false;
 
@@ -101,6 +104,9 @@ namespace Links.Models.Themes
             {
                 object currPropValue = currProps[i].GetValue(this);
                 object otherPropValue = otherProps[i].GetValue(other);
+
+                if (currPropValue == null)
+                    return otherPropValue == null;
 
                 if (currPropValue is DropShadowEffect)
                 {

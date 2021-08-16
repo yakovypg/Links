@@ -18,9 +18,12 @@ All changes occur in real time and do not require manual saving. The change of t
 Hot keys:
 
 1. F1 - show program info
+2. F3 - advanced links search (pressing inside special TextBox)
 2. F6 - show/hide group creator menu
 3. F7 - show/hide link creator menu
 4. F10 - show/hide settings menu
 5. F11 - maximize window
 6. Del - remove item from current collection
 7. Tab - show/hide current collection nested menu
+8. LeftShift - check all links from current collection
+9. RightShift - uncheck all links from current collection

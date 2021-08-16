@@ -40,12 +40,16 @@
             Image = "Image";
 
             Ok = "Ok";
+            Cancel = "Cancel";
+
             On = "On";
             Off = "Off";
 
             Add = "Add";
             Find = "Find";
+            Move = "Move";
             CheckAll = "Check all";
+            UncheckAll = "Uncheck all";
 
             Ascending = "Ascending";
             Descending = "Descending";
@@ -56,10 +60,13 @@
             Information = "Information";
             Comment = "Comment";
 
+            SelectGroupToMove = "Select group to move";
+
             LocaleMessages = new LocaleMessages()
             {
                 SuccessfulLinksImportingInfo = "The links were successfully imported.",
                 SuccessfulLinksExportingInfo = "The links were successfully exported.",
+                NoSelectedGroupToMoveInfo = "You have not selected the group to which you want to move the links.",
                 NoSelectedLinksInfo = "You have not selected any links.",
 
                 LoadProgramStateQuestion = "Failed to load program state. Try again?",

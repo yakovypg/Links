@@ -28,6 +28,13 @@ namespace Links.ViewModels
         public DeleteGroupParamMultiConverter DeleteGroupParamMultiConverter { get; } = new DeleteGroupParamMultiConverter();
         public IEnumerable<string> GroupIconColors => Enum.GetValues(typeof(GroupIcon.Colors)).Cast<GroupIcon.Colors>().ToStringEnumerable();
 
+        private Group _grouoToMoveLinks;
+        public Group GroupToMoveLinks
+        {
+            get => _grouoToMoveLinks;
+            set => SetValue(ref _grouoToMoveLinks, value);
+        }
+
         #region SizeParameters
 
         private double _linkPresenterGridWidth;
@@ -67,6 +74,17 @@ namespace Links.ViewModels
                 int height = value <= 0 ? 0 : 70;
                 SetValue(ref _groupEditorHeight, height);
             }
+        }
+
+        #endregion
+
+        #region FieldsVisibility
+
+        private Visibility _linksMoveMenuVisibility = Visibility.Hidden;
+        public Visibility LinksMoveMenuVisibility
+        {
+            get => _linksMoveMenuVisibility;
+            set => SetValue(ref _linksMoveMenuVisibility, value);
         }
 
         #endregion
@@ -161,25 +179,21 @@ namespace Links.ViewModels
                 new QuickMessage(CurrLocale.LocaleMessages.DeleteGroupError, CurrLocale).ShowError();
         }
 
-        public ICommand ChangeGroupEditorVisibilityCommand { get; }
-        public bool CanChangeGroupEditorVisibilityCommandExecute(object parameter)
-        {
-            return SelectedGroup != null;
-        }
-        public void OnChangeGroupEditorVisibilityCommandExecuted(object parameter)
-        {
-            GroupEditorHeight = GroupEditorHeight != 0 ? 0 : 70;
-        }
-
         #endregion
 
         #region LinkCommands
 
         public ICommand DeleteLinkCommand { get; }
+        public bool CanDeleteLinkCommandExecuted(object parameter)
+        {
+            return parameter is LinkInfo;
+        }
         public void OnDeleteLinkCommandExecuted(object parameter)
         {
-            if (!(parameter is LinkInfo linkInfo))
+            if (!CanDeleteGroupCommandExecute(parameter))
                 return;
+
+            var linkInfo = parameter as LinkInfo;
 
             if (MainWindowVM.SettingsVM.IsWarningsEnable)
             {
@@ -202,11 +216,120 @@ namespace Links.ViewModels
                 new QuickMessage(CurrLocale.LocaleMessages.DeleteLinkError, CurrLocale).ShowError();
         }
 
+        public ICommand DeleteSelectedLinksCommand { get; }
+        public void OnDeleteSelectedLinksCommandExecuted(object parameter)
+        {
+            var selectedLinks = new GroupAnalyzer().GetAllSelectedLinks(GroupCollection);
+
+            if (selectedLinks.IsNullOrEmpty())
+                return;
+
+            if (MainWindowVM.SettingsVM.IsWarningsEnable)
+            {
+                MessageBoxResult msgResult = new QuickMessage(CurrLocale.LocaleMessages.DeleteLinkQuestion, CurrLocale)
+                    .GetWarningResult(MessageBoxButton.YesNo);
+
+                if (msgResult == MessageBoxResult.No)
+                    return;
+            }
+
+            var warningParam = MainWindowVM.SettingsVM.WarningsParam;
+            MainWindowVM.SettingsVM.WarningsParam = CurrLocale.Off;
+
+            foreach (var link in selectedLinks)
+            {
+                link.IsSelected = false;
+                DeleteLinkCommand?.Execute(link);
+            }
+
+            MainWindowVM.SettingsVM.WarningsParam = warningParam;
+        }
+
+        public ICommand MoveLinkCommand { get; }
+        public bool CanMoveLinkCommandExecuted(object parameter)
+        {
+            //change the parent group of the link and then call this method
+            return parameter is LinkInfo linkInfo && linkInfo.IsLinkMoved;
+        }
+        public void OnMoveLinkCommandExecuted(object parameter)
+        {
+            if (!CanMoveLinkCommandExecuted(parameter))
+                return;
+
+            var linkInfo = parameter as LinkInfo;
+
+            if (linkInfo.PrimaryGroup.Links.Remove(linkInfo))
+            {
+                linkInfo.ParentGroup.Links.Add(linkInfo);
+                linkInfo.ResetPrimaryGroup();
+            }
+            else
+            {
+                linkInfo.CancelMove();
+            }
+        }
+
+        public ICommand MoveSelectedLinksCommand { get; }
+        public void OnMoveSelectedLinksCommandExecuted(object parameter)
+        {
+            var selectedLinks = new GroupAnalyzer().GetAllSelectedLinks(GroupCollection);
+
+            if (selectedLinks.IsNullOrEmpty())
+                return;
+
+            var newParentGroup = GroupToMoveLinks;
+
+            if (newParentGroup == null)
+            {
+                new QuickMessage(CurrLocale.LocaleMessages.NoSelectedGroupToMoveInfo, CurrLocale).ShowWarning();
+                return;
+            }
+
+            foreach (var link in selectedLinks)
+            {
+                link.IsSelected = false;
+                link.ParentGroup = newParentGroup;
+                MoveLinkCommand?.Execute(link);
+            }
+
+            ChangeLinksMoveMenuVisibilityCommand?.Execute(null);
+        }
+
+        public ICommand CheckAllLinksCommand { get; }
+        public void OnCheckAllLinksCommandExecuted(object parameter)
+        {
+            var uncheckedLinks = SelectedGroup?.Links?.Where(t => !t.IsSelected)?.ToArray();
+
+            if (uncheckedLinks.IsNullOrEmpty())
+                return;
+
+            foreach (var link in uncheckedLinks)
+                link.IsSelected = true;
+        }
+
+        public ICommand UncheckAllLinksCommand { get; }
+        public void OnUncheckAllLinksCommandExecuted(object parameter)
+        {
+            var checkedLinks = SelectedGroup?.Links?.Where(t => t.IsSelected)?.ToArray();
+
+            if (checkedLinks.IsNullOrEmpty())
+                return;
+
+            foreach (var link in checkedLinks)
+                link.IsSelected = false;
+        }
+
         public ICommand SetLinkImageCommand { get; }
+        public bool CanSetLinkImageCommandExecute(object parameter)
+        {
+            return parameter is LinkInfo;
+        }
         public void OnSetLinkImageCommandExecuted(object parameter)
         {
-            if (!(parameter is LinkInfo linkInfo))
+            if (!CanSetLinkImageCommandExecute(parameter))
                 return;
+
+            var linkInfo = parameter as LinkInfo;
 
             DialogProvider.GetFilePath(out string path);
 
@@ -234,11 +357,31 @@ namespace Links.ViewModels
             }
         }
 
+        #endregion
+
+        #region VisibilityCommands
+
+        public ICommand ChangeGroupEditorVisibilityCommand { get; }
+        public bool CanChangeGroupEditorVisibilityCommandExecute(object parameter)
+        {
+            return SelectedGroup != null;
+        }
+        public void OnChangeGroupEditorVisibilityCommandExecuted(object parameter)
+        {
+            GroupEditorHeight = GroupEditorHeight != 0 ? 0 : 70;
+        }
+
         public ICommand ChangeLinkEditorVisibilityCommand { get; }
+        public bool CanChangeLinkEditorVisibilityCommandExecute(object parameter)
+        {
+            return parameter is LinkInfo;
+        }
         public void OnChangeLinkEditorVisibilityCommandExecuted(object parameter)
         {
-            if (!(parameter is LinkInfo linkInfo))
+            if (!CanChangeLinkEditorVisibilityCommandExecute(parameter))
                 return;
+
+            var linkInfo = parameter as LinkInfo;
 
             linkInfo.PresenterVisibility = linkInfo.PresenterVisibility == Visibility.Hidden
                 ? Visibility.Visible
@@ -246,25 +389,37 @@ namespace Links.ViewModels
         }
 
         public ICommand HideLinkEditorCommand { get; }
+        public bool CanHideLinkEditorCommandExecuted(object parameter)
+        {
+            return parameter is LinkInfo;
+        }
         public void OnHideLinkEditorCommandExecuted(object parameter)
         {
-            if (!(parameter is LinkInfo linkInfo))
+            if (!CanHideLinkEditorCommandExecuted(parameter))
                 return;
 
-            if (linkInfo.IsLinkMoved)
-            {
-                if (linkInfo.PrimaryGroup.Links.Remove(linkInfo))
-                {
-                    linkInfo.ParentGroup.Links.Add(linkInfo);
-                    linkInfo.ResetPrimaryGroup();
-                }
-                else
-                {
-                    linkInfo.CancelMove();
-                }
-            }
+            MoveLinkCommand?.Execute(parameter);
+            (parameter as LinkInfo).PresenterVisibility = Visibility.Visible;
+        }
 
-            linkInfo.PresenterVisibility = Visibility.Visible;
+        public ICommand ChangeLinksMoveMenuVisibilityCommand { get; }
+        public void OnChangeLinksMoveMenuVisibilityCommandExecuted(object parameter)
+        {
+            bool isLinksMoveMenuHidden = LinksMoveMenuVisibility == Visibility.Hidden;
+
+            if (isLinksMoveMenuHidden)
+            {
+                var selectedLinks = SelectedGroup?.Links?.Where(t => t.IsSelected)?.ToArray();
+
+                if (selectedLinks.IsNullOrEmpty())
+                    return;
+
+                LinksMoveMenuVisibility = Visibility.Visible;
+            }
+            else
+            {
+                LinksMoveMenuVisibility = Visibility.Hidden;
+            }
         }
 
         #endregion
@@ -287,6 +442,8 @@ namespace Links.ViewModels
             MainWindowVM = mainWindowVM ?? throw new ArgumentNullException(nameof(mainWindowVM));
             GroupCollection = groups ?? new ObservableCollection<Group>();
 
+            GroupToMoveLinks = GroupCollection.Count > 0 ? GroupCollection[0] : null;
+
             _groups = new CollectionViewSource()
             {
                 IsLiveSortingRequested = true,
@@ -305,14 +462,20 @@ namespace Links.ViewModels
             _selectedGroupLinks.Filter += OnLinkFiltered;
 
             DeleteGroupCommand = new RelayCommand(OnDeleteGroupCommandExecuted, CanDeleteGroupCommandExecute);
-            ChangeGroupEditorVisibilityCommand = new RelayCommand(OnChangeGroupEditorVisibilityCommandExecuted, CanChangeGroupEditorVisibilityCommandExecute);
 
-            DeleteLinkCommand = new RelayCommand(OnDeleteLinkCommandExecuted, t => true);
-            SetLinkImageCommand = new RelayCommand(OnSetLinkImageCommandExecuted, t => true);
+            DeleteLinkCommand = new RelayCommand(OnDeleteLinkCommandExecuted, CanDeleteLinkCommandExecuted);
+            DeleteSelectedLinksCommand = new RelayCommand(OnDeleteSelectedLinksCommandExecuted, t => true);
+            MoveLinkCommand = new RelayCommand(OnMoveLinkCommandExecuted, CanMoveLinkCommandExecuted);
+            MoveSelectedLinksCommand = new RelayCommand(OnMoveSelectedLinksCommandExecuted, t => true);
+            CheckAllLinksCommand = new RelayCommand(OnCheckAllLinksCommandExecuted, t => true);
+            UncheckAllLinksCommand = new RelayCommand(OnUncheckAllLinksCommandExecuted, t => true);
+            SetLinkImageCommand = new RelayCommand(OnSetLinkImageCommandExecuted, CanSetLinkImageCommandExecute);
             FollowLinkCommand = new RelayCommand(OnFollowLinkCommandExecuted, t => true);
 
-            ChangeLinkEditorVisibilityCommand = new RelayCommand(OnChangeLinkEditorVisibilityCommandExecuted, t => true);
-            HideLinkEditorCommand = new RelayCommand(OnHideLinkEditorCommandExecuted, t => true);
+            ChangeGroupEditorVisibilityCommand = new RelayCommand(OnChangeGroupEditorVisibilityCommandExecuted, CanChangeGroupEditorVisibilityCommandExecute);
+            ChangeLinkEditorVisibilityCommand = new RelayCommand(OnChangeLinkEditorVisibilityCommandExecuted, CanChangeLinkEditorVisibilityCommandExecute);
+            HideLinkEditorCommand = new RelayCommand(OnHideLinkEditorCommandExecuted, CanHideLinkEditorCommandExecuted);
+            ChangeLinksMoveMenuVisibilityCommand = new RelayCommand(OnChangeLinksMoveMenuVisibilityCommandExecuted, t => true);
 
             SetFocusCommand = new RelayCommand(OnSetFocusCommandExecuted, t => true);
         }
