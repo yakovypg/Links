@@ -19,6 +19,12 @@ namespace Links.Data.App
 
             Directories = new AppDirectories();
             FilePaths = new AppFilePaths(Directories);
+
+            if (!Directories.IsDirectoriesInOrder)
+                Directories.TryRestoreDirectories();
+
+            if (!FilePaths.IsFilesInOrder)
+                FilePaths.TryRestoreFiles();
         }
 
         public static string GenerateString()

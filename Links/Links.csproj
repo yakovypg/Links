@@ -5,10 +5,26 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
 	<UseWindowsForms>true</UseWindowsForms>
+	<ApplicationIcon>Icon.ico</ApplicationIcon>
+	<Authors>yakovypg</Authors>
+	<Company>Y-Progs</Company>
+	<Copyright>© 2021 Yakov Kuzin</Copyright>
+	<PackageIcon>Icon.png</PackageIcon>
+	<PackageIconUrl />
+	<NeutralLanguage>en-US</NeutralLanguage>
+	<PackageTags>Links</PackageTags>
+	<RepositoryUrl>https://github.com/yakovypg/Links</RepositoryUrl>
+	<Description>A program for managing links</Description>
+	<RepositoryType>Public</RepositoryType>
+	<PackageReleaseNotes>A program for managing links</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="Icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

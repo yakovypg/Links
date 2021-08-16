@@ -10,6 +10,9 @@ namespace Links.Data.App
         public string Locales { get; }
         public string Data { get; }
 
+        public bool IsDirectoriesInOrder => Directory.Exists(Links) && Directory.Exists(Themes) &&
+            Directory.Exists(Locales) && Directory.Exists(Data);
+
         public AppDirectories()
         {
             string executablePath = System.Windows.Forms.Application.ExecutablePath;
@@ -21,6 +24,30 @@ namespace Links.Data.App
             Themes = Path.Combine(Program, "Themes");
             Locales = Path.Combine(Program, "Locales");
             Data = Path.Combine(Program, "Data");
+        }
+
+        public bool TryRestoreDirectories()
+        {
+            try
+            {
+                if (!Directory.Exists(Links))
+                    Directory.CreateDirectory(Links);
+
+                if (!Directory.Exists(Themes))
+                    Directory.CreateDirectory(Themes);
+
+                if (!Directory.Exists(Locales))
+                    Directory.CreateDirectory(Locales);
+
+                if (!Directory.Exists(Data))
+                    Directory.CreateDirectory(Data);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }
