@@ -2,7 +2,7 @@
 This is a program for managing links. It is able to group and sort links, visualize them, and helps to carry out a quick and advanced search for links. The program supports interface configuration: you can choose the theme you like and change the size of the visual elements.
 
 <p align="center">
-<img src="https://github.com/yakovypg/Links/tree/master/Links/Icon.png" width="384">
+<img src="https://github.com/yakovypg/Links/blob/master/Links/Icon.png" width="384">
 </p>
 
 Quick instruction:
