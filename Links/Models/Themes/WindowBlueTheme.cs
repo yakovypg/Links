@@ -10,7 +10,7 @@ namespace Links.Models.Themes
         {
             WindowBackground = BrushTransformer.ToSolidColorBrush("#333449");
             WindowSystemTopBarBackground = BrushTransformer.ToSolidColorBrush("#464775");
-            WindowGridSplitterBackground = BrushTransformer.ToSolidColorBrush("#696969");
+            WindowGridSplitterBackground = BrushTransformer.ToSolidColorBrush("#646485");
 
             TitleEffect = new DropShadowEffect() { ShadowDepth = 3, BlurRadius = 5, Color = Colors.Black };
             TitleForeground = BrushTransformer.ToSolidColorBrush("#E2E1E6");
@@ -37,8 +37,8 @@ namespace Links.Models.Themes
             SettingsFieldTextBlocksForeground = BrushTransformer.ToSolidColorBrush("#E2E1E6");
             SettingsFieldBottomBarBackground = BrushTransformer.ToSolidColorBrush("#464775");
 
-            GroupsFieldBorderBrush = BrushTransformer.ToSolidColorBrush("#696969");
-            GroupsFieldSubborderBrush = BrushTransformer.ToSolidColorBrush("#000000");
+            GroupsFieldBorderBrush = BrushTransformer.ToSolidColorBrush("#646485");
+            GroupsFieldSubborderBrush = BrushTransformer.ToSolidColorBrush("#181818");
             GroupsFieldTextBlocksForeground = BrushTransformer.ToSolidColorBrush("#E2E1E6");
 
             GroupsFieldIconButtonItemBackground = BrushTransformer.ToSolidColorBrush("#303038");
@@ -46,7 +46,7 @@ namespace Links.Models.Themes
             GroupsFieldIconButtonBackgroundMouseOver = BrushTransformer.ToSolidColorBrush("#BABABB");
             GroupsFieldIconButtonBackgroundPressed = BrushTransformer.ToSolidColorBrush("#8B9BCF");
 
-            GroupEditorBackground = BrushTransformer.ToSolidColorBrush("#303038");
+            GroupEditorBackground = BrushTransformer.ToSolidColorBrush("#464775");
 
             CreatorMenuBackground = BrushTransformer.ToSolidColorBrush("#DCE0DF");
             CreatorMenuBorderBrush = BrushTransformer.ToSolidColorBrush("#FFD700");

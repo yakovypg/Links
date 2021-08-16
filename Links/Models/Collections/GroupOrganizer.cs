@@ -11,7 +11,7 @@ namespace Links.Models.Collections
         {
             if (groups.IsNullOrEmpty())
                 return;
-            
+
             foreach (var group in groups)
             {
                 if (group.Links.IsNullOrEmpty())

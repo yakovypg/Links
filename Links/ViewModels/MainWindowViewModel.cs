@@ -28,8 +28,21 @@ namespace Links.ViewModels
         public SettingsViewModel SettingsVM { get; private set; }
         public LinkCollectionViewModel LinkCollectionVM { get; private set; }
 
+        #region Creators
+
         public GroupCreator GroupCreator { get; } = new GroupCreator();
         public LinkCreator LinkCreator { get; } = new LinkCreator();
+
+        private int _linkCreatorGroupIndex = 0;
+        public int LinkCreatorGroupIndex
+        {
+            get => _linkCreatorGroupIndex;
+            set => SetValue(ref _linkCreatorGroupIndex, value);
+        }
+
+        #endregion
+
+        #region Customization
 
         private IWindowTheme _theme = WindowTheme.Dark;
         public IWindowTheme Theme
@@ -52,12 +65,7 @@ namespace Links.ViewModels
             private set => SetValue(ref _title, value);
         }
 
-        private int _linkCreatorGroupIndex = 0;
-        public int LinkCreatorGroupIndex
-        {
-            get => _linkCreatorGroupIndex;
-            set => SetValue(ref _linkCreatorGroupIndex, value);
-        }
+        #endregion
 
         #region FieldsVisibility
 

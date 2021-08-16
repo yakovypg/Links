@@ -10,7 +10,7 @@ namespace Links.Models.Themes
         {
             WindowBackground = BrushTransformer.ToSolidColorBrush("#EFF8FF");
             WindowSystemTopBarBackground = BrushTransformer.ToSolidColorBrush("#464775");
-            WindowGridSplitterBackground = BrushTransformer.ToSolidColorBrush("#464775");
+            WindowGridSplitterBackground = BrushTransformer.ToSolidColorBrush("#552C51");
 
             TitleEffect = new DropShadowEffect() { ShadowDepth = 3, BlurRadius = 5, Color = Colors.Black };
             TitleForeground = BrushTransformer.ToSolidColorBrush("#E2E1E6");
@@ -35,10 +35,10 @@ namespace Links.Models.Themes
             IconButtonBackgroundPressed = BrushTransformer.ToSolidColorBrush("#8B9BCF");
 
             SettingsFieldTextBlocksForeground = BrushTransformer.ToSolidColorBrush("#000000");
-            SettingsFieldBottomBarBackground = BrushTransformer.ToSolidColorBrush("#464775");
+            SettingsFieldBottomBarBackground = BrushTransformer.ToSolidColorBrush("#A6A3C9");
 
-            GroupsFieldBorderBrush = BrushTransformer.ToSolidColorBrush("#696969");
-            GroupsFieldSubborderBrush = BrushTransformer.ToSolidColorBrush("#000000");
+            GroupsFieldBorderBrush = BrushTransformer.ToSolidColorBrush("#BB8BB6");
+            GroupsFieldSubborderBrush = BrushTransformer.ToSolidColorBrush("#552C51");
             GroupsFieldTextBlocksForeground = BrushTransformer.ToSolidColorBrush("#212123");
 
             GroupsFieldIconButtonItemBackground = BrushTransformer.ToSolidColorBrush("#303038");
@@ -54,10 +54,10 @@ namespace Links.Models.Themes
 
             LinksFieldTopBarBackground = BrushTransformer.ToSolidColorBrush("#DCE0DF");
 
-            LinkPresenterGridBackground = BrushTransformer.ToSolidColorBrush("#AAAAAA");
+            LinkPresenterGridBackground = BrushTransformer.ToSolidColorBrush("#A6A3C9");
             LinkPresenterBottomBarBackground = BrushTransformer.ToSolidColorBrush("#F5DEB3");
             LinkPresenterTextBlocksForeground = BrushTransformer.ToSolidColorBrush("#000000");
-            LinkPresenterInformationGridBackground = BrushTransformer.ToSolidColorBrush("#AAAAAA");
+            LinkPresenterInformationGridBackground = BrushTransformer.ToSolidColorBrush("#A6A3C9");
             LinkPresenterImageBorderBrush = BrushTransformer.ToSolidColorBrush("#696969");
             LinkPresenterImageBackground = BrushTransformer.ToSolidColorBrush("#FFFFFF");
         }

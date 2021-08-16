@@ -24,17 +24,23 @@ namespace Links.ViewModels
 
         public MainWindowViewModel MainWindowVM { get; }
         public ObservableCollection<LinkInfo> RecycleBin { get; private set; }
-
         public DateTime LastRecycleBinCleaningDate { get; private set; }
 
-        public ObservableCollection<string> GroupSortings { get; private set; }
-        public ObservableCollection<string> LinkSortings { get; private set; }
-        public ObservableCollection<string> SortingMods { get; private set; }
-        public ObservableCollection<Size> PresenterSizes { get; private set; }
-        public ObservableCollection<IWindowTheme> Themes { get; private set; }
-        public ObservableCollection<ILocale> Locales { get; private set; }
-        public ObservableCollection<string> OnOffParams { get; private set; }
-        public ObservableCollection<string> EmptyRecycleBinParams { get; private set; }
+        public Settings CurrentSettings => new Settings()
+        {
+            GroupSortPropertyName = GroupSortPropertyName,
+            GroupListSortDescriptionParam = GroupListSortDescriptionParam,
+            LinkSortPropertyName = LinkSortPropertyName,
+            LinkListSortDescriptionParam = LinkListSortDescriptionParam,
+            WarningsParam = WarningsParam,
+            PresenterSize = PresenterSize,
+            Theme = MainWindowVM.Theme,
+            CurrentLocale = MainWindowVM.CurrentLocale,
+            RecycleBinParam = RecycleBinParam,
+            EmptyRecycleBinParam = EmptyRecycleBinParam
+        };
+
+        #region RecycleBinProperties
 
         private int _selectedDeletedLinkIndex;
         public int SelectedDeletedLinkIndex
@@ -50,26 +56,16 @@ namespace Links.ViewModels
             set => SetValue(ref _selectedDeletedLink, value);
         }
 
+        #endregion
+
+        #region Impex
+
         private GroupViewModel[] _impexGroups;
         public GroupViewModel[] ImpexGroups
         {
             get => _impexGroups;
             private set => SetValue(ref _impexGroups, value);
         }
-
-        public Settings CurrentSettings => new Settings()
-        {
-            GroupSortPropertyName = GroupSortPropertyName,
-            GroupListSortDescriptionParam = GroupListSortDescriptionParam,
-            LinkSortPropertyName = LinkSortPropertyName,
-            LinkListSortDescriptionParam = LinkListSortDescriptionParam,
-            WarningsParam = WarningsParam,
-            PresenterSize = PresenterSize,
-            Theme = MainWindowVM.Theme,
-            CurrentLocale = MainWindowVM.CurrentLocale,
-            RecycleBinParam = RecycleBinParam,
-            EmptyRecycleBinParam = EmptyRecycleBinParam
-        };
 
         public (IEnumerable<Group> NonemptyImpexGroups, IEnumerable<LinkInfo> SelectedImpexGroupsLinks) ImpexLinksTreeData
         {
@@ -102,6 +98,21 @@ namespace Links.ViewModels
                 return (nonemptyGroups, selectedImpexGroupsLinks);
             }
         }
+
+        #endregion
+
+        #region Collections
+
+        public ObservableCollection<string> GroupSortings { get; private set; }
+        public ObservableCollection<string> LinkSortings { get; private set; }
+        public ObservableCollection<string> SortingMods { get; private set; }
+        public ObservableCollection<Size> PresenterSizes { get; private set; }
+        public ObservableCollection<IWindowTheme> Themes { get; private set; }
+        public ObservableCollection<ILocale> Locales { get; private set; }
+        public ObservableCollection<string> OnOffParams { get; private set; }
+        public ObservableCollection<string> EmptyRecycleBinParams { get; private set; }
+
+        #endregion
 
         #region FieldsVisibility
 
