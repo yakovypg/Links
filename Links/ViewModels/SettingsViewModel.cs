@@ -375,9 +375,13 @@ namespace Links.ViewModels
         }
 
         public ICommand CheckAllLinksCommand { get; }
+        public bool CanCheckAllLinksCommandExecute(object parameter)
+        {
+            return ImpexGroups != null;
+        }
         public void OnCheckAllLinksCommandExecuted(object parameter)
         {
-            if (ImpexGroups == null)
+            if (!CanCheckAllLinksCommandExecute(parameter))
                 return;
 
             foreach (GroupViewModel group in ImpexGroups)
@@ -395,9 +399,13 @@ namespace Links.ViewModels
         }
 
         public ICommand UncheckAllLinksCommand { get; }
+        public bool CanUncheckAllLinksCommandExecute(object parameter)
+        {
+            return ImpexGroups != null;
+        }
         public void OnUncheckAllLinksCommandExecuted(object parameter)
         {
-            if (ImpexGroups == null)
+            if (!CanUncheckAllLinksCommandExecute(parameter))
                 return;
 
             foreach (GroupViewModel group in ImpexGroups)
@@ -449,9 +457,13 @@ namespace Links.ViewModels
         }
 
         public ICommand ShowImportMenuCommand { get; }
+        public bool CanShowImportMenuCommandExecute(object parameter)
+        {
+            return ImpexMenuVisibility == Visibility.Hidden;
+        }
         public void OnShowImportMenuCommandExecuted(object parameter)
         {
-            if (ImpexMenuVisibility == Visibility.Visible)
+            if (!CanShowImportMenuCommandExecute(parameter))
                 return;
 
             bool isImported = DataOrganizer.TryImportGroups(out IEnumerable<Group> groups, out System.Windows.Forms.DialogResult dialogResult);
@@ -584,14 +596,14 @@ namespace Links.ViewModels
 
             ImportLinksCommand = new RelayCommand(OnImportLinksCommandExecuted, t => true);
             ExportLinksCommand = new RelayCommand(OnExportLinksCommandExecuted, t => true);
-            CheckAllLinksCommand = new RelayCommand(OnCheckAllLinksCommandExecuted, t => true);
-            UncheckAllLinksCommand = new RelayCommand(OnUncheckAllLinksCommandExecuted, t => true);
+            CheckAllLinksCommand = new RelayCommand(OnCheckAllLinksCommandExecuted, CanCheckAllLinksCommandExecute);
+            UncheckAllLinksCommand = new RelayCommand(OnUncheckAllLinksCommandExecuted, CanUncheckAllLinksCommandExecute);
 
             ChangeImportLinksBottomBarVisibilityCommand = new RelayCommand(OnChangeImportLinksBottomBarVisibilityCommandExecuted, t => true);
             ChangeExportLinksBottomBarVisibilityCommand = new RelayCommand(OnChangeExportLinksBottomBarVisibilityCommandExecuted, t => true);
 
             CloseSettingsPageCommand = new RelayCommand(OnCloseSettingsPageCommandExecuted, t => true);
-            ShowImportMenuCommand = new RelayCommand(OnShowImportMenuCommandExecuted, t => true);
+            ShowImportMenuCommand = new RelayCommand(OnShowImportMenuCommandExecuted, CanShowImportMenuCommandExecute);
             ShowExportMenuCommand = new RelayCommand(OnShowExportMenuCommandExecuted, t => true);
 
             RestoreRecycleBinItemCommand = new RelayCommand(OnRestoreRecycleBinItemCommandExecuted, CanRestoreRecycleBinItemCommandExecute);
