@@ -58,6 +58,7 @@ namespace Links.Models.Themes
             LinkPresenterBottomBarBackground = BrushTransformer.ToSolidColorBrush("#F5DEB3");
             LinkPresenterTextBlocksForeground = BrushTransformer.ToSolidColorBrush("#000000");
             LinkPresenterInformationGridBackground = BrushTransformer.ToSolidColorBrush("#A6A3C9");
+            LinkPresenterSelectorBackground = BrushTransformer.ToSolidColorBrush("#FFB761");
             LinkPresenterImageBorderBrush = BrushTransformer.ToSolidColorBrush("#696969");
             LinkPresenterImageBackground = BrushTransformer.ToSolidColorBrush("#FFFFFF");
         }

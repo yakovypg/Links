@@ -64,6 +64,17 @@ namespace Links.Models.Collections
             }
         }
 
+        private bool _isSelected;
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                _isSelected = value;
+                OnPropertyChanged(nameof(IsSelected));
+            }
+        }
+
         private Visibility _presenterVisibility = Visibility.Visible;
         public Visibility PresenterVisibility
         {

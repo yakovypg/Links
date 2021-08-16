@@ -599,6 +599,26 @@
                                         </TextBlock.ToolTip>
                                     </TextBlock>
 
+                                    <Rectangle
+                                        Grid.Row="0"
+                                        Width="18"
+                                        Height="18"
+                                        RadiusX="4"
+                                        RadiusY="4"
+                                        Margin="0, 0, 24, 0"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Right"
+                                        Fill="{Binding DataContext.MainWindowVM.Theme.LinkPresenterSelectorBackground, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                    </Rectangle>
+
+                                    <CheckBox
+                                        Grid.Row="0"
+                                        Margin="0, 0, 25, 0"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Right"
+                                        IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}">
+                                    </CheckBox>
+
                                     <Button
                                         Name="DeleteLinkButton"
                                         Width="20"

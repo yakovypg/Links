@@ -69,6 +69,7 @@ namespace Links.Models.Themes
         public SolidColorBrush LinkPresenterBottomBarBackground { get; set; }
         public SolidColorBrush LinkPresenterTextBlocksForeground { get; set; }
         public SolidColorBrush LinkPresenterInformationGridBackground { get; set; }
+        public SolidColorBrush LinkPresenterSelectorBackground { get; set; }
         public SolidColorBrush LinkPresenterImageBorderBrush { get; set; }
         public SolidColorBrush LinkPresenterImageBackground { get; set; }
 

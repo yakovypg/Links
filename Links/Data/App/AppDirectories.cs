@@ -13,6 +13,24 @@ namespace Links.Data.App
         public bool IsDirectoriesInOrder => Directory.Exists(Links) && Directory.Exists(Themes) &&
             Directory.Exists(Locales) && Directory.Exists(Data);
 
+        public bool IsDirectoriesDefaultFilesInOrder
+        {
+            get
+            {
+                try
+                {
+                    var themesCount = new DirectoryInfo(Themes).GetFiles().Length;
+                    var localesCount = new DirectoryInfo(Locales).GetFiles().Length;
+
+                    return themesCount > 0 && localesCount > 0;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
+
         public AppDirectories()
         {
             string executablePath = System.Windows.Forms.Application.ExecutablePath;

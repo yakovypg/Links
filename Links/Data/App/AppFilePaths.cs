@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Links.Models.Configuration;
+using System;
 using System.IO;
-using Links.Models.Configuration;
 
 namespace Links.Data.App
 {
