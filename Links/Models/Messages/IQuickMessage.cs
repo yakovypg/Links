@@ -5,19 +5,19 @@ namespace Links.Models.Messages
 {
     internal interface IQuickMessage
     {
-        public ILocale MessageLocale { get; }
-        public string Message { get; set; }
+        ILocale MessageLocale { get; }
+        string Message { get; set; }
 
-        public void ShowEmpty();
-        public void ShowError();
-        public void ShowWarning();
-        public void ShowQuestion();
-        public void ShowInformation();
+        void ShowEmpty();
+        void ShowError();
+        void ShowWarning();
+        void ShowQuestion();
+        void ShowInformation();
 
-        public MessageBoxResult GetEmptyResult(MessageBoxButton msgButton = MessageBoxButton.OK);
-        public MessageBoxResult GetErrorResult(MessageBoxButton msgButton = MessageBoxButton.OK);
-        public MessageBoxResult GetWarningResult(MessageBoxButton msgButton = MessageBoxButton.OK);
-        public MessageBoxResult GetQuestionResult(MessageBoxButton msgButton = MessageBoxButton.YesNo);
-        public MessageBoxResult GetInformationResult(MessageBoxButton msgButton = MessageBoxButton.OK);
+        MessageBoxResult GetEmptyResult(MessageBoxButton msgButton = MessageBoxButton.OK);
+        MessageBoxResult GetErrorResult(MessageBoxButton msgButton = MessageBoxButton.OK);
+        MessageBoxResult GetWarningResult(MessageBoxButton msgButton = MessageBoxButton.OK);
+        MessageBoxResult GetQuestionResult(MessageBoxButton msgButton = MessageBoxButton.YesNo);
+        MessageBoxResult GetInformationResult(MessageBoxButton msgButton = MessageBoxButton.OK);
     }
 }
